@@ -5,7 +5,7 @@
 #include "headers/Traitor.h"
 
 // g++ *.cpp -o main `pkg-config --cflags --libs opencv4`
-
+//https://stackoverflow.com/questions/23683023/how-to-store-a-matrix-of-custom-objects-in-c
 int main()
 {
     srand(time(0));
