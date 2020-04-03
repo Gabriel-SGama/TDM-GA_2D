@@ -9,6 +9,7 @@ Player::Player()
     double currentAngle;
     double nextCurrentAngle;
 
+    score = 0;
     alive = true;
 
     aux.x = -RADIUS / 2;
@@ -70,11 +71,6 @@ int Player::checkPosition()
         pt.y = sin(i) * (_RADIUS_TOTAL_DISTANCE + 1);
 
         pt += center;
-
-        //cv::circle(screen->getMap(), pt, 1, TRAITOR_RAY, cv::FILLED);
-
-        //std::cout << pt << std::endl;
-        //std::cout << i << std::endl;
 
         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
             return 0;
@@ -159,13 +155,8 @@ int Player::checkMove(cv::Point offset)
 
         pt += center + offset;
 
-        //std::cout << pt << std::endl;
-        //std::cout << i << std::endl;
-
         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
             return 0;
-
-        //cv::circle(screen->getMap(), pt, 1, cv::Scalar(0, 1, 255), cv::FILLED);
     }
 
     return 1;
@@ -182,7 +173,7 @@ void Player::move(cv::Point offset)
     }
 }
 
-void Player::killPlayer(int rayNumber, Player *inocentArray, Player *traitorArray, Player *detectiveArray)
+void Player::killPlayer(int rayNumber, Player *inocents, Player *traitors, Player *detectives)
 {
     double currentAngle;
 
@@ -195,37 +186,37 @@ void Player::killPlayer(int rayNumber, Player *inocentArray, Player *traitorArra
 
     enemyPoint += center;
 
-    //cv::circle(screen->getMap(), enemyPoint, 3, cv::Scalar(0, 1, 255), cv::FILLED);
+    cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
 
-    getPlayerNumber(enemyPoint, inocentArray, traitorArray, detectiveArray);
+    getPlayerNumber(enemyPoint, inocents, traitors, detectives);
 }
 
-int Player::getPlayerNumber(cv::Point enemyPoint, Player *inocentArray, Player *traitorArray, Player *detectiveArray)
+int Player::getPlayerNumber(cv::Point enemyPoint, Player *inocents, Player *traitors, Player *detectives)
 {
     int i;
     float distance;
 
     for (i = 0; i < NUMBER_OF_INOCENTS; i++)
     {
-        distance = cv::norm(enemyPoint - inocentArray[i].center);
+        distance = cv::norm(enemyPoint - inocents[i].center);
 
         if (distance <= RADIUS)
         {
-            inocentArray[i].alive = false;
-            //std::cout << playerNumber << "matou " << inocentArray[i].playerNumber << std::endl;
-            return inocentArray[i].playerNumber;
+            inocents[i].alive = false;
+            std::cout << playerNumber << "matou " << inocents[i].playerNumber << std::endl;
+            return inocents[i].playerNumber;
         }
     }
 
     for (i = 0; i < NUMBER_OF_TRAITORS; i++)
     {
-        distance = cv::norm(enemyPoint - traitorArray[i].center);
+        distance = cv::norm(enemyPoint - traitors[i].center);
 
         if (distance <= RADIUS)
         {
-            traitorArray[i].alive = false;
-            //std::cout << playerNumber << "matou " << traitorArray[i].playerNumber << std::endl;
-            return traitorArray[i].playerNumber;
+            traitors[i].alive = false;
+            std::cout << playerNumber << "matou " << traitors[i].playerNumber << std::endl;
+            return traitors[i].playerNumber;
         }
     }
 

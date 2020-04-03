@@ -47,9 +47,12 @@ protected:
     int playerNumber;
     int radiusOffset;
     int numberOfRays;
+    int killPotential;
+
     int *raysID;
     int *raysDist;
-    int killPotential;
+
+    float score;
 
     double separationAngle;
     double angleCorrection;
@@ -65,14 +68,14 @@ public:
     int getRadius();
     int checkPosition();
     int checkMove(cv::Point offset);
-    int getPlayerNumber(cv::Point enemyPoint, Player *inocentArray, Player *traitorArray, Player *detectiveArray);
+    int getPlayerNumber(cv::Point enemyPoint, Player *inocents, Player *traitors, Player *detectives);
 
     void setPlayerValues(Screen *screen, int playerNumber);
     void setPosition();
     void drawPlayer();
     void drawVisionLines(double currentAngle, int id);
     void move(cv::Point offset);
-    void killPlayer(int rayNumber, Player *inocentArray, Player *tratorArray, Player *detectiveArray);
+    void killPlayer(int rayNumber, Player *inocents, Player *trators, Player *detectives);
 
     cv::Point getCenter();
     cv::Point *updateVision();
