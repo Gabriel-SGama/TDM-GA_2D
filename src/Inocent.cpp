@@ -4,7 +4,8 @@ Inocent::Inocent() : Player()
 {
     playerType = INOCENT;
     playerColor = INOCENT_COLOR;
-    killPotential = INOCENT_KILL_POTENTIAL;
+    killPotential = INOCENT_DAMAGE;
+    life = INOCENT_HEALTH;
 }
 
 Inocent::~Inocent()

@@ -21,9 +21,6 @@ uchar **Screen::getMatrix()
 
 void Screen::matToMatrix()
 {
-    int i;
-    int j;
-
     imgMatrix = new uchar *[rows];
 
     for (int i = 0; i < rows; i++)

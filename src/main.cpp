@@ -14,9 +14,6 @@ int main()
 {
     srand(time(0));
 
-    int i;
-    int playerNumber = 0;
-
     Screen *screen = new Screen;
 
     if (!screen->getMap().isContinuous())
@@ -38,6 +35,8 @@ int main()
 
         moderator->drawPlayers();
         moderator->updatePlayersVision();
+        moderator->conflicts();
+        moderator->checkLife();
 
         screen->updateMap();
     }

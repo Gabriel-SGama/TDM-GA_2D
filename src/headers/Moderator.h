@@ -24,9 +24,12 @@ public:
     Moderator(Screen *screen);
     ~Moderator();
 
+    void shotPlayer(Player *shooter, int damage, cv::Point enemyPoint);
     void setPlayersValues();
     void drawPlayers();
     void updatePlayersVision();
+    void conflicts();
+    void checkLife();
 };
 
 #endif

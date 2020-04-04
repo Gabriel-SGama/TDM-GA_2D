@@ -22,8 +22,8 @@ CC=g++
 #          -ansi      \
 #          -pedantic
 CC_FLAGS = -g \
+		   -c \
 		   -Wall
-
 
 # Command used at clean target
 RM = rm -rf

@@ -2,7 +2,8 @@
 #define DETECTIVE_H
 
 #define NUMBER_OF_DETECTIVES 2
-#define DETECTIVE_KILL_POTENTIAL 15
+#define DETECTIVE_HEALTH 100
+#define DETECTIVE_DAMAGE 50
 
 #include "Player.h"
 #include "Screen.h"

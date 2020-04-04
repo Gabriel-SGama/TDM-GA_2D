@@ -39,12 +39,13 @@ protected:
     cv::Scalar playerColor;
     cv::Point aux;
 
-    std::string playerNumberStr;
+    std::string playerIDStr;
 
     bool alive;
 
     int playerType;
-    int playerNumber;
+    int playerID;
+    int life;
     int radiusOffset;
     int numberOfRays;
     int killPotential;
@@ -65,20 +66,25 @@ public:
 
     bool isAlive();
 
+    inline int getPlayerID() { return playerID; }
+    inline cv::Point getCenter() { return center; }
+    inline int getLife() { return life; }
+
+    inline void setAlive(bool alive) { this->alive = alive; }
+
     int getRadius();
     int checkPosition();
     int checkMove(cv::Point offset);
-    int getPlayerNumber(cv::Point enemyPoint, Player *inocents, Player *traitors, Player *detectives);
 
-    void setPlayerValues(Screen *screen, int playerNumber);
+    void setPlayerValues(Screen *screen, int playerID, int life);
     void setPosition();
     void drawPlayer();
     void drawVisionLines(double currentAngle, int id);
     void move(cv::Point offset);
-    void killPlayer(int rayNumber, Player *inocents, Player *trators, Player *detectives);
+    void updateVision();
+    void takeDamage(int damage);
 
-    cv::Point getCenter();
-    cv::Point *updateVision();
+    cv::Point killPlayer(int rayNumber);
 };
 
 #endif

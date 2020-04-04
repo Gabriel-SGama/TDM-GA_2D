@@ -2,7 +2,8 @@
 #define TRAITOR_H
 
 #define NUMBER_OF_TRAITORS 3
-#define TRAITOR_KILL_POTENTIAL 9
+#define TRAITOR_HEALTH 75
+#define TRAITOR_DAMAGE 35
 
 #include "Player.h"
 #include "Screen.h"
