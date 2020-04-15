@@ -46,7 +46,7 @@ void Player::setPlayerValues(Screen *screen, int playerID, int life)
 
 void Player::setPosition()
 {
-    int safeDist = 2 * RADIUS + RADIUS_OFFSET;
+    //int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
     center.x = LENGTH / 2;
     center.y = HEIGHT / 2;
@@ -125,6 +125,7 @@ void Player::drawVisionLines(double currentAngle, int id)
 
     raysDist[id] = i;
 
+    //only traitors see others traitors
     if (raysID[id] == TRAITOR && playerType != TRAITOR)
     {
         raysID[id] = INOCENT;
@@ -144,6 +145,7 @@ int Player::checkMove(cv::Point offset)
 
     float angle = atan2(offset.y, offset.x);
 
+    //checks movement in an angle of 90 degres to each side
     for (float i = angle - M_PI_2; i < M_PI_2 + angle; i += 0.1)
     {
         pt.x = cos(i) * _RADIUS_TOTAL_DISTANCE;
@@ -171,12 +173,16 @@ void Player::move(cv::Point offset)
 
 cv::Point Player::killPlayer(int rayNumber)
 {
+    if (rayNumber < 0 || rayNumber > numberOfRays) //invalid position
+        return cv::Point(-1, -1);
+
     double currentAngle;
 
     cv::Point enemyPoint;
 
     currentAngle = separationAngle * rayNumber;
 
+    //enemy location
     enemyPoint.x = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * cos(currentAngle);
     enemyPoint.y = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * sin(currentAngle);
 
