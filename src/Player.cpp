@@ -9,9 +9,6 @@ Player::Player()
     score = 0;
     alive = true;
 
-    aux.x = -RADIUS / 2;
-    aux.y = RADIUS / 2;
-
     separationAngle = _RADIUS_TOTAL_DISTANCE * 2.0 / VISION_DIST;
     numberOfRays = round(2 * M_PI / separationAngle);
 

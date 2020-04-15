@@ -31,6 +31,8 @@ const cv::Scalar INOCENT_RAY = cv::Scalar(1, 255, 0);   //green ray
 const cv::Scalar DETECTIVE_RAY = cv::Scalar(255, 1, 0); //blue ray
 const cv::Scalar TRAITOR_RAY = cv::Scalar(1, 0, 255);   //red ray
 
+const cv::Point aux = cv::Point(-RADIUS / 2, RADIUS / 2); //offset to print text
+
 #include "Screen.h"
 
 class Player
@@ -38,7 +40,6 @@ class Player
 protected:
     cv::Point center;       //position
     cv::Scalar playerColor; //color
-    cv::Point aux;          //param to print text
 
     std::string playerIDStr; //id->str
 
