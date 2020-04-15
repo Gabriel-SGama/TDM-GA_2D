@@ -11,11 +11,13 @@ typedef struct playerList_t
     Player *player;
 } playerList_t;
 
+//repeats the same function call for all players alive
 class Moderator
 {
 private:
-    Screen *screen;
+    Screen *screen; //commun screen obj
 
+    //players:
     Inocent *inocents;
     Detective *detectives;
     Traitor *traitors;

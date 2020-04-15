@@ -4,6 +4,7 @@ Moderator::Moderator(Screen *screen)
 {
     this->screen = screen;
 
+    //allocs all memory
     inocents = new Inocent[NUMBER_OF_INOCENTS];
     traitors = new Traitor[NUMBER_OF_TRAITORS];
     detectives = new Detective[NUMBER_OF_DETECTIVES];
@@ -103,6 +104,9 @@ void Moderator::conflicts()
         if (inocents[i].isAlive() && true)
         {
             enemyPoint = inocents[i].killPlayer(0);
+            if (enemyPoint == cv::Point(-1, -1))
+                continue;
+
             shot = true;
             shotPlayer(&inocents[i], INOCENT_DAMAGE, enemyPoint);
         }
@@ -126,6 +130,7 @@ void Moderator::shotPlayer(Player *shooter, int damage, cv::Point enemyPoint)
     int i;
     float distance;
 
+    //find the player that was shot
     for (i = 0; i < NUMBER_OF_INOCENTS; i++)
     {
         distance = cv::norm(enemyPoint - inocents[i].getCenter());
@@ -170,6 +175,7 @@ void Moderator::checkLife()
 {
     int i;
 
+    //update status
     for (i = 0; i < NUMBER_OF_INOCENTS; i++)
     {
         if (inocents[i].getLife() <= 0)
