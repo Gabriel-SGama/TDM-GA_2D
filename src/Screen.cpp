@@ -1,5 +1,6 @@
 #include "headers/Screen.h"
 
+//defaut constructor
 Screen::Screen()
 {
     windowName = "map";
@@ -96,6 +97,23 @@ cv::Scalar Screen::idToRay(int rayId)
         return DETECTIVE_RAY;
 }
 
+void Screen::resetImage()
+{
+    map.setTo(BACKGROUND_COLOR);
+}
+
+void Screen::updateMap()
+{
+
+    cv::imshow(windowName, map);
+    cv::waitKey(0);
+}
+
+cv::Mat Screen::getMap()
+{
+    return map;
+}
+
 void Screen::createObstacle()
 {
     cv::Point pt1;
@@ -147,26 +165,4 @@ void Screen::createObstacle()
     pt2.y = pt1.y - HEIGHT / 4;
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
-}
-
-void Screen::resetImage()
-{
-    int i;
-    int j;
-
-    for (i = 0; i < rows; i++)
-        for (j = 0; j < cols; j++)
-            imgMatrix[i][j] = 255;
-}
-
-void Screen::updateMap()
-{
-
-    cv::imshow(windowName, map);
-    cv::waitKey(0);
-}
-
-cv::Mat Screen::getMap()
-{
-    return map;
 }
