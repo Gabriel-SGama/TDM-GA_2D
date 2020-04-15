@@ -89,7 +89,7 @@ void Moderator::conflicts()
     bool shot = false;
 
     int i;
-    int playerID;
+    //int playerID;
 
     cv::Point enemyPoint;
     /*
