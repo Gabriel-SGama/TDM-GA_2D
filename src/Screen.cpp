@@ -99,6 +99,15 @@ cv::Scalar Screen::idToRay(int rayId)
 
 void Screen::resetImage()
 {
+    /*
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            imgMatrix[i][j] = 255;
+        }
+    }
+*/
     map.setTo(BACKGROUND_COLOR);
 }
 

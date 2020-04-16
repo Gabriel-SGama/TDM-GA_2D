@@ -6,6 +6,7 @@
 #include "headers/Traitor.h"
 #include "headers/Detective.h"
 #include "headers/Moderator.h"
+#include "headers/ANN.h"
 
 // g++ *.cpp -o main `pkg-config --cflags --libs opencv4`
 //https://stackoverflow.com/questions/23683023/how-to-store-a-matrix-of-custom-objects-in-c
@@ -28,8 +29,13 @@ int main()
 
     moderator->setPlayersValues();
 
+    ANN *ann = new ANN;
+
+    ann->setANNParameters(2, 3);
+
     while (1)
     {
+
         screen->resetImage();
         screen->createObstacle();
 

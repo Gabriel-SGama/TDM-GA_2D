@@ -51,6 +51,8 @@ protected:
     //int radiusOffset;
     int numberOfRays;
     int killPotential; //player damage
+    int ANNInputSize;
+    int ANNOutputSize;
 
     //ray info
     int *raysID;
