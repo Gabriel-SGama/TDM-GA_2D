@@ -32,6 +32,7 @@ int main()
     ANN *ann = new ANN;
 
     ann->setANNParameters(2, 3);
+    ann->multiply();
 
     while (1)
     {
