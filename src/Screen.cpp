@@ -3,16 +3,19 @@
 //defaut constructor
 Screen::Screen()
 {
-    windowName = "map";
 
     map = cv::Mat(HEIGHT, LENGTH, CV_8UC3, BACKGROUND_COLOR);
-
-    cv::namedWindow(windowName);
 
     rows = map.rows;
     cols = map.cols * map.channels();
 
     matToMatrix();
+}
+
+void Screen::setScreenParam(std::string name)
+{
+    windowName = name;
+    cv::namedWindow(windowName);
 }
 
 uchar **Screen::getMatrix()
@@ -99,15 +102,6 @@ cv::Scalar Screen::idToRay(int rayId)
 
 void Screen::resetImage()
 {
-    /*
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < cols; j++)
-        {
-            imgMatrix[i][j] = 255;
-        }
-    }
-*/
     map.setTo(BACKGROUND_COLOR);
 }
 

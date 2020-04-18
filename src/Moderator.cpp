@@ -1,9 +1,7 @@
 #include "headers/Moderator.h"
 
-Moderator::Moderator(Screen *screen)
+Moderator::Moderator()
 {
-    this->screen = screen;
-
     inocentsScore = 0;
     traitorScore = 0;
 
@@ -15,6 +13,14 @@ Moderator::Moderator(Screen *screen)
 
 Moderator::~Moderator()
 {
+}
+
+void Moderator::setScreen(Screen *screen)
+{
+    this->screen = screen;
+
+    screen->resetImage();
+    screen->createObstacle();
 }
 
 void Moderator::setAllPlayersValues()
@@ -29,10 +35,7 @@ void Moderator::setAllPlayersValues()
 void Moderator::setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS)
 {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++, playerNumber++)
-    {
         players[i].setPlayerValues(screen, playerNumber, INOCENT_HEALTH);
-        players[i].drawPlayer();
-    }
 }
 
 void Moderator::drawAllPlayers()
@@ -164,6 +167,9 @@ void Moderator::multiplyAllPlayers()
     multiplyPlayers(inocents, NUMBER_OF_INOCENTS);
     multiplyPlayers(traitors, NUMBER_OF_TRAITORS);
     multiplyPlayers(detectives, NUMBER_OF_DETECTIVES);
+
+    screen->resetImage();
+    screen->createObstacle();
 }
 
 void Moderator::multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS)
@@ -227,4 +233,28 @@ void Moderator::calculateScore()
 
     //std::cout << "inocent Score: " << inocentsScore << std::endl;
     //std::cout << "traitor Score: " << traitorScore << std::endl;
+}
+
+void Moderator::resetAllPlayers()
+{
+    screen->resetImage();
+    screen->createObstacle();
+
+    resetPlayers(inocents, NUMBER_OF_INOCENTS, INOCENT_HEALTH);
+    resetPlayers(traitors, NUMBER_OF_TRAITORS, TRAITOR_HEALTH);
+    resetPlayers(detectives, NUMBER_OF_DETECTIVES, DETECTIVE_HEALTH);
+}
+
+void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life)
+{
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
+        players[i].reset(life);
+}
+
+void Moderator::copyWeights(Inocent *bestInocents, Traitor *bestTraitors, Detective *bestDetectives)
+{
+    for (int i = 0; i < NUMBER_OF_INOCENTS; i++)
+    {
+        inocents[i].ann->setMatrix(bestInocents[i].ann->getMatrixPtr());
+    }
 }

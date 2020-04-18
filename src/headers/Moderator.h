@@ -6,7 +6,7 @@
 #include "Traitor.h"
 #include "Detective.h"
 
-#define DURATION 750
+#define DURATION 150
 
 typedef struct playerList_t
 {
@@ -17,20 +17,22 @@ typedef struct playerList_t
 class Moderator
 {
 private:
+    //players:
+    Inocent *inocents;
+    Traitor *traitors;
+    Detective *detectives;
+
+public:
     float inocentsScore;
     float traitorScore;
 
+    Moderator();
+    ~Moderator();
+
     Screen *screen; //commun screen obj
 
-    //players:
-    Inocent *inocents;
-    Detective *detectives;
-    Traitor *traitors;
-
-public:
-    Moderator(Screen *screen);
-    ~Moderator();
     //initial values:
+    void setScreen(Screen *screen);
     void setAllPlayersValues();
     void setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS);
 
@@ -60,6 +62,17 @@ public:
     void multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS);
 
     void calculateScore();
+
+    //reset:
+    void resetAllPlayers();
+    void resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life);
+
+    //get best players
+    inline Inocent *getInocents() { return inocents; }
+    inline Traitor *getTraitors() { return traitors; }
+    inline Detective *getDetectives() { return detectives; }
+
+    void copyWeights(Inocent *inocents, Traitor *traitors, Detective *detectives);
 };
 
 #endif

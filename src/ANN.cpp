@@ -9,6 +9,8 @@ ANN::ANN(int inputSize, int outputSize)
     input.resize(inputSize);
     output.resize(outputSize);
 
+    output[INDEX_SHOT] = -1;
+
     for (int i = 0; i < inputSize; i++)
     {
         input[i] = 1;
@@ -26,8 +28,10 @@ ANN::ANN(int inputSize, int outputSize)
 
     aux.push_back(outputSize);
 
-    intermediunOut.resize(layers.size());
-    matrixArray.resize(aux.size() - 1);
+    intermediunOut = new VectorXf[layers.size()];
+    matrixArray = new MatrixXf[aux.size() - 1];
+    //intermediunOut.resize(layers.size());
+    //matrixArray.resize(aux.size() - 1);
 
     for (i = 0; i < aux.size() - 1; i++)
     {

@@ -125,6 +125,9 @@ public:
 
     //ANN:
     void setComunInput();
+
+    //reset
+    void reset(int life);
 };
 
 #endif

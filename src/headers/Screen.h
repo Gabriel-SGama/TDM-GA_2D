@@ -33,6 +33,8 @@ public:
     Screen();
     ~Screen();
 
+    void setScreenParam(std::string name);
+
     int colorToId(cv::Scalar color); //transforms color to id
 
     void matToMatrix(); //set ptrs of matrix

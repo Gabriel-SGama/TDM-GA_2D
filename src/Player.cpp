@@ -38,6 +38,7 @@ void Player::setPlayerValues(Screen *screen, int playerID, int life)
     this->life = life;
 
     setPosition();
+    drawPlayer();
 }
 
 void Player::setPosition()
@@ -205,4 +206,17 @@ void Player::setComunInput()
     (*input)[numberOfRays * 2] = center.x;
     (*input)[numberOfRays * 2 + 1] = center.y;
     (*input)[numberOfRays * 2 + 2] = life;
+}
+
+void Player::reset(int life)
+{
+    score = 0;
+    alive = true;
+
+    this->life = life;
+
+    setPosition();
+    drawPlayer();
+    updateVision();
+    setComunInput();
 }

@@ -10,6 +10,9 @@
 #define INDEX_POSI_Y 1
 #define INDEX_SHOT 2
 
+//populatio param
+#define POP_SIZE 5
+
 using namespace Eigen;
 
 const std::vector<int> layers({70, 30, 9});
@@ -23,8 +26,8 @@ private:
     VectorXf input;
     VectorXf output;
 
-    std::vector<VectorXf> intermediunOut;
-    std::vector<MatrixXf> matrixArray;
+    VectorXf *intermediunOut;
+    MatrixXf *matrixArray;
 
 public:
     ANN(int inputSize, int outputSize);
@@ -33,6 +36,8 @@ public:
     void setANNParameters();
     void multiply();
 
-    inline VectorXf *getOutputPtr() { return &output; };
-    inline VectorXf *getInputPtr() { return &input; };
+    inline VectorXf *getOutputPtr() { return &output; }
+    inline VectorXf *getInputPtr() { return &input; }
+    inline MatrixXf *getMatrixPtr() { return matrixArray; }
+    inline void setMatrix(MatrixXf *matrixArray) { this->matrixArray = matrixArray; }
 };

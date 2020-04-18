@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 
 #include "headers/Player.h"
 #include "headers/Screen.h"
@@ -13,45 +14,96 @@
 
 int main()
 {
+    int bestInocentScore = -100;
+    int bestTraitorScore = -100;
+    int bestInocentIndex = 0;
+    int bestTraitorIndex = 0;
+    int i;
     int move = 0;
 
     srand(time(0));
 
-    Screen *screen = new Screen;
+    Screen *screenOfBest = new Screen;
 
+    /*
     if (!screen->getMap().isContinuous())
     {
         std::cout << "Is not continuous, need to change code" << std::endl;
         return -1;
     }
+    */
 
-    screen->createObstacle();
+    screenOfBest->createObstacle();
 
-    Moderator *moderator = new Moderator(screen);
+    Moderator *bestModerator = new Moderator;
+    bestModerator->setScreen(screenOfBest);
+    bestModerator->setAllPlayersValues();
+    bestModerator->screen->setScreenParam("best indvs");
 
-    moderator->setAllPlayersValues();
+    std::vector<Moderator *> Moderators;
+    Moderators.resize(POP_SIZE);
+
+    Screen *temp;
+
+    for (i = 0; i < POP_SIZE; i++)
+    {
+        Moderators[i] = new Moderator;
+        temp = new Screen;
+
+        //temp->setScreenParam(std::to_string(i));
+
+        Moderators[i]->setScreen(temp);
+        Moderators[i]->setAllPlayersValues();
+        Moderators[i]->drawAllPlayers();
+    }
 
     while (1)
     {
         for (move = 0; move < DURATION; move++)
         {
 
-            screen->resetImage();
-            screen->createObstacle();
+            for (i = 0; i < POP_SIZE; i++)
+            {
+                Moderators[i]->drawAllPlayers();
+                Moderators[i]->updateAllPlayersVision();
+                Moderators[i]->conflictsAllPlayers();
+                Moderators[i]->checkAllPlayersLife();
 
-            moderator->drawAllPlayers();
-            moderator->updateAllPlayersVision();
-            moderator->conflictsAllPlayers();
-            moderator->checkAllPlayersLife();
-            screen->updateMap();
+                //Moderators[i]->screen->updateMap();
 
-            moderator->defineAllPlayersInput();
-            moderator->multiplyAllPlayers();
+                Moderators[i]->defineAllPlayersInput();
+                Moderators[i]->multiplyAllPlayers();
+            }
+
+            bestModerator->drawAllPlayers();
+            bestModerator->updateAllPlayersVision();
+            bestModerator->conflictsAllPlayers();
+            bestModerator->checkAllPlayersLife();
+
+            screenOfBest->updateMap();
+
+            bestModerator->defineAllPlayersInput();
+            bestModerator->multiplyAllPlayers();
 
             if (!(move % 50))
                 std::cout << move << std::endl;
         }
-        moderator->calculateScore();
+
+        for (i = 0; i < POP_SIZE; i++)
+        {
+            Moderators[i]->calculateScore();
+            if (Moderators[i]->inocentsScore > bestInocentScore)
+            {
+                bestInocentScore = Moderators[i]->inocentsScore;
+                bestInocentIndex = i;
+            }
+            Moderators[i]->resetAllPlayers();
+        }
+
+        bestModerator->copyWeights(Moderators[bestInocentIndex]->getInocents(), nullptr, nullptr);
+
+        //bestModerator->calculateScore();
+        bestModerator->resetAllPlayers();
     }
 
     return 0;
