@@ -27,7 +27,7 @@ int main()
 
     Moderator *moderator = new Moderator(screen);
 
-    moderator->setPlayersValues();
+    moderator->setAllPlayersValues();
 
     while (1)
     {
@@ -35,14 +35,14 @@ int main()
         screen->resetImage();
         screen->createObstacle();
 
-        moderator->drawPlayers();
-        moderator->updatePlayersVision();
+        moderator->drawAllPlayers();
+        moderator->updateAllPlayersVision();
         moderator->conflicts();
-        moderator->checkLife();
+        moderator->checkAllPlayersLife();
 
         screen->updateMap();
 
-        moderator->multiply();
+        moderator->multiplyAllPlayers();
     }
 
     return 0;

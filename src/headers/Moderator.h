@@ -27,13 +27,18 @@ public:
     ~Moderator();
 
     void shotPlayer(Player *shooter, int damage, cv::Point enemyPoint);
-    void setPlayersValues();
-    void drawPlayers();
-    void updatePlayersVision();
+    void setAllPlayersValues();
+    void setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS);
+    void drawAllPlayers();
+    void drawPlayers(Player *players, int NUMBER_OF_PLAYERS);
+    void updateAllPlayersVision();
+    void updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS);
     void conflicts();
-    void checkLife();
+    void checkAllPlayersLife();
+    void checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS);
 
-    void multiply();
+    void multiplyAllPlayers();
+    void multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS);
 };
 
 #endif

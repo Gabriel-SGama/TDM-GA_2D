@@ -14,74 +14,53 @@ Moderator::~Moderator()
 {
 }
 
-void Moderator::setPlayersValues()
+void Moderator::setAllPlayersValues()
 {
-    int i;
     int playerNumber = 0;
 
-    for (i = 0; i < NUMBER_OF_INOCENTS; i++, playerNumber++)
-    {
-        inocents[i].setPlayerValues(screen, playerNumber, INOCENT_HEALTH);
-        inocents[i].drawPlayer();
-    }
+    setPlayersValues(playerNumber, inocents, NUMBER_OF_INOCENTS);
+    setPlayersValues(playerNumber, traitors, NUMBER_OF_TRAITORS);
+    setPlayersValues(playerNumber, detectives, NUMBER_OF_DETECTIVES);
+}
 
-    for (i = 0; i < NUMBER_OF_TRAITORS; i++, playerNumber++)
+void Moderator::setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS)
+{
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++, playerNumber++)
     {
-        traitors[i].setPlayerValues(screen, playerNumber, TRAITOR_HEALTH);
-        traitors[i].drawPlayer();
-    }
-
-    for (i = 0; i < NUMBER_OF_DETECTIVES; i++, playerNumber++)
-    {
-        detectives[i].setPlayerValues(screen, playerNumber, DETECTIVE_HEALTH);
-        detectives[i].drawPlayer();
+        players[i].setPlayerValues(screen, playerNumber, INOCENT_HEALTH);
+        players[i].drawPlayer();
     }
 }
 
-void Moderator::drawPlayers()
+void Moderator::drawAllPlayers()
 {
+    drawPlayers(inocents, NUMBER_OF_INOCENTS);
+    drawPlayers(traitors, NUMBER_OF_TRAITORS);
+    drawPlayers(detectives, NUMBER_OF_DETECTIVES);
+}
 
-    int i;
-
-    for (i = 0; i < NUMBER_OF_INOCENTS; i++)
+void Moderator::drawPlayers(Player *players, int NUMBER_OF_PLAYERS)
+{
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        if (inocents[i].isAlive())
-            inocents[i].drawPlayer();
-    }
-
-    for (i = 0; i < NUMBER_OF_TRAITORS; i++)
-    {
-        if (traitors[i].isAlive())
-            traitors[i].drawPlayer();
-    }
-
-    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
-    {
-        if (detectives[i].isAlive())
-            detectives[i].drawPlayer();
+        if (players[i].isAlive())
+            players[i].drawPlayer();
     }
 }
 
-void Moderator::updatePlayersVision()
+void Moderator::updateAllPlayersVision()
 {
-    int i;
+    updatePlayersVision(inocents, NUMBER_OF_INOCENTS);
+    updatePlayersVision(traitors, NUMBER_OF_TRAITORS);
+    updatePlayersVision(detectives, NUMBER_OF_DETECTIVES);
+}
 
-    for (i = 0; i < NUMBER_OF_INOCENTS; i++)
+void Moderator::updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS)
+{
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        if (inocents[i].isAlive())
-            inocents[i].updateVision();
-    }
-
-    for (i = 0; i < NUMBER_OF_TRAITORS; i++)
-    {
-        if (traitors[i].isAlive())
-            traitors[i].updateVision();
-    }
-
-    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
-    {
-        if (detectives[i].isAlive())
-            detectives[i].updateVision();
+        if (players[i].isAlive())
+            players[i].updateVision();
     }
 }
 
@@ -171,57 +150,39 @@ void Moderator::shotPlayer(Player *shooter, int damage, cv::Point enemyPoint)
     }
 }
 
-void Moderator::checkLife()
+void Moderator::checkAllPlayersLife()
 {
     int i;
 
-    //update status
-    for (i = 0; i < NUMBER_OF_INOCENTS; i++)
-    {
-        if (inocents[i].getLife() <= 0)
-            inocents[i].setAlive(false);
-    }
+    checkPlayersLife(inocents, NUMBER_OF_INOCENTS);
+    checkPlayersLife(traitors, NUMBER_OF_TRAITORS);
+    checkPlayersLife(detectives, NUMBER_OF_DETECTIVES);
+}
 
-    for (i = 0; i < NUMBER_OF_TRAITORS; i++)
+void Moderator::checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS)
+{
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        if (traitors[i].getLife() <= 0)
-            traitors[i].setAlive(false);
-    }
-    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
-    {
-        if (detectives[i].getLife() <= 0)
-            detectives[i].setAlive(false);
+        if (players[i].getLife() <= 0)
+            players[i].setAlive(false);
     }
 }
 
-void Moderator::multiply()
+void Moderator::multiplyAllPlayers()
 {
-    int i;
-    //update status
-    for (i = 0; i < NUMBER_OF_INOCENTS; i++)
-    {
-        if (inocents[i].isAlive())
-        {
-            inocents[i].ann->multiply();
-            inocents[i].move();
-        }
-    }
+    multiplyPlayers(inocents, NUMBER_OF_INOCENTS);
+    multiplyPlayers(traitors, NUMBER_OF_TRAITORS);
+    multiplyPlayers(detectives, NUMBER_OF_DETECTIVES);
+}
 
-    for (i = 0; i < NUMBER_OF_TRAITORS; i++)
+void Moderator::multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS)
+{
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        if (traitors[i].isAlive())
+        if (players[i].isAlive())
         {
-            traitors[i].ann->multiply();
-            traitors[i].move();
-        }
-    }
-    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
-    {
-
-        if (detectives[i].isAlive())
-        {
-            detectives[i].ann->multiply();
-            detectives[i].move();
+            players[i].ann->multiply();
+            players[i].move();
         }
     }
 }

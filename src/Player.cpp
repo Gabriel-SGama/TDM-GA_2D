@@ -164,7 +164,7 @@ void Player::move()
     if (!checkMove(offset))
     {
         center -= offset;
-        std::cout << "posisao invalida" << std::endl;
+        //std::cout << "posisao invalida" << std::endl;
     }
 }
 
