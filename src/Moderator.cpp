@@ -193,3 +193,35 @@ void Moderator::checkLife()
             detectives[i].setAlive(false);
     }
 }
+
+void Moderator::multiply()
+{
+    int i;
+    //update status
+    for (i = 0; i < NUMBER_OF_INOCENTS; i++)
+    {
+        if (inocents[i].isAlive())
+        {
+            inocents[i].ann->multiply();
+            inocents[i].move();
+        }
+    }
+
+    for (i = 0; i < NUMBER_OF_TRAITORS; i++)
+    {
+        if (traitors[i].isAlive())
+        {
+            traitors[i].ann->multiply();
+            traitors[i].move();
+        }
+    }
+    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
+    {
+
+        if (detectives[i].isAlive())
+        {
+            detectives[i].ann->multiply();
+            detectives[i].move();
+        }
+    }
+}

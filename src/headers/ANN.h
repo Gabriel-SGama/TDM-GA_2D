@@ -5,6 +5,11 @@
 
 #define RAND_LIMIT 1
 
+//output indexs
+#define INDEX_POSI_X 0
+#define INDEX_POSI_Y 1
+#define INDEX_TO_SHOT 2
+
 using namespace Eigen;
 
 const std::vector<int> layers({70, 30, 9});
@@ -22,10 +27,10 @@ private:
     std::vector<MatrixXf> matrixArray;
 
 public:
-    ANN(/* args */);
+    ANN(int inputSize, int outputSize);
     ~ANN();
 
-    void setANNParameters(int inputSize, int outputSize);
+    void setANNParameters();
     void multiply();
 
     inline VectorXf *getOutputPtr() { return &output; };

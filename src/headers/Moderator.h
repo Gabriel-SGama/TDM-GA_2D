@@ -32,6 +32,8 @@ public:
     void updatePlayersVision();
     void conflicts();
     void checkLife();
+
+    void multiply();
 };
 
 #endif

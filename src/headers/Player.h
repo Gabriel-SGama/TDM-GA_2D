@@ -3,8 +3,10 @@
 
 class Player;
 
+#include <iostream>
 #include "math.h"
 #include <opencv2/opencv.hpp>
+#include <eigen3/Eigen/Dense>
 
 //Player ID:
 #define NOTHING 1
@@ -12,8 +14,6 @@ class Player;
 #define DETECTIVE 3
 #define TRAITOR 4
 #define OBSTACLE 5
-
-//Colors
 
 //Vision and player paramters
 #define VISION_DIST 100
@@ -23,10 +23,12 @@ class Player;
 const int _RADIUS_TOTAL_DISTANCE = RADIUS + RADIUS_OFFSET;
 const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
+//Colors
 const cv::Scalar INOCENT_COLOR = cv::Scalar(0, 255, 0);   //green
 const cv::Scalar DETECTIVE_COLOR = cv::Scalar(255, 0, 0); //blue
 const cv::Scalar TRAITOR_COLOR = cv::Scalar(0, 0, 255);   //red
 
+//Ray colors
 const cv::Scalar INOCENT_RAY = cv::Scalar(1, 255, 0);   //green ray
 const cv::Scalar DETECTIVE_RAY = cv::Scalar(255, 1, 0); //blue ray
 const cv::Scalar TRAITOR_RAY = cv::Scalar(1, 0, 255);   //red ray
@@ -34,11 +36,16 @@ const cv::Scalar TRAITOR_RAY = cv::Scalar(1, 0, 255);   //red ray
 const cv::Point aux = cv::Point(-RADIUS / 2, RADIUS / 2); //offset to print text
 
 #include "Screen.h"
+#include "ANN.h"
+
+using namespace Eigen;
 
 class Player
 {
 protected:
-    cv::Point center;       //position
+    cv::Point center; //position
+    cv::Point movePt; //position
+
     cv::Scalar playerColor; //color
 
     std::string playerIDStr; //id->str
@@ -65,7 +72,11 @@ protected:
 
     Screen *screen;
 
+    VectorXf *output;
+
 public:
+    ANN *ann;
+
     explicit Player();
     ~Player();
 
@@ -77,6 +88,8 @@ public:
     inline int getLife() { return life; }
     //int getRadius();
 
+    inline void printOut() { std::cout << (*output) << std::endl; };
+
     inline void setAlive(bool alive) { this->alive = alive; }
 
     int checkPosition();
@@ -86,7 +99,7 @@ public:
     void setPosition();                                           //initial position
     void drawPlayer();                                            //draws player
     void drawVisionLines(double currentAngle, int id);            //draw vision lines
-    void move(cv::Point offset);                                  //move player
+    void move();                                                  //move player
     void updateVision();                                          //updates vision info
     void takeDamage(int damage);                                  //get shot
 

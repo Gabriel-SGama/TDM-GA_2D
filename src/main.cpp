@@ -29,11 +29,6 @@ int main()
 
     moderator->setPlayersValues();
 
-    ANN *ann = new ANN;
-
-    ann->setANNParameters(2, 3);
-    ann->multiply();
-
     while (1)
     {
 
@@ -46,6 +41,8 @@ int main()
         moderator->checkLife();
 
         screen->updateMap();
+
+        moderator->multiply();
     }
 
     return 0;

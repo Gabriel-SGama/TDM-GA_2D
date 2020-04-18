@@ -32,7 +32,6 @@ bool Player::isAlive()
 void Player::setPlayerValues(Screen *screen, int playerID, int life)
 {
     this->playerType = playerType;
-    this->playerColor = playerColor;
     this->playerID = playerID;
     playerIDStr = std::to_string(playerID);
     this->screen = screen;
@@ -77,7 +76,7 @@ int Player::checkPosition()
 void Player::drawPlayer()
 {
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
-    cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
+    //cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
 }
 
 void Player::updateVision()
@@ -157,8 +156,9 @@ int Player::checkMove(cv::Point offset)
     return 1;
 }
 
-void Player::move(cv::Point offset)
+void Player::move()
 {
+    cv::Point offset = cv::Point((*output)[INDEX_POSI_X], (*output)[INDEX_POSI_Y]);
     center += offset;
 
     if (!checkMove(offset))
