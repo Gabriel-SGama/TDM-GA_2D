@@ -8,13 +8,14 @@ Inocent::Inocent() : Player()
     killPotential = INOCENT_DAMAGE;
     life = INOCENT_HEALTH;
 
-    //vision + position+ take damage + life
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1;
+    //vision + position + life
+    ANNInputSize = numberOfRays * 2 + 2 + 1;
     //angle + distance + shot id
     ANNOutputSize = 1 + 1 + 1;
 
     ann = new ANN(ANNInputSize, ANNOutputSize);
 
+    input = ann->getInputPtr();
     output = ann->getOutputPtr();
 }
 

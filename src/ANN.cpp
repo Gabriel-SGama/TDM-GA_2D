@@ -49,7 +49,6 @@ ANN::~ANN()
 void ANN::multiply()
 {
     intermediunOut[0] = matrixArray[0] * input;
-    std::cout << "inter " << std::endl;
 
     for (unsigned int i = 1; i < layers.size(); i++)
     {
@@ -70,6 +69,8 @@ void ANN::multiply()
     else if (output[1] < 5)
         output[1] = -5;
 
-    std::cout << "output" << std::endl;
     std::cout << output << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
 }

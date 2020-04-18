@@ -64,87 +64,60 @@ void Moderator::updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS)
     }
 }
 
-void Moderator::conflicts()
+void Moderator::conflictsAllPlayers()
 {
-    bool shot = false;
 
-    int i;
-    //int playerID;
+    conflictsPlayers(inocents, NUMBER_OF_INOCENTS);
+    conflictsPlayers(traitors, NUMBER_OF_TRAITORS);
+    conflictsPlayers(detectives, NUMBER_OF_DETECTIVES);
+}
 
-    cv::Point enemyPoint;
-    /*
-    TODO:
-        replace 'true' for the result of the neural network
-        replace '0' for the ray choosen
-    */
+void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS)
+{
+    enemyInfo_t enemyInfo;
 
-    for (i = 0; i < NUMBER_OF_INOCENTS; i++)
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        if (inocents[i].isAlive() && true)
+
+        if (players[i].isAlive())
         {
-            enemyPoint = inocents[i].killPlayer(0);
-            if (enemyPoint == cv::Point(-1, -1))
+            enemyInfo = players[i].killPlayer((int)players[i].output[0][INDEX_SHOT]);
+
+            if (enemyInfo.playerType == NOTHING || enemyInfo.playerType == OBSTACLE)
                 continue;
 
-            shot = true;
-            shotPlayer(&inocents[i], INOCENT_DAMAGE, enemyPoint);
+            shotPlayer(&players[i], INOCENT_DAMAGE, enemyInfo);
         }
-    }
-
-    for (i = 0; i < NUMBER_OF_TRAITORS && !shot; i++)
-    {
-        if (traitors[i].isAlive())
-            traitors[i].updateVision();
-    }
-
-    for (i = 0; i < NUMBER_OF_DETECTIVES && !shot; i++)
-    {
-        if (detectives[i].isAlive())
-            detectives[i].updateVision();
     }
 }
 
-void Moderator::shotPlayer(Player *shooter, int damage, cv::Point enemyPoint)
+void Moderator::shotPlayer(Player *shooter, int damage, enemyInfo_t enemyInfo)
 {
-    int i;
+    //find the player that was shot
+    if (enemyInfo.playerType == INOCENT)
+        findPlayer(shooter, inocents, NUMBER_OF_INOCENTS, damage, enemyInfo.posiAprox);
+
+    if (enemyInfo.playerType == TRAITOR)
+        findPlayer(shooter, traitors, NUMBER_OF_TRAITORS, damage, enemyInfo.posiAprox);
+
+    if (enemyInfo.playerType == DETECTIVE)
+        findPlayer(shooter, detectives, NUMBER_OF_DETECTIVES, damage, enemyInfo.posiAprox);
+}
+
+void Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, int damage, cv::Point enemyPoint)
+{
     float distance;
 
     //find the player that was shot
-    for (i = 0; i < NUMBER_OF_INOCENTS; i++)
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        distance = cv::norm(enemyPoint - inocents[i].getCenter());
+        distance = cv::norm(enemyPoint - players[i].getCenter());
 
         if (distance <= RADIUS)
         {
-            inocents[i].takeDamage(damage);
-            std::cout << shooter->getPlayerID() << "matou " << inocents[i].getPlayerID() << std::endl;
-            std::cout << "vida: " << inocents[i].getLife() << std::endl;
-            break;
-        }
-    }
-
-    for (i = 0; i < NUMBER_OF_TRAITORS; i++)
-    {
-        distance = cv::norm(enemyPoint - traitors[i].getCenter());
-
-        if (distance <= RADIUS)
-        {
-            traitors[i].takeDamage(damage);
-            std::cout << shooter->getPlayerID() << "matou " << traitors[i].getPlayerID() << std::endl;
-            std::cout << "vida: " << traitors[i].getLife() << std::endl;
-            break;
-        }
-    }
-
-    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
-    {
-        distance = cv::norm(enemyPoint - detectives[i].getCenter());
-
-        if (distance <= RADIUS)
-        {
-            detectives[i].takeDamage(damage);
-            std::cout << shooter->getPlayerID() << "matou " << detectives[i].getPlayerID() << std::endl;
-            std::cout << "vida: " << detectives[i].getLife() << std::endl;
+            players[i].takeDamage(damage);
+            std::cout << shooter->getPlayerID() << "matou " << players[i].getPlayerID() << std::endl;
+            std::cout << "vida: " << players[i].getLife() << std::endl;
             break;
         }
     }
@@ -152,8 +125,6 @@ void Moderator::shotPlayer(Player *shooter, int damage, cv::Point enemyPoint)
 
 void Moderator::checkAllPlayersLife()
 {
-    int i;
-
     checkPlayersLife(inocents, NUMBER_OF_INOCENTS);
     checkPlayersLife(traitors, NUMBER_OF_TRAITORS);
     checkPlayersLife(detectives, NUMBER_OF_DETECTIVES);
@@ -184,5 +155,21 @@ void Moderator::multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS)
             players[i].ann->multiply();
             players[i].move();
         }
+    }
+}
+
+void Moderator::defineAllPlayersInput()
+{
+    definePlayersInput(inocents, NUMBER_OF_INOCENTS);
+    definePlayersInput(traitors, NUMBER_OF_TRAITORS);
+    definePlayersInput(detectives, NUMBER_OF_DETECTIVES);
+}
+
+void Moderator::definePlayersInput(Player *players, int NUMBER_OF_PLAYERS)
+{
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
+    {
+        if (players[i].isAlive())
+            players[i].setComunInput();
     }
 }

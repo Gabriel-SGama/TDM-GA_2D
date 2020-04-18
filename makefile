@@ -22,8 +22,7 @@ CC_FLAGS= -I /usr/local/include/eigen3 \
           -Wall	\
 		  -Wextra \
 		  -pedantic \
-		  -O3 \
-		  -std=c++14
+		  -O3
 
 CC_FLAGS_DEBUG = -g \
 		   		 -c \

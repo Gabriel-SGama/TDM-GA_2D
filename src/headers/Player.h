@@ -40,6 +40,12 @@ const cv::Point aux = cv::Point(-RADIUS / 2, RADIUS / 2); //offset to print text
 
 using namespace Eigen;
 
+typedef struct enemyInfo_t
+{
+    cv::Point posiAprox;
+    int playerType;
+} enemyInfo_t;
+
 class Player
 {
 protected:
@@ -52,9 +58,10 @@ protected:
 
     bool alive; //player status
 
-    int playerType; //type of player
-    int playerID;   //number of player
-    int life;       //current life
+    int playerType;  //type of player
+    int playerID;    //number of player
+    int life;        //current life
+    int damageTaken; //demage taken on that turn
     //int radiusOffset;
     int numberOfRays;
     int killPotential; //player damage
@@ -72,10 +79,11 @@ protected:
 
     Screen *screen;
 
-    VectorXf *output;
+    VectorXf *input;
 
 public:
     ANN *ann;
+    VectorXf *output;
 
     explicit Player();
     ~Player();
@@ -102,8 +110,9 @@ public:
     void move();                                                  //move player
     void updateVision();                                          //updates vision info
     void takeDamage(int damage);                                  //get shot
+    void setComunInput();
 
-    cv::Point killPlayer(int rayNumber); //shot playe
+    enemyInfo_t killPlayer(int rayNumber); //shot playe
 };
 
 #endif

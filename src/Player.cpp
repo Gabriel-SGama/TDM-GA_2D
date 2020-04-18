@@ -76,7 +76,7 @@ int Player::checkPosition()
 void Player::drawPlayer()
 {
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
-    //cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
+    cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
 }
 
 void Player::updateVision()
@@ -168,10 +168,10 @@ void Player::move()
     }
 }
 
-cv::Point Player::killPlayer(int rayNumber)
+enemyInfo_t Player::killPlayer(int rayNumber)
 {
     if (rayNumber < 0 || rayNumber > numberOfRays) //invalid position
-        return cv::Point(-1, -1);
+        return {cv::Point(-1, -1), NOTHING};
 
     double currentAngle;
 
@@ -187,10 +187,23 @@ cv::Point Player::killPlayer(int rayNumber)
 
     cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
 
-    return enemyPoint;
+    return {enemyPoint, raysID[rayNumber]};
 }
 
 void Player::takeDamage(int damage)
 {
     life -= damage;
+}
+
+void Player::setComunInput()
+{
+    for (int i = 0; i < numberOfRays; i++)
+    {
+        (*input)[i * 2] = i;
+        (*input)[i * 2] = raysDist[i];
+    }
+
+    (*input)[numberOfRays * 2] = center.x;
+    (*input)[numberOfRays * 2 + 1] = center.y;
+    (*input)[numberOfRays * 2 + 2] = life;
 }

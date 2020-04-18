@@ -37,11 +37,12 @@ int main()
 
         moderator->drawAllPlayers();
         moderator->updateAllPlayersVision();
-        moderator->conflicts();
+        moderator->conflictsAllPlayers();
         moderator->checkAllPlayersLife();
 
         screen->updateMap();
 
+        moderator->defineAllPlayersInput();
         moderator->multiplyAllPlayers();
     }
 

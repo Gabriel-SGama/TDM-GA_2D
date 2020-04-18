@@ -8,7 +8,7 @@
 //output indexs
 #define INDEX_POSI_X 0
 #define INDEX_POSI_Y 1
-#define INDEX_TO_SHOT 2
+#define INDEX_SHOT 2
 
 using namespace Eigen;
 
@@ -34,4 +34,5 @@ public:
     void multiply();
 
     inline VectorXf *getOutputPtr() { return &output; };
+    inline VectorXf *getInputPtr() { return &input; };
 };
