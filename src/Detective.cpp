@@ -4,7 +4,7 @@ Detective::Detective() : Player()
 {
     playerType = DETECTIVE;
     playerColor = DETECTIVE_COLOR;
-    killPotential = DETECTIVE_DAMAGE;
+    damage = DETECTIVE_DAMAGE;
     life = DETECTIVE_HEALTH;
 
     //vision + position + life

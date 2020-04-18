@@ -64,7 +64,7 @@ protected:
     int damageTaken; //demage taken on that turn
     //int radiusOffset;
     int numberOfRays;
-    int killPotential; //player damage
+    int damage; //player damage
     int ANNInputSize;
     int ANNOutputSize;
 
@@ -92,11 +92,16 @@ public:
     bool isAlive();
 
     inline int getPlayerID() { return playerID; }
-    inline cv::Point getCenter() { return center; }
+    inline int getPlayerType() { return playerType; }
     inline int getLife() { return life; }
+    inline int getDamage() { return damage; }
+    inline cv::Point getCenter() { return center; }
+    inline float getScore() { return score; }
+    inline void updateScore(float change) { score += change; }
+
     //int getRadius();
 
-    inline void printOut() { std::cout << (*output) << std::endl; };
+    inline void printOut() { std::cout << (*output) << std::endl; }
 
     inline void setAlive(bool alive) { this->alive = alive; }
 

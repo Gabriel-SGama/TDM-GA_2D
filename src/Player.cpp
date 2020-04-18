@@ -184,7 +184,6 @@ enemyInfo_t Player::killPlayer(int rayNumber)
     enemyPoint.y = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * sin(currentAngle);
 
     enemyPoint += center;
-
     cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
 
     return {enemyPoint, raysID[rayNumber]};

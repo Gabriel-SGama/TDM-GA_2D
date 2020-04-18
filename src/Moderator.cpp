@@ -4,6 +4,9 @@ Moderator::Moderator(Screen *screen)
 {
     this->screen = screen;
 
+    inocentsScore = 0;
+    traitorScore = 0;
+
     //allocs all memory
     inocents = new Inocent[NUMBER_OF_INOCENTS];
     traitors = new Traitor[NUMBER_OF_TRAITORS];
@@ -66,7 +69,6 @@ void Moderator::updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS)
 
 void Moderator::conflictsAllPlayers()
 {
-
     conflictsPlayers(inocents, NUMBER_OF_INOCENTS);
     conflictsPlayers(traitors, NUMBER_OF_TRAITORS);
     conflictsPlayers(detectives, NUMBER_OF_DETECTIVES);
@@ -78,33 +80,50 @@ void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS)
 
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-
         if (players[i].isAlive())
         {
             enemyInfo = players[i].killPlayer((int)players[i].output[0][INDEX_SHOT]);
+            if (enemyInfo.playerType == INOCENT)
+            {
+            }
 
+            //if(players->getPlayerType() == INOCENT || players->getPlayerType()==DETECTIVE)
             if (enemyInfo.playerType == NOTHING || enemyInfo.playerType == OBSTACLE)
                 continue;
 
-            shotPlayer(&players[i], INOCENT_DAMAGE, enemyInfo);
+            shotPlayer(&players[i], enemyInfo);
         }
     }
 }
 
-void Moderator::shotPlayer(Player *shooter, int damage, enemyInfo_t enemyInfo)
+void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
 {
     //find the player that was shot
-    if (enemyInfo.playerType == INOCENT)
-        findPlayer(shooter, inocents, NUMBER_OF_INOCENTS, damage, enemyInfo.posiAprox);
+    if (enemyInfo.playerType == INOCENT && findPlayer(shooter, inocents, NUMBER_OF_INOCENTS, enemyInfo.posiAprox))
+    {
+        if (shooter->getPlayerType() == TRAITOR)
+            shooter->updateScore(shooter->getDamage() / INOCENT_DAMAGE);
+        else
+            shooter->updateScore(-shooter->getDamage() / INOCENT_DAMAGE);
+    }
 
-    if (enemyInfo.playerType == TRAITOR)
-        findPlayer(shooter, traitors, NUMBER_OF_TRAITORS, damage, enemyInfo.posiAprox);
-
-    if (enemyInfo.playerType == DETECTIVE)
-        findPlayer(shooter, detectives, NUMBER_OF_DETECTIVES, damage, enemyInfo.posiAprox);
+    else if (enemyInfo.playerType == TRAITOR && findPlayer(shooter, traitors, NUMBER_OF_TRAITORS, enemyInfo.posiAprox))
+    {
+        if (shooter->getPlayerType() == TRAITOR)
+            shooter->updateScore(-shooter->getDamage() / INOCENT_DAMAGE);
+        else
+            shooter->updateScore(shooter->getDamage() / INOCENT_DAMAGE);
+    }
+    else if (enemyInfo.playerType == DETECTIVE && findPlayer(shooter, detectives, NUMBER_OF_DETECTIVES, enemyInfo.posiAprox))
+    {
+        if (shooter->getPlayerType() == TRAITOR)
+            shooter->updateScore(shooter->getDamage() / INOCENT_DAMAGE);
+        else
+            shooter->updateScore(-shooter->getDamage() / INOCENT_DAMAGE);
+    }
 }
 
-void Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, int damage, cv::Point enemyPoint)
+int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, cv::Point enemyPoint)
 {
     float distance;
 
@@ -115,12 +134,13 @@ void Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYE
 
         if (distance <= RADIUS)
         {
-            players[i].takeDamage(damage);
+            players[i].takeDamage(shooter->getDamage());
             std::cout << shooter->getPlayerID() << "matou " << players[i].getPlayerID() << std::endl;
             std::cout << "vida: " << players[i].getLife() << std::endl;
-            break;
+            return 1;
         }
     }
+    return 0;
 }
 
 void Moderator::checkAllPlayersLife()
@@ -172,4 +192,39 @@ void Moderator::definePlayersInput(Player *players, int NUMBER_OF_PLAYERS)
         if (players[i].isAlive())
             players[i].setComunInput();
     }
+}
+
+void Moderator::calculateScore()
+{
+    int i;
+
+    for (i = 0; i < NUMBER_OF_INOCENTS; i++)
+    {
+        inocentsScore += inocents[i].getScore();
+        if (inocents[i].isAlive())
+            inocentsScore++;
+        else
+            traitorScore += 2;
+    }
+
+    for (i = 0; i < NUMBER_OF_TRAITORS; i++)
+    {
+        traitorScore += traitors[i].getScore();
+        if (traitors[i].isAlive())
+            traitorScore++;
+        else
+            inocentsScore += 2;
+    }
+
+    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
+    {
+        inocentsScore += detectives[i].getScore();
+        if (detectives[i].isAlive())
+            inocentsScore++;
+        else
+            traitorScore += 2;
+    }
+
+    //std::cout << "inocent Score: " << inocentsScore << std::endl;
+    //std::cout << "traitor Score: " << traitorScore << std::endl;
 }

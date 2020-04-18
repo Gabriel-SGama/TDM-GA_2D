@@ -13,6 +13,8 @@
 
 int main()
 {
+    int move = 0;
+
     srand(time(0));
 
     Screen *screen = new Screen;
@@ -31,19 +33,25 @@ int main()
 
     while (1)
     {
+        for (move = 0; move < DURATION; move++)
+        {
 
-        screen->resetImage();
-        screen->createObstacle();
+            screen->resetImage();
+            screen->createObstacle();
 
-        moderator->drawAllPlayers();
-        moderator->updateAllPlayersVision();
-        moderator->conflictsAllPlayers();
-        moderator->checkAllPlayersLife();
+            moderator->drawAllPlayers();
+            moderator->updateAllPlayersVision();
+            moderator->conflictsAllPlayers();
+            moderator->checkAllPlayersLife();
+            screen->updateMap();
 
-        screen->updateMap();
+            moderator->defineAllPlayersInput();
+            moderator->multiplyAllPlayers();
 
-        moderator->defineAllPlayersInput();
-        moderator->multiplyAllPlayers();
+            if (!(move % 50))
+                std::cout << move << std::endl;
+        }
+        moderator->calculateScore();
     }
 
     return 0;

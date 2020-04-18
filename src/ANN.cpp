@@ -69,8 +69,8 @@ void ANN::multiply()
     else if (output[1] < 5)
         output[1] = -5;
 
-    std::cout << output << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
+    //std::cout << output << std::endl;
+    //std::cout << std::endl;
+    //std::cout << std::endl;
+    //std::cout << std::endl;
 }

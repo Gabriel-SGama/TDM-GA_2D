@@ -6,6 +6,8 @@
 #include "Traitor.h"
 #include "Detective.h"
 
+#define DURATION 750
+
 typedef struct playerList_t
 {
     Player *player;
@@ -15,6 +17,9 @@ typedef struct playerList_t
 class Moderator
 {
 private:
+    float inocentsScore;
+    float traitorScore;
+
     Screen *screen; //commun screen obj
 
     //players:
@@ -26,8 +31,8 @@ public:
     Moderator(Screen *screen);
     ~Moderator();
 
-    void shotPlayer(Player *shooter, int damage, enemyInfo_t enemyInfo);
-    void findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, int damage, cv::Point enemyPoint);
+    void shotPlayer(Player *shooter, enemyInfo_t enemyInfo);
+    int findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, cv::Point enemyPoint);
     void setAllPlayersValues();
     void setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS);
     void drawAllPlayers();
@@ -43,6 +48,8 @@ public:
     void multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS);
     void defineAllPlayersInput();
     void definePlayersInput(Player *players, int NUMBER_OF_PLAYERS);
+
+    void calculateScore();
 };
 
 #endif

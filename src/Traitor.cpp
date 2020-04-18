@@ -4,7 +4,7 @@ Traitor::Traitor() : Player()
 {
     playerType = TRAITOR;
     playerColor = TRAITOR_COLOR;
-    killPotential = TRAITOR_DAMAGE;
+    damage = TRAITOR_DAMAGE;
     life = TRAITOR_HEALTH;
 
     //vision + position + life
