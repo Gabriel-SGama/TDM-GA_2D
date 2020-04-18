@@ -101,23 +101,30 @@ public:
 
     //int getRadius();
 
-    inline void printOut() { std::cout << (*output) << std::endl; }
-
     inline void setAlive(bool alive) { this->alive = alive; }
 
-    int checkPosition();
-    int checkMove(cv::Point offset);
-
+    //initial values
     void setPlayerValues(Screen *screen, int playerID, int life); //inicial values
     void setPosition();                                           //initial position
-    void drawPlayer();                                            //draws player
-    void drawVisionLines(double currentAngle, int id);            //draw vision lines
-    void move();                                                  //move player
-    void updateVision();                                          //updates vision info
-    void takeDamage(int damage);                                  //get shot
-    void setComunInput();
+    int checkPosition();
 
+    //draw
+    void drawPlayer();                                 //draws player
+    void drawVisionLines(double currentAngle, int id); //draw vision lines
+
+    //vision
+    void updateVision(); //updates vision info
+
+    //movement
+    void move(); //move player
+    int checkMove(cv::Point offset);
+
+    //conflicts
+    void takeDamage(int damage);           //get shot
     enemyInfo_t killPlayer(int rayNumber); //shot playe
+
+    //ANN:
+    void setComunInput();
 };
 
 #endif

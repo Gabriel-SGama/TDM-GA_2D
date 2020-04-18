@@ -30,24 +30,34 @@ private:
 public:
     Moderator(Screen *screen);
     ~Moderator();
+    //initial values:
+    void setAllPlayersValues();
+    void setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS);
+
+    //draw functions
+    void drawAllPlayers();
+    void drawPlayers(Player *players, int NUMBER_OF_PLAYERS);
+
+    //vision:
+    void updateAllPlayersVision();
+    void updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS);
+
+    //Conflicts:
+    void conflictsAllPlayers();
+    void conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS);
 
     void shotPlayer(Player *shooter, enemyInfo_t enemyInfo);
     int findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, cv::Point enemyPoint);
-    void setAllPlayersValues();
-    void setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS);
-    void drawAllPlayers();
-    void drawPlayers(Player *players, int NUMBER_OF_PLAYERS);
-    void updateAllPlayersVision();
-    void updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS);
-    void conflictsAllPlayers();
-    void conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS);
+
     void checkAllPlayersLife();
     void checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS);
 
-    void multiplyAllPlayers();
-    void multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS);
+    //ANN:
     void defineAllPlayersInput();
     void definePlayersInput(Player *players, int NUMBER_OF_PLAYERS);
+
+    void multiplyAllPlayers();
+    void multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS);
 
     void calculateScore();
 };
