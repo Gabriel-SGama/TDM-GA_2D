@@ -6,8 +6,8 @@
 class Screen;
 
 //screen dimensions
-#define LENGTH 800
-#define HEIGHT 600
+#define LENGTH 1800
+#define HEIGHT 800
 
 #include "Player.h"
 

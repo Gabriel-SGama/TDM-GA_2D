@@ -144,20 +144,18 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
         if (!players[i].isAlive())
             continue;
 
-        distance = cv::norm(enemyPoint - shooter->getCenter());
+        distance = cv::norm(players[i].getCenter() - enemyPoint);
 
-        if (distance > VISION_DIST + RADIUS + 2)
-            std::cout << "error" << std::endl;
-
-        if (distance <= RADIUS + 2)
+        if (distance <= RADIUS)
         {
-            std::cout << "distance:" << distance << std::endl;
-            std::cout << "center: " << shooter->getCenter() << std::endl;
-            std::cout << "enemy: " << enemyPoint << std::endl;
-
+            //std::cout << "distance:" << distance << std::endl;
+            //std::cout << "center: " << shooter->getCenter() << std::endl;
+            //std::cout << "enemy: " << enemyPoint << std::endl;
             players[i].takeDamage(shooter->getDamage());
-            std::cout << shooter->getPlayerID() << "matou " << players[i].getPlayerID() << std::endl;
-            std::cout << "vida: " << players[i].getLife() << std::endl;
+            //std::cout << shooter->getPlayerID() << "matou " << players[i].getPlayerID() << std::endl;
+            //std::cout << "vida: " << players[i].getLife() << std::endl;
+            //cv::waitKey(0);
+
             return 1;
         }
     }
@@ -180,6 +178,22 @@ void Moderator::checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS)
     }
 }
 
+void Moderator::moveAllPlayers()
+{
+    movePlayers(inocents, NUMBER_OF_INOCENTS);
+    movePlayers(traitors, NUMBER_OF_TRAITORS);
+    movePlayers(detectives, NUMBER_OF_DETECTIVES);
+}
+
+void Moderator::movePlayers(Player *players, int NUMBER_OF_PLAYERS)
+{
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
+    {
+        if (players[i].isAlive())
+            players[i].move();
+    }
+}
+
 void Moderator::multiplyAllPlayers()
 {
     multiplyPlayers(inocents, NUMBER_OF_INOCENTS);
@@ -189,13 +203,11 @@ void Moderator::multiplyAllPlayers()
 
 void Moderator::multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS)
 {
+
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         if (players[i].isAlive())
-        {
             players[i].ann->multiply();
-            players[i].move();
-        }
     }
 }
 
@@ -251,11 +263,6 @@ void Moderator::calculateScore()
             bestInocent->score = indvScore;
             bestInocent->player = &traitors[i];
         }
-        //traitorScore += traitors[i].getScore();
-        //if (traitors[i].isAlive())
-        //    traitorScore++;
-        //else
-        //    inocentsScore += 2;
     }
 
     for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
@@ -273,11 +280,6 @@ void Moderator::calculateScore()
             bestDetective->score = indvScore;
             bestDetective->player = &detectives[i];
         }
-        //inocentsScore += detectives[i].getScore();
-        //if (detectives[i].isAlive())
-        //    inocentsScore++;
-        //else
-        //    traitorScore += 2;
     }
 
     //std::cout << "inocent Score: " << inocentsScore << std::endl;
@@ -373,6 +375,7 @@ void Moderator::game()
         updateAllPlayersVision();
         conflictsAllPlayers();
         checkAllPlayersLife();
+        moveAllPlayers();
         defineAllPlayersInput();
         multiplyAllPlayers();
     }
@@ -387,6 +390,7 @@ void Moderator::gameOfBest()
         updateAllPlayersVision();
         conflictsAllPlayers();
         checkAllPlayersLife();
+        moveAllPlayers();
         defineAllPlayersInput();
         multiplyAllPlayers();
 

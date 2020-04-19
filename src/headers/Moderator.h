@@ -68,6 +68,10 @@ public:
     void checkAllPlayersLife();
     void checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS);
 
+    //mode:
+    void moveAllPlayers();
+    void movePlayers(Player *players, int NUMBER_OF_PLAYERS);
+
     //ANN:
     void defineAllPlayersInput();
     void definePlayersInput(Player *players, int NUMBER_OF_PLAYERS);
