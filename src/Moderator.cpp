@@ -13,6 +13,10 @@ Moderator::Moderator()
     inocents = new Inocent[NUMBER_OF_INOCENTS];
     traitors = new Traitor[NUMBER_OF_TRAITORS];
     detectives = new Detective[NUMBER_OF_DETECTIVES];
+
+    bestInocent = new dataOfBestPlayers_t;
+    bestTraitor = new dataOfBestPlayers_t;
+    bestDetective = new dataOfBestPlayers_t;
 }
 
 Moderator::~Moderator()
@@ -44,6 +48,9 @@ void Moderator::setPlayersValues(int &playerNumber, Player *players, int NUMBER_
 
 void Moderator::drawAllPlayers()
 {
+    screen->resetImage();
+    screen->createObstacle();
+
     drawPlayers(inocents, NUMBER_OF_INOCENTS);
     drawPlayers(traitors, NUMBER_OF_TRAITORS);
     drawPlayers(detectives, NUMBER_OF_DETECTIVES);
@@ -139,6 +146,9 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
 
         distance = cv::norm(enemyPoint - shooter->getCenter());
 
+        if (distance > VISION_DIST + RADIUS + 2)
+            std::cout << "error" << std::endl;
+
         if (distance <= RADIUS + 2)
         {
             std::cout << "distance:" << distance << std::endl;
@@ -148,7 +158,6 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
             players[i].takeDamage(shooter->getDamage());
             std::cout << shooter->getPlayerID() << "matou " << players[i].getPlayerID() << std::endl;
             std::cout << "vida: " << players[i].getLife() << std::endl;
-            cv::waitKey(0);
             return 1;
         }
     }
@@ -176,9 +185,6 @@ void Moderator::multiplyAllPlayers()
     multiplyPlayers(inocents, NUMBER_OF_INOCENTS);
     multiplyPlayers(traitors, NUMBER_OF_TRAITORS);
     multiplyPlayers(detectives, NUMBER_OF_DETECTIVES);
-
-    screen->resetImage();
-    screen->createObstacle();
 }
 
 void Moderator::multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS)
@@ -212,32 +218,66 @@ void Moderator::definePlayersInput(Player *players, int NUMBER_OF_PLAYERS)
 void Moderator::calculateScore()
 {
     int i;
+    float indvScore;
 
     for (i = 0; i < NUMBER_OF_INOCENTS; i++)
     {
-        inocentsScore += inocents[i].getScore();
+        indvScore = inocents[i].getScore();
+        inocentsScore += indvScore;
         if (inocents[i].isAlive())
             inocentsScore++;
         else
             traitorScore += 2;
+
+        if (indvScore > bestInocent->score)
+        {
+            bestInocent->score = indvScore;
+            bestInocent->player = &inocents[i];
+        }
     }
 
     for (i = 0; i < NUMBER_OF_TRAITORS; i++)
     {
-        traitorScore += traitors[i].getScore();
+
+        indvScore = traitors[i].getScore();
+        traitorScore += indvScore;
         if (traitors[i].isAlive())
             traitorScore++;
         else
             inocentsScore += 2;
+
+        if (indvScore > bestInocent->score)
+        {
+            bestInocent->score = indvScore;
+            bestInocent->player = &traitors[i];
+        }
+        //traitorScore += traitors[i].getScore();
+        //if (traitors[i].isAlive())
+        //    traitorScore++;
+        //else
+        //    inocentsScore += 2;
     }
 
     for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
     {
-        inocentsScore += detectives[i].getScore();
+        indvScore = detectives[i].getScore();
+        inocentsScore += indvScore;
+
         if (detectives[i].isAlive())
             inocentsScore++;
         else
             traitorScore += 2;
+
+        if (indvScore > bestDetective->score)
+        {
+            bestDetective->score = indvScore;
+            bestDetective->player = &detectives[i];
+        }
+        //inocentsScore += detectives[i].getScore();
+        //if (detectives[i].isAlive())
+        //    inocentsScore++;
+        //else
+        //    traitorScore += 2;
     }
 
     //std::cout << "inocent Score: " << inocentsScore << std::endl;
@@ -249,9 +289,16 @@ void Moderator::resetAllPlayers()
     screen->resetImage();
     screen->createObstacle();
 
+    inocentsScore = 0;
+    traitorScore = 0;
+
     resetPlayers(inocents, NUMBER_OF_INOCENTS, INOCENT_HEALTH);
     resetPlayers(traitors, NUMBER_OF_TRAITORS, TRAITOR_HEALTH);
     resetPlayers(detectives, NUMBER_OF_DETECTIVES, DETECTIVE_HEALTH);
+
+    bestInocent->score = -100;
+    bestTraitor->score = -100;
+    bestDetective->score = -100;
 }
 
 void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life)
@@ -262,9 +309,14 @@ void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life)
 
 void Moderator::setAllWeights(Inocent *bestInocents, Traitor *bestTraitors, Detective *bestDetectives)
 {
-    setWeights(bestInocents, inocents, NUMBER_OF_INOCENTS);
-    //setWeights(bestTraitors, traitors, NUMBER_OF_TRAITORS);
-    //setWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVES);
+    if (bestInocents != nullptr)
+        setWeights(bestInocents, inocents, NUMBER_OF_INOCENTS);
+
+    if (bestTraitors != nullptr)
+        setWeights(bestTraitors, traitors, NUMBER_OF_TRAITORS);
+
+    if (bestDetectives != nullptr)
+        setWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVES);
 }
 
 void Moderator::setWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS)
@@ -280,9 +332,14 @@ void Moderator::setWeights(Player *bestPlayers, Player *players, int NUMBER_OF_P
 
 void Moderator::copyAllWeights(Inocent *bestInocents, Traitor *bestTraitors, Detective *bestDetectives)
 {
-    copyWeights(bestInocents, inocents, NUMBER_OF_INOCENTS);
-    //copyWeights(bestTraitors, traitors, NUMBER_OF_TRAITORS);
-    //copyWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVES);
+    if (bestInocents != nullptr)
+        copyWeights(bestInocents, inocents, NUMBER_OF_INOCENTS);
+
+    if (bestTraitors != nullptr)
+        copyWeights(bestTraitors, traitors, NUMBER_OF_TRAITORS);
+
+    if (bestDetectives != nullptr)
+        copyWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVES);
 }
 
 void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS)
@@ -306,4 +363,34 @@ void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_
 
         //std::cout << players[i].ann->getMatrixPtr()[2] << std::endl;
     }
+}
+
+void Moderator::game()
+{
+    for (int i = 0; i < DURATION; i++)
+    {
+        drawAllPlayers();
+        updateAllPlayersVision();
+        conflictsAllPlayers();
+        checkAllPlayersLife();
+        defineAllPlayersInput();
+        multiplyAllPlayers();
+    }
+    calculateScore();
+}
+
+void Moderator::gameOfBest()
+{
+    for (int i = 0; i < DURATION; i++)
+    {
+        drawAllPlayers();
+        updateAllPlayersVision();
+        conflictsAllPlayers();
+        checkAllPlayersLife();
+        defineAllPlayersInput();
+        multiplyAllPlayers();
+
+        screen->updateMap();
+    }
+    calculateScore();
 }

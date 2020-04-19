@@ -78,3 +78,11 @@ void ANN::multiply()
     //std::cout << std::endl;
     //std::cout << std::endl;
 }
+
+void ANN::simpleBreeding(MatrixXf *matrixArray)
+{
+    for (int i = 0; i < layers.size() + 1; i++)
+    {
+        this->matrixArray[i] = (matrixArray[i] + this->matrixArray[i]) / 2;
+    }
+}

@@ -1,7 +1,7 @@
 #ifndef TRAITOR_H
 #define TRAITOR_H
 
-#define NUMBER_OF_TRAITORS 5
+#define NUMBER_OF_TRAITORS 15
 #define TRAITOR_HEALTH 75
 #define TRAITOR_DAMAGE 35
 

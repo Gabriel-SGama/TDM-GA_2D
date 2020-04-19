@@ -8,18 +8,18 @@
 #include "headers/Detective.h"
 #include "headers/Moderator.h"
 #include "headers/ANN.h"
+#include "headers/Learning.h"
 
 // g++ *.cpp -o main `pkg-config --cflags --libs opencv4`
 //https://stackoverflow.com/questions/23683023/how-to-store-a-matrix-of-custom-objects-in-c
 
 int main()
 {
-    int bestInocentScore = -100;
-    int bestTraitorScore = -100;
-    int bestInocentIndex = 0;
-    int bestTraitorIndex = 0;
     int i;
-    int move = 0;
+
+    dataOfBest_t dataOfBest;
+
+    std::cout << dataOfBest.bestInocentScore << std::endl;
 
     srand(time(0));
 
@@ -40,74 +40,70 @@ int main()
     bestModerator->setAllPlayersValues();
     bestModerator->screen->setScreenParam("best indvs");
 
-    std::vector<Moderator *> Moderators;
-    Moderators.resize(POP_SIZE);
+    Moderator *inocentsTraining = new Moderator[POP_SIZE];
+    Moderator *traitorsTraining = new Moderator[POP_SIZE];
 
     Screen *temp;
 
     for (i = 0; i < POP_SIZE; i++)
     {
-        Moderators[i] = new Moderator;
         temp = new Screen;
 
         //temp->setScreenParam(std::to_string(i));
+        inocentsTraining[i].setScreen(temp);
+        inocentsTraining[i].setAllPlayersValues();
+        inocentsTraining[i].drawAllPlayers();
+        inocentsTraining[i].setAllWeights(nullptr, bestModerator->getTraitors(), nullptr);
 
-        Moderators[i]->setScreen(temp);
-        Moderators[i]->setAllPlayersValues();
-        Moderators[i]->drawAllPlayers();
+        temp = new Screen;
+        //temp->setScreenParam(std::to_string(i + POP_SIZE));
+
+        traitorsTraining[i].setScreen(temp);
+        traitorsTraining[i].setAllPlayersValues();
+        traitorsTraining[i].drawAllPlayers();
+        traitorsTraining[i].setAllWeights(bestModerator->getInocents(), nullptr, bestModerator->getDetectives());
     }
+
+    Learning *learning = new Learning;
+    learning->setData(inocentsTraining, traitorsTraining, &dataOfBest);
 
     while (1)
     {
-        for (move = 0; move < DURATION; move++)
+        for (i = 0; i < POP_SIZE; i++)
         {
-
-            for (i = 0; i < POP_SIZE; i++)
-            {
-                Moderators[i]->drawAllPlayers();
-                Moderators[i]->updateAllPlayersVision();
-                Moderators[i]->conflictsAllPlayers();
-                Moderators[i]->checkAllPlayersLife();
-
-                //Moderators[i]->screen->updateMap();
-
-                Moderators[i]->defineAllPlayersInput();
-                Moderators[i]->multiplyAllPlayers();
-            }
-
-            bestModerator->drawAllPlayers();
-            bestModerator->updateAllPlayersVision();
-            bestModerator->conflictsAllPlayers();
-            screenOfBest->updateMap();
-            bestModerator->checkAllPlayersLife();
-
-            screenOfBest->updateMap();
-
-            bestModerator->defineAllPlayersInput();
-            bestModerator->multiplyAllPlayers();
-
-            if (!(move % 50))
-                std::cout << move << std::endl;
+            inocentsTraining[i].game();
+            traitorsTraining[i].game();
         }
+
+        bestModerator->gameOfBest();
 
         for (i = 0; i < POP_SIZE; i++)
         {
-            Moderators[i]->calculateScore();
-            if (Moderators[i]->inocentsScore > bestInocentScore)
+            //inocentsTraining[i].calculateScore();
+            //traitorsTraining[i].calculateScore();
+            if (inocentsTraining[i].inocentsScore > dataOfBest.bestInocentScore)
             {
-                bestInocentScore = Moderators[i]->inocentsScore;
-                bestInocentIndex = i;
+                std::cout << "change" << std::endl;
+                dataOfBest.bestInocentScore = inocentsTraining[i].inocentsScore;
+                dataOfBest.bestInocentIndex = i;
             }
-            if (Moderators[i]->traitorScore > bestTraitorScore)
+            if (traitorsTraining[i].traitorScore > dataOfBest.bestTraitorScore)
             {
-                bestTraitorScore = Moderators[i]->traitorScore;
-                bestTraitorIndex = i;
+                std::cout << "change" << std::endl;
+                dataOfBest.bestTraitorScore = traitorsTraining[i].traitorScore;
+                dataOfBest.bestTraitorIndex = i;
             }
-            Moderators[i]->resetAllPlayers();
+
+            inocentsTraining[i].resetAllPlayers();
+            traitorsTraining[i].resetAllPlayers();
         }
 
-        bestModerator->copyAllWeights(Moderators[bestInocentIndex]->getInocents(), Moderators[bestTraitorIndex]->getTraitors(), Moderators[bestInocentIndex]->getDetectives());
-
+        bestModerator->copyAllWeights(inocentsTraining[dataOfBest.bestInocentIndex].getInocents(), traitorsTraining[dataOfBest.bestTraitorIndex].getTraitors(), inocentsTraining[dataOfBest.bestInocentIndex].getDetectives());
+        for (i = 0; i < POP_SIZE; i++)
+        {
+            inocentsTraining[i].setAllWeights(nullptr, bestModerator->getTraitors(), nullptr);
+            traitorsTraining[i].setAllWeights(bestModerator->getInocents(), nullptr, bestModerator->getDetectives());
+        }
         bestModerator->calculateScore();
         bestModerator->resetAllPlayers();
     }

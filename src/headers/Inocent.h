@@ -1,7 +1,7 @@
 #ifndef INOCENT_H
 #define INOCENT_H
 
-#define NUMBER_OF_INOCENTS 10
+#define NUMBER_OF_INOCENTS 30
 #define INOCENT_HEALTH 50
 
 #define INOCENT_DAMAGE 25

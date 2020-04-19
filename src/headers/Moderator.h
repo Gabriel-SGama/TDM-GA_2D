@@ -8,6 +8,16 @@
 
 #define DURATION 150
 
+typedef struct dataOfBestPlayers_t
+{
+
+    float score;
+    Player *player;
+
+    dataOfBestPlayers_t() : score(-100){};
+
+} dataOfBestPlayers_t;
+
 typedef struct playerList_t
 {
     Player *player;
@@ -23,6 +33,10 @@ private:
     Detective *detectives;
 
 public:
+    dataOfBestPlayers_t *bestInocent;
+    dataOfBestPlayers_t *bestDetective;
+    dataOfBestPlayers_t *bestTraitor;
+
     float inocentsScore;
     float traitorScore;
 
@@ -72,10 +86,15 @@ public:
     inline Traitor *getTraitors() { return traitors; }
     inline Detective *getDetectives() { return detectives; }
 
+    //weights
     void setAllWeights(Inocent *inocents, Traitor *traitors, Detective *detectives);
     void setWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
+
     void copyAllWeights(Inocent *inocents, Traitor *traitors, Detective *detectives);
     void copyWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
+
+    void game();
+    void gameOfBest();
 };
 
 #endif

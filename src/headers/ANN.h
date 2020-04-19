@@ -3,7 +3,7 @@
 #include <vector>
 #include <eigen3/Eigen/Dense>
 
-#define RAND_LIMIT 1
+#define RAND_LIMIT 0.5
 
 //output indexs
 #define INDEX_POSI_X 0
@@ -11,7 +11,7 @@
 #define INDEX_SHOT 2
 
 //populatio param
-#define POP_SIZE 10
+#define POP_SIZE 8
 
 using namespace Eigen;
 
@@ -40,4 +40,7 @@ public:
     inline VectorXf *getInputPtr() { return &input; }
     inline MatrixXf *getMatrixPtr() { return matrixArray; }
     inline void setMatrix(MatrixXf *matrixArray) { this->matrixArray = matrixArray; }
+
+    //evolution:
+    void simpleBreeding(MatrixXf *matrixArray);
 };
