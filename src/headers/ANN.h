@@ -11,11 +11,11 @@
 #define INDEX_SHOT 2
 
 //populatio param
-#define POP_SIZE 5
+#define POP_SIZE 10
 
 using namespace Eigen;
 
-const std::vector<int> layers({70, 30, 9});
+const std::vector<int> layers({70, 4, 9});
 //const std::vector<int> layers({3, 2});
 
 class ANN

@@ -109,7 +109,7 @@ void Screen::updateMap()
 {
 
     cv::imshow(windowName, map);
-    cv::waitKey(0);
+    cv::waitKey(10);
 }
 
 cv::Mat Screen::getMap()

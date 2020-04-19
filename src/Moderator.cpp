@@ -1,4 +1,8 @@
+#include <iostream>
+#include <vector>
+
 #include "headers/Moderator.h"
+#include "headers/ANN.h"
 
 Moderator::Moderator()
 {
@@ -86,9 +90,6 @@ void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS)
         if (players[i].isAlive())
         {
             enemyInfo = players[i].killPlayer((int)players[i].output[0][INDEX_SHOT]);
-            if (enemyInfo.playerType == INOCENT)
-            {
-            }
 
             //if(players->getPlayerType() == INOCENT || players->getPlayerType()==DETECTIVE)
             if (enemyInfo.playerType == NOTHING || enemyInfo.playerType == OBSTACLE)
@@ -110,7 +111,7 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
             shooter->updateScore(-shooter->getDamage() / INOCENT_DAMAGE);
     }
 
-    else if (enemyInfo.playerType == TRAITOR && findPlayer(shooter, traitors, NUMBER_OF_TRAITORS, enemyInfo.posiAprox))
+    else if ((enemyInfo.playerType == TRAITOR || enemyInfo.playerType == INOCENT) && findPlayer(shooter, traitors, NUMBER_OF_TRAITORS, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
             shooter->updateScore(-shooter->getDamage() / INOCENT_DAMAGE);
@@ -133,13 +134,21 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
     //find the player that was shot
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        distance = cv::norm(enemyPoint - players[i].getCenter());
+        if (!players[i].isAlive())
+            continue;
 
-        if (distance <= RADIUS)
+        distance = cv::norm(enemyPoint - shooter->getCenter());
+
+        if (distance <= RADIUS + 2)
         {
+            std::cout << "distance:" << distance << std::endl;
+            std::cout << "center: " << shooter->getCenter() << std::endl;
+            std::cout << "enemy: " << enemyPoint << std::endl;
+
             players[i].takeDamage(shooter->getDamage());
             std::cout << shooter->getPlayerID() << "matou " << players[i].getPlayerID() << std::endl;
             std::cout << "vida: " << players[i].getLife() << std::endl;
+            cv::waitKey(0);
             return 1;
         }
     }
@@ -251,10 +260,50 @@ void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life)
         players[i].reset(life);
 }
 
-void Moderator::copyWeights(Inocent *bestInocents, Traitor *bestTraitors, Detective *bestDetectives)
+void Moderator::setAllWeights(Inocent *bestInocents, Traitor *bestTraitors, Detective *bestDetectives)
 {
-    for (int i = 0; i < NUMBER_OF_INOCENTS; i++)
+    setWeights(bestInocents, inocents, NUMBER_OF_INOCENTS);
+    //setWeights(bestTraitors, traitors, NUMBER_OF_TRAITORS);
+    //setWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVES);
+}
+
+void Moderator::setWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS)
+{
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        inocents[i].ann->setMatrix(bestInocents[i].ann->getMatrixPtr());
+        //std::cout << players[i].ann->getMatrixPtr() << std::endl;
+        //delete[] players[i].ann->getMatrixPtr();
+        players[i].ann->setMatrix(bestPlayers[i].ann->getMatrixPtr());
+        //std::cout << players[i].ann->getMatrixPtr()[2] << std::endl;
+    }
+}
+
+void Moderator::copyAllWeights(Inocent *bestInocents, Traitor *bestTraitors, Detective *bestDetectives)
+{
+    copyWeights(bestInocents, inocents, NUMBER_OF_INOCENTS);
+    //copyWeights(bestTraitors, traitors, NUMBER_OF_TRAITORS);
+    //copyWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVES);
+}
+
+void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS)
+{
+    unsigned int j;
+
+    MatrixXf *newMatrixArray;
+    MatrixXf *matrixArray;
+
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
+    {
+        newMatrixArray = new MatrixXf[layers.size() + 1];
+        //std::cout << players[i].ann->getMatrixPtr() << std::endl;
+        delete[] players[i].ann->getMatrixPtr();
+        matrixArray = bestPlayers[i].ann->getMatrixPtr();
+        for (j = 0; j < layers.size() + 1; j++)
+        {
+            newMatrixArray[j] = matrixArray[j];
+        }
+        players[i].ann->setMatrix(newMatrixArray);
+
+        //std::cout << players[i].ann->getMatrixPtr()[2] << std::endl;
     }
 }

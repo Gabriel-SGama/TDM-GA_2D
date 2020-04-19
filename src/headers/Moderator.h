@@ -72,7 +72,10 @@ public:
     inline Traitor *getTraitors() { return traitors; }
     inline Detective *getDetectives() { return detectives; }
 
-    void copyWeights(Inocent *inocents, Traitor *traitors, Detective *detectives);
+    void setAllWeights(Inocent *inocents, Traitor *traitors, Detective *detectives);
+    void setWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
+    void copyAllWeights(Inocent *inocents, Traitor *traitors, Detective *detectives);
+    void copyWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
 };
 
 #endif

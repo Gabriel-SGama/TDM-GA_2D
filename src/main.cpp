@@ -78,6 +78,7 @@ int main()
             bestModerator->drawAllPlayers();
             bestModerator->updateAllPlayersVision();
             bestModerator->conflictsAllPlayers();
+            screenOfBest->updateMap();
             bestModerator->checkAllPlayersLife();
 
             screenOfBest->updateMap();
@@ -97,12 +98,17 @@ int main()
                 bestInocentScore = Moderators[i]->inocentsScore;
                 bestInocentIndex = i;
             }
+            if (Moderators[i]->traitorScore > bestTraitorScore)
+            {
+                bestTraitorScore = Moderators[i]->traitorScore;
+                bestTraitorIndex = i;
+            }
             Moderators[i]->resetAllPlayers();
         }
 
-        bestModerator->copyWeights(Moderators[bestInocentIndex]->getInocents(), nullptr, nullptr);
+        bestModerator->copyAllWeights(Moderators[bestInocentIndex]->getInocents(), Moderators[bestTraitorIndex]->getTraitors(), Moderators[bestInocentIndex]->getDetectives());
 
-        //bestModerator->calculateScore();
+        bestModerator->calculateScore();
         bestModerator->resetAllPlayers();
     }
 
