@@ -47,6 +47,7 @@ int main()
 
     for (i = 0; i < POP_SIZE; i++)
     {
+
         temp = new Screen;
 
         //temp->setScreenParam(std::to_string(i));
