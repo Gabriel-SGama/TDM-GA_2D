@@ -236,6 +236,7 @@ void Moderator::calculateScore()
     {
         indvScore = inocents[i].getScore();
         inocentsScore += indvScore;
+
         if (inocents[i].isAlive())
             inocentsScore++;
         else
@@ -250,18 +251,18 @@ void Moderator::calculateScore()
 
     for (i = 0; i < NUMBER_OF_TRAITORS; i++)
     {
-
         indvScore = traitors[i].getScore();
         traitorScore += indvScore;
+
         if (traitors[i].isAlive())
             traitorScore++;
         else
             inocentsScore += 2;
 
-        if (indvScore > bestInocent->score)
+        if (indvScore > bestTraitor->score)
         {
-            bestInocent->score = indvScore;
-            bestInocent->player = &traitors[i];
+            bestTraitor->score = indvScore;
+            bestTraitor->player = &traitors[i];
         }
     }
 
@@ -291,16 +292,16 @@ void Moderator::resetAllPlayers()
     screen->resetImage();
     screen->createObstacle();
 
+    bestInocent->score = -100;
+    bestTraitor->score = -100;
+    bestDetective->score = -100;
+
     inocentsScore = 0;
     traitorScore = 0;
 
     resetPlayers(inocents, NUMBER_OF_INOCENTS, INOCENT_HEALTH);
     resetPlayers(traitors, NUMBER_OF_TRAITORS, TRAITOR_HEALTH);
     resetPlayers(detectives, NUMBER_OF_DETECTIVES, DETECTIVE_HEALTH);
-
-    bestInocent->score = -100;
-    bestTraitor->score = -100;
-    bestDetective->score = -100;
 }
 
 void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life)

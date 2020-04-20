@@ -8,6 +8,7 @@
 #include "headers/Detective.h"
 #include "headers/Moderator.h"
 #include "headers/ANN.h"
+#include "headers/Evolution.h"
 
 // g++ *.cpp -o main `pkg-config --cflags --libs opencv4`
 //https://stackoverflow.com/questions/23683023/how-to-store-a-matrix-of-custom-objects-in-c
@@ -34,12 +35,17 @@ int main()
     bestModerator->setAllPlayersValues();
     bestModerator->screen->setScreenParam("best indvs");
 
+    Evolution *evolution = new Evolution;
+
+    evolution->setParam(bestModerator);
+
     while (1)
     {
 
         bestModerator->gameOfBest();
 
         bestModerator->calculateScore();
+        evolution->eletism();
         bestModerator->resetAllPlayers();
     }
 
