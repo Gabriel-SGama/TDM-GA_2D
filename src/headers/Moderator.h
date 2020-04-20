@@ -11,10 +11,12 @@
 typedef struct dataOfBestPlayers_t
 {
 
+    int index;
     float score;
     Player *player;
 
-    dataOfBestPlayers_t() : score(-100){};
+    dataOfBestPlayers_t() : index(0),
+                            score(-100){};
 
 } dataOfBestPlayers_t;
 
@@ -82,8 +84,8 @@ public:
     void calculateScore();
 
     //reset:
-    void resetAllPlayers();
-    void resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life);
+    void resetAllPlayers(bool resetScore);
+    void resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, bool resetScore);
 
     //get best players
     inline Inocent *getInocents() { return inocents; }

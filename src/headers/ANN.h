@@ -15,7 +15,7 @@
 
 using namespace Eigen;
 
-const std::vector<int> layers({70, 4, 9});
+const std::vector<int> layers({15, 9});
 //const std::vector<int> layers({3, 2});
 
 class ANN
@@ -30,16 +30,18 @@ private:
     MatrixXf *matrixArray;
 
 public:
-    ANN(int inputSize, int outputSize);
+    ANN();
     ~ANN();
 
-    void setANNParameters();
+    void setANNParameters(int inputSize, int outputSize);
     void multiply();
 
     inline VectorXf *getOutputPtr() { return &output; }
     inline VectorXf *getInputPtr() { return &input; }
     inline MatrixXf *getMatrixPtr() { return matrixArray; }
-    inline void setMatrix(MatrixXf *matrixArray) { this->matrixArray = matrixArray; }
+    MatrixXf *setMatrix(MatrixXf *matrixArray);
+
+    void copyWheights(MatrixXf *matrixArray);
 
     //evolution:
     void simpleBreeding(MatrixXf *matrixArray);

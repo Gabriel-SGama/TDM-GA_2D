@@ -2,7 +2,15 @@
 
 #include "headers/ANN.h"
 
-ANN::ANN(int inputSize, int outputSize)
+ANN::ANN()
+{
+}
+
+ANN::~ANN()
+{
+}
+
+void ANN::setANNParameters(int inputSize, int outputSize)
 {
     unsigned int i;
 
@@ -46,10 +54,6 @@ ANN::ANN(int inputSize, int outputSize)
     }
 }
 
-ANN::~ANN()
-{
-}
-
 void ANN::multiply()
 {
     intermediunOut[0] = matrixArray[0] * input;
@@ -79,9 +83,26 @@ void ANN::multiply()
     //std::cout << std::endl;
 }
 
+MatrixXf *ANN::setMatrix(MatrixXf *matrixArray)
+{
+    MatrixXf *temp;
+    temp = this->matrixArray;
+    this->matrixArray = matrixArray;
+
+    return temp;
+}
+
+void ANN::copyWheights(MatrixXf *matrixArray)
+{
+    for (unsigned int i = 0; i < layers.size() + 1; i++)
+    {
+        this->matrixArray[i] = matrixArray[i];
+    }
+}
+
 void ANN::simpleBreeding(MatrixXf *matrixArray)
 {
-    for (int i = 0; i < layers.size() + 1; i++)
+    for (unsigned int i = 0; i < layers.size() + 1; i++)
     {
         this->matrixArray[i] = (matrixArray[i] + this->matrixArray[i]) / 2;
     }

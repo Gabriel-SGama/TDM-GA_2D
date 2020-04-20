@@ -15,6 +15,7 @@
 
 int main()
 {
+    int gen = 0;
 
     srand(time(0));
 
@@ -42,11 +43,26 @@ int main()
     while (1)
     {
 
-        bestModerator->gameOfBest();
+        if (!(gen % 10))
+        {
+            std::cout << "gen: " << gen << std::endl;
+            bestModerator->gameOfBest();
+            bestModerator->resetAllPlayers(false);
+            bestModerator->gameOfBest();
+        }
+        else
+        {
+            bestModerator->game();
+            bestModerator->resetAllPlayers(false);
+            bestModerator->game();
+        }
 
         bestModerator->calculateScore();
-        evolution->eletism();
-        bestModerator->resetAllPlayers();
+        evolution->tournamentAll();
+        //evolution->eletismAll();
+        bestModerator->resetAllPlayers(true);
+
+        gen++;
     }
 
     return 0;

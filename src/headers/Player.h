@@ -65,8 +65,6 @@ protected:
     //int radiusOffset;
     int numberOfRays;
     int damage; //player damage
-    int ANNInputSize;
-    int ANNOutputSize;
 
     //ray info
     int *raysID;
@@ -83,6 +81,10 @@ protected:
 
 public:
     ANN *ann;
+
+    int ANNInputSize;
+    int ANNOutputSize;
+
     VectorXf *output;
 
     explicit Player();
@@ -101,7 +103,7 @@ public:
 
     //int getRadius();
 
-    inline void setAlive(bool alive) { this->alive = alive; }
+    void setAlive(bool alive);
 
     //initial values
     void setPlayerValues(Screen *screen, int playerID, int life); //inicial values
@@ -127,7 +129,7 @@ public:
     void setComunInput();
 
     //reset
-    void reset(int life);
+    void reset(int life, bool resetScore);
 };
 
 #endif

@@ -171,7 +171,7 @@ void Player::move()
 
 enemyInfo_t Player::killPlayer(int rayNumber)
 {
-    if (rayNumber < 0 || rayNumber > numberOfRays) //invalid position
+    if (rayNumber < 0 || rayNumber > numberOfRays || raysDist[rayNumber] > VISION_DIST / 1.5) //invalid position
         return {cv::Point(-1, -1), NOTHING};
 
     double currentAngle;
@@ -185,6 +185,8 @@ enemyInfo_t Player::killPlayer(int rayNumber)
     enemyPoint.y = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * sin(currentAngle);
 
     enemyPoint += center;
+
+    cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0));
     cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
 
     return {enemyPoint, raysID[rayNumber]};
@@ -193,6 +195,13 @@ enemyInfo_t Player::killPlayer(int rayNumber)
 void Player::takeDamage(int damage)
 {
     life -= damage;
+}
+
+void Player::setAlive(bool alive)
+{
+    this->alive = alive;
+    if (!alive)
+        updateScore(-5);
 }
 
 void Player::setComunInput()
@@ -208,9 +217,11 @@ void Player::setComunInput()
     (*input)[numberOfRays * 2 + 2] = life;
 }
 
-void Player::reset(int life)
+void Player::reset(int life, bool resetScore)
 {
-    score = 0;
+    if (resetScore)
+        score = 0;
+
     alive = true;
 
     this->life = life;

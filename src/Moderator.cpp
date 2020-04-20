@@ -115,22 +115,22 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
         if (shooter->getPlayerType() == TRAITOR)
             shooter->updateScore(shooter->getDamage() / INOCENT_DAMAGE);
         else
-            shooter->updateScore(-shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-3.5 * shooter->getDamage() / INOCENT_DAMAGE);
     }
 
     else if ((enemyInfo.playerType == TRAITOR || enemyInfo.playerType == INOCENT) && findPlayer(shooter, traitors, NUMBER_OF_TRAITORS, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
-            shooter->updateScore(-shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-3.5 * shooter->getDamage() / INOCENT_DAMAGE);
         else
-            shooter->updateScore(shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(1.5 * shooter->getDamage() / INOCENT_DAMAGE);
     }
     else if (enemyInfo.playerType == DETECTIVE && findPlayer(shooter, detectives, NUMBER_OF_DETECTIVES, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
-            shooter->updateScore(shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(1.5 * shooter->getDamage() / INOCENT_DAMAGE);
         else
-            shooter->updateScore(-shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-3.5 * shooter->getDamage() / INOCENT_DAMAGE);
     }
 }
 
@@ -246,6 +246,7 @@ void Moderator::calculateScore()
         {
             bestInocent->score = indvScore;
             bestInocent->player = &inocents[i];
+            bestInocent->index = i;
         }
     }
 
@@ -257,12 +258,13 @@ void Moderator::calculateScore()
         if (traitors[i].isAlive())
             traitorScore++;
         else
-            inocentsScore += 2;
+            inocentsScore += 3;
 
         if (indvScore > bestTraitor->score)
         {
             bestTraitor->score = indvScore;
             bestTraitor->player = &traitors[i];
+            bestTraitor->index = i;
         }
     }
 
@@ -274,12 +276,13 @@ void Moderator::calculateScore()
         if (detectives[i].isAlive())
             inocentsScore++;
         else
-            traitorScore += 2;
+            traitorScore += 4;
 
         if (indvScore > bestDetective->score)
         {
             bestDetective->score = indvScore;
             bestDetective->player = &detectives[i];
+            bestDetective->index = i;
         }
     }
 
@@ -287,27 +290,30 @@ void Moderator::calculateScore()
     //std::cout << "traitor Score: " << traitorScore << std::endl;
 }
 
-void Moderator::resetAllPlayers()
+void Moderator::resetAllPlayers(bool resetScore)
 {
     screen->resetImage();
     screen->createObstacle();
 
-    bestInocent->score = -100;
-    bestTraitor->score = -100;
-    bestDetective->score = -100;
+    if (resetScore)
+    {
+        bestInocent->score = -100;
+        bestTraitor->score = -100;
+        bestDetective->score = -100;
+    }
 
     inocentsScore = 0;
     traitorScore = 0;
 
-    resetPlayers(inocents, NUMBER_OF_INOCENTS, INOCENT_HEALTH);
-    resetPlayers(traitors, NUMBER_OF_TRAITORS, TRAITOR_HEALTH);
-    resetPlayers(detectives, NUMBER_OF_DETECTIVES, DETECTIVE_HEALTH);
+    resetPlayers(inocents, NUMBER_OF_INOCENTS, INOCENT_HEALTH, resetScore);
+    resetPlayers(traitors, NUMBER_OF_TRAITORS, TRAITOR_HEALTH, resetScore);
+    resetPlayers(detectives, NUMBER_OF_DETECTIVES, DETECTIVE_HEALTH, resetScore);
 }
 
-void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life)
+void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, bool resetScore)
 {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
-        players[i].reset(life);
+        players[i].reset(life, resetScore);
 }
 
 void Moderator::setAllWeights(Inocent *bestInocents, Traitor *bestTraitors, Detective *bestDetectives)
@@ -355,7 +361,6 @@ void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         newMatrixArray = new MatrixXf[layers.size() + 1];
-        //std::cout << players[i].ann->getMatrixPtr() << std::endl;
         delete[] players[i].ann->getMatrixPtr();
         matrixArray = bestPlayers[i].ann->getMatrixPtr();
         for (j = 0; j < layers.size() + 1; j++)
@@ -363,8 +368,6 @@ void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_
             newMatrixArray[j] = matrixArray[j];
         }
         players[i].ann->setMatrix(newMatrixArray);
-
-        //std::cout << players[i].ann->getMatrixPtr()[2] << std::endl;
     }
 }
 
@@ -390,12 +393,13 @@ void Moderator::gameOfBest()
         drawAllPlayers();
         updateAllPlayersVision();
         conflictsAllPlayers();
+
+        screen->updateMap();
+
         checkAllPlayersLife();
         moveAllPlayers();
         defineAllPlayersInput();
         multiplyAllPlayers();
-
-        screen->updateMap();
     }
     calculateScore();
 }

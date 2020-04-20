@@ -12,7 +12,9 @@ Detective::Detective() : Player()
     //angle + distance + shot id
     ANNOutputSize = 1 + 1 + 1;
 
-    ann = new ANN(ANNInputSize, ANNOutputSize);
+    //ann = new ANN(ANNInputSize, ANNOutputSize);
+    ann = new ANN;
+    ann->setANNParameters(ANNInputSize, ANNOutputSize);
 
     input = ann->getInputPtr();
     output = ann->getOutputPtr();
