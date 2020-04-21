@@ -1,16 +1,15 @@
-#ifndef MODERATOR_H
-#define MODERATOR_H
+#pragma once
+
+#define DURATION 250
 
 #include "Screen.h"
+#include "Player.h"
 #include "Inocent.h"
 #include "Traitor.h"
 #include "Detective.h"
 
-#define DURATION 200
-
 typedef struct dataOfBestPlayers_t
 {
-
     int index;
     float score;
     Player *player;
@@ -102,5 +101,3 @@ public:
     void game();
     void gameOfBest();
 };
-
-#endif

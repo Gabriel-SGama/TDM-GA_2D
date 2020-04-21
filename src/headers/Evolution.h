@@ -1,8 +1,12 @@
 #pragma once
 #include <eigen3/Eigen/Dense>
 
+
 #include "Moderator.h"
+
 using namespace Eigen;
+
+#define TOURNAMENT_K 6
 
 class Evolution
 {

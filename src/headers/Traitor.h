@@ -1,12 +1,12 @@
-#ifndef TRAITOR_H
-#define TRAITOR_H
+#pragma once
 
 #define NUMBER_OF_TRAITORS 20
 #define TRAITOR_HEALTH 75
 #define TRAITOR_DAMAGE 35
 
-#include "Player.h"
-#include "Screen.h"
+class Traitor;
+
+#include "Moderator.h"
 
 class Traitor : public Player
 {
@@ -16,5 +16,3 @@ public:
     Traitor();
     ~Traitor();
 };
-
-#endif

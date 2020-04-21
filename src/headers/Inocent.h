@@ -1,13 +1,13 @@
-#ifndef INOCENT_H
-#define INOCENT_H
+#pragma once
 
 #define NUMBER_OF_INOCENTS 30
 #define INOCENT_HEALTH 50
 
 #define INOCENT_DAMAGE 25
 
-#include "Player.h"
-#include "Screen.h"
+class Inocent;
+
+#include "Moderator.h"
 
 class Inocent : public Player
 {
@@ -17,5 +17,3 @@ public:
     Inocent();
     ~Inocent();
 };
-
-#endif

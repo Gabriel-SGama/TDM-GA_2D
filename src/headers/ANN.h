@@ -10,8 +10,6 @@
 #define INDEX_POSI_Y 1
 #define INDEX_SHOT 2
 
-//populatio param
-//#define POP_SIZE 8
 
 using namespace Eigen;
 

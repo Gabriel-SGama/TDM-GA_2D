@@ -5,8 +5,9 @@
 #define DETECTIVE_HEALTH 100
 #define DETECTIVE_DAMAGE 50
 
-#include "Player.h"
-#include "Screen.h"
+class Detective;
+
+#include "Moderator.h"
 
 class Detective : public Player
 {

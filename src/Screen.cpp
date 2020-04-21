@@ -167,4 +167,36 @@ void Screen::createObstacle()
     pt2.y = pt1.y - HEIGHT / 4;
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 0;
+    pt1.y = OFFSET_LIMIT;
+
+    pt2.x = LENGTH;
+    pt2.y = OFFSET_LIMIT;
+
+    cv::line(map, pt1, pt2, OBSTACLE_COLOR, LIMIT_SIZE);
+
+    pt1.x = 0;
+    pt1.y = HEIGHT - 1 - OFFSET_LIMIT;
+
+    pt2.x = LENGTH;
+    pt2.y = HEIGHT - 1 - OFFSET_LIMIT;
+
+    cv::line(map, pt1, pt2, OBSTACLE_COLOR, LIMIT_SIZE);
+
+    pt1.x = OFFSET_LIMIT;
+    pt1.y = 0;
+
+    pt2.x = OFFSET_LIMIT;
+    pt2.y = HEIGHT - 1;
+
+    cv::line(map, pt1, pt2, OBSTACLE_COLOR, LIMIT_SIZE);
+
+    pt1.x = LENGTH - 1 - OFFSET_LIMIT;
+    pt1.y = 0;
+
+    pt2.x = LENGTH - 1 - OFFSET_LIMIT;
+    pt2.y = HEIGHT - 1;
+
+    cv::line(map, pt1, pt2, OBSTACLE_COLOR, LIMIT_SIZE);
 }

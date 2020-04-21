@@ -1,7 +1,4 @@
 #include "headers/Player.h"
-#include "headers/Inocent.h"
-#include "headers/Traitor.h"
-#include "headers/Detective.h"
 #include "string.h"
 
 Player::Player()
@@ -18,6 +15,8 @@ Player::Player()
 
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
+
+    timeStand = MAX_TIME_STAND;
 }
 
 Player::~Player()
@@ -133,7 +132,8 @@ void Player::drawVisionLines(double currentAngle, int id)
         color = screen->idToRay(raysID[id]);
     }
 
-    cv::line(screen->getMap(), center + offset, finalPt, color);
+    if (raysID[id] != NOTHING)
+        cv::line(screen->getMap(), center + offset, finalPt, color);
 }
 
 int Player::checkMove(cv::Point offset)
@@ -162,10 +162,21 @@ void Player::move()
     cv::Point offset = cv::Point((*output)[INDEX_POSI_X], (*output)[INDEX_POSI_Y]);
     center += offset;
 
-    if (!checkMove(offset))
+    if (!checkMove(offset) || offset == cv::Point(0, 0))
     {
         center -= offset;
+        timeStand--;
+
+        if (timeStand <= 0 && alive)
+        {
+            timeStand = MAX_TIME_STAND / 2;
+            score -= 4;
+        }
         //std::cout << "posisao invalida" << std::endl;
+    }
+    else
+    {
+        timeStand = MAX_TIME_STAND;
     }
 }
 
@@ -227,6 +238,8 @@ void Player::reset(int life, bool resetScore)
     alive = true;
 
     this->life = life;
+
+    timeStand = MAX_TIME_STAND;
 
     setPosition();
     drawPlayer();

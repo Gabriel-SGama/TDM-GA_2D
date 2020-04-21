@@ -1,4 +1,5 @@
 #include "headers/Evolution.h"
+#include "headers/Player.h"
 
 using namespace Eigen;
 
@@ -43,7 +44,7 @@ void Evolution::eletismAll()
     traitors = moderator->getTraitors();
     detectives = moderator->getDetectives();
 
-       matrixOfBest = moderator->bestInocent->player->ann->getMatrixPtr();
+    matrixOfBest = moderator->bestInocent->player->ann->getMatrixPtr();
     eletism(inocents, NUMBER_OF_INOCENTS, matrixOfBest);
 
     matrixOfBest = moderator->bestTraitor->player->ann->getMatrixPtr();
@@ -89,20 +90,24 @@ void Evolution::tournament(Player *players, int NUMBER_OF_PLAYERS, ANN *childs, 
         matrixArray = childs[i].getMatrixPtr();
 
         father1 = &players[rand() % NUMBER_OF_PLAYERS];
-        father2 = &players[rand() % NUMBER_OF_PLAYERS];
 
-        if (father1->getScore() > father2->getScore())
-            best1 = father1;
-        else
-            best1 = father2;
+        for (j = 0; j < TOURNAMENT_K - 1; j++)
+        {
+            father2 = &players[rand() % NUMBER_OF_PLAYERS];
+            if (father2->getScore() > father1->getScore())
+                father1 = father2;
+        }
+        best1 = father1;
 
         father1 = &players[rand() % NUMBER_OF_PLAYERS];
-        father2 = &players[rand() % NUMBER_OF_PLAYERS];
 
-        if (father1->getScore() > father2->getScore())
-            best2 = father1;
-        else
-            best2 = father2;
+        for (j = 0; j < TOURNAMENT_K - 1; j++)
+        {
+            father2 = &players[rand() % NUMBER_OF_PLAYERS];
+            if (father2->getScore() > father1->getScore())
+                father1 = father2;
+        }
+        best2 = father1;
 
         matrixArrayBest1 = best1->ann->getMatrixPtr();
         matrixArrayBest2 = best2->ann->getMatrixPtr();
@@ -118,7 +123,9 @@ void Evolution::tournament(Player *players, int NUMBER_OF_PLAYERS, ANN *childs, 
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         if (i == indexOfBest)
-            childs[i].setMatrix(players[i].ann->setMatrix(childs[i].getMatrixPtr()));
+            continue;
+
+        childs[i].setMatrix(players[i].ann->setMatrix(childs[i].getMatrixPtr()));
     }
 
     // std::cout << "best inocent: " << moderator->bestInocent->player->getPlayerID()
@@ -136,7 +143,7 @@ void Evolution::mutation(MatrixXf *matrixArray)
 
     for (unsigned int i = 0; i < layers.size() + 1; i++)
     {
-        for (quant = 0; quant < 5; quant++)
+        for (quant = 0; quant < 7; quant++)
         {
             line = rand() % matrixArray[i].rows();
             colun = rand() % matrixArray[i].cols();

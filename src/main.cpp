@@ -1,17 +1,45 @@
 #include <iostream>
 #include <string.h>
+#include <thread>
+#include <mutex>
 
-#include "headers/Player.h"
-#include "headers/Screen.h"
-#include "headers/Inocent.h"
-#include "headers/Traitor.h"
-#include "headers/Detective.h"
 #include "headers/Moderator.h"
 #include "headers/ANN.h"
 #include "headers/Evolution.h"
 
 // g++ *.cpp -o main `pkg-config --cflags --libs opencv4`
 //https://stackoverflow.com/questions/23683023/how-to-store-a-matrix-of-custom-objects-in-c
+
+std::mutex mtx;
+Moderator *bestModerator;
+
+void runModerator(Moderator *copyModerator)
+{
+    copyModerator->gameOfBest();
+    copyModerator->resetAllPlayers(true);
+}
+
+void copyModerator()
+{
+    Moderator *copyModerator = new Moderator;
+    Screen *screen = new Screen;
+    Inocent *inocents = bestModerator->getInocents();
+    Traitor *traitors = bestModerator->getTraitors();
+    Detective *detectives = bestModerator->getDetectives();
+
+    copyModerator->setScreen(screen);
+    copyModerator->setAllPlayersValues();
+    copyModerator->screen->setScreenParam("indvs");
+
+    while (true)
+    {
+        mtx.lock();
+        copyModerator->copyAllWeights(inocents, traitors, detectives);
+        mtx.unlock();
+        std::thread th(runModerator, copyModerator);
+        th.join();
+    }
+}
 
 int main()
 {
@@ -31,7 +59,7 @@ int main()
 
     screenOfBest->createObstacle();
 
-    Moderator *bestModerator = new Moderator;
+    bestModerator = new Moderator;
     bestModerator->setScreen(screenOfBest);
     bestModerator->setAllPlayersValues();
     bestModerator->screen->setScreenParam("best indvs");
@@ -40,15 +68,20 @@ int main()
 
     evolution->setParam(bestModerator);
 
+    std::thread th(copyModerator);
+
     while (1)
     {
         std::cout << "gen: " << gen << std::endl;
 
         if (!(gen % 20))
         {
-            bestModerator->gameOfBest();
+            //bestModerator->gameOfBest();
+            //bestModerator->resetAllPlayers(false);
+            //bestModerator->gameOfBest();
+            bestModerator->game();
             bestModerator->resetAllPlayers(false);
-            bestModerator->gameOfBest();
+            bestModerator->game();
         }
         else
         {

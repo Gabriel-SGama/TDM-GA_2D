@@ -22,10 +22,12 @@ CC_FLAGS= -I /usr/local/include/eigen3 \
           -Wall	\
 		  -Wextra \
 		  -pedantic \
+		  -lpthread \
 		  -O3
 
 CC_FLAGS_DEBUG = -g \
 		   		 -c \
+				 -lpthread \
 		  		 -Wall
 
 # Command used at clean target
@@ -41,7 +43,7 @@ all: objFolder $(PROJ_NAME)
 
 $(PROJ_NAME): $(OBJ)
 	@ echo 'Building binary using GCC linker: $@'
-	$(CC) $^ -o $@ $(LIBS)
+	$(CC) $^ -o $@ $(LIBS) -lpthread
 	@ echo 'Finished building binary: $@'
 	@ echo ' '
 

@@ -1,7 +1,4 @@
-#ifndef PLAYER_H
-#define PLAYER_H
-
-class Player;
+#pragma once
 
 #include <iostream>
 #include "math.h"
@@ -35,8 +32,8 @@ const cv::Scalar TRAITOR_RAY = cv::Scalar(1, 0, 255);   //red ray
 
 const cv::Point aux = cv::Point(-RADIUS / 2, RADIUS / 2); //offset to print text
 
-#include "Screen.h"
 #include "ANN.h"
+#include "Screen.h"
 
 using namespace Eigen;
 
@@ -44,6 +41,7 @@ typedef struct enemyInfo_t
 {
     cv::Point posiAprox;
     int playerType;
+
 } enemyInfo_t;
 
 class Player
@@ -65,6 +63,7 @@ protected:
     //int radiusOffset;
     int numberOfRays;
     int damage; //player damage
+    int timeStand;
 
     //ray info
     int *raysID;
@@ -132,4 +131,6 @@ public:
     void reset(int life, bool resetScore);
 };
 
-#endif
+#include "Moderator.h"
+
+const int MAX_TIME_STAND = 50;
