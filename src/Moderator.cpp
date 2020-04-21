@@ -113,24 +113,24 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
     if (enemyInfo.playerType == INOCENT && findPlayer(shooter, inocents, NUMBER_OF_INOCENTS, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
-            shooter->updateScore(shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(2.5 * shooter->getDamage() / INOCENT_DAMAGE);
         else
-            shooter->updateScore(-3.5 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-2 * shooter->getDamage() / INOCENT_DAMAGE);
     }
 
     else if ((enemyInfo.playerType == TRAITOR || enemyInfo.playerType == INOCENT) && findPlayer(shooter, traitors, NUMBER_OF_TRAITORS, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
-            shooter->updateScore(-3.5 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-2 * shooter->getDamage() / INOCENT_DAMAGE);
         else
-            shooter->updateScore(1.5 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(3 * shooter->getDamage() / INOCENT_DAMAGE);
     }
     else if (enemyInfo.playerType == DETECTIVE && findPlayer(shooter, detectives, NUMBER_OF_DETECTIVES, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
-            shooter->updateScore(1.5 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(3.5 * shooter->getDamage() / INOCENT_DAMAGE);
         else
-            shooter->updateScore(-3.5 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-2 * shooter->getDamage() / INOCENT_DAMAGE);
     }
 }
 

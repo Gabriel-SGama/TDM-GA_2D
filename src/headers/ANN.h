@@ -11,7 +11,7 @@
 #define INDEX_SHOT 2
 
 //populatio param
-#define POP_SIZE 8
+//#define POP_SIZE 8
 
 using namespace Eigen;
 

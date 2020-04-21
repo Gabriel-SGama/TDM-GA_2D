@@ -43,13 +43,7 @@ void Evolution::eletismAll()
     traitors = moderator->getTraitors();
     detectives = moderator->getDetectives();
 
-    std::cout << "best inocent: " << moderator->bestInocent->player->getPlayerID()
-              << " | score: " << moderator->bestInocent->score << std::endl;
-
-    std::cout << "best traitor: " << moderator->bestTraitor->player->getPlayerID()
-              << " | score: " << moderator->bestTraitor->score << std::endl;
-
-    matrixOfBest = moderator->bestInocent->player->ann->getMatrixPtr();
+       matrixOfBest = moderator->bestInocent->player->ann->getMatrixPtr();
     eletism(inocents, NUMBER_OF_INOCENTS, matrixOfBest);
 
     matrixOfBest = moderator->bestTraitor->player->ann->getMatrixPtr();
@@ -64,6 +58,7 @@ void Evolution::eletism(Player *players, int NUMBER_OF_PLAYERS, MatrixXf *matrix
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         players[i].ann->simpleBreeding(matrixOfBest);
+        mutation(players[i].ann->getMatrixPtr());
     }
 }
 
@@ -146,7 +141,7 @@ void Evolution::mutation(MatrixXf *matrixArray)
             line = rand() % matrixArray[i].rows();
             colun = rand() % matrixArray[i].cols();
 
-            matrixArray[i](line, colun) += ((rand() % 2 * 500) - 500) / 10000.0;
+            matrixArray[i](line, colun) += (rand() % (2 * 750) - 750) / 10000.0;
         }
     }
 }

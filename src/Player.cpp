@@ -171,8 +171,10 @@ void Player::move()
 
 enemyInfo_t Player::killPlayer(int rayNumber)
 {
-    if (rayNumber < 0 || rayNumber > numberOfRays || raysDist[rayNumber] > VISION_DIST / 1.5) //invalid position
+    if (rayNumber < 0 || rayNumber > numberOfRays /*|| raysID[rayNumber] == NOTHING || raysID[rayNumber] == OBSTACLE*/) //invalid position
         return {cv::Point(-1, -1), NOTHING};
+
+    //score += 1.1;
 
     double currentAngle;
 
@@ -201,7 +203,7 @@ void Player::setAlive(bool alive)
 {
     this->alive = alive;
     if (!alive)
-        updateScore(-5);
+        updateScore(-3);
 }
 
 void Player::setComunInput()

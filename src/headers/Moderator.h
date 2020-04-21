@@ -6,7 +6,7 @@
 #include "Traitor.h"
 #include "Detective.h"
 
-#define DURATION 150
+#define DURATION 200
 
 typedef struct dataOfBestPlayers_t
 {

@@ -16,7 +16,7 @@ class Player;
 #define OBSTACLE 5
 
 //Vision and player paramters
-#define VISION_DIST 100
+#define VISION_DIST 125
 #define RADIUS 10
 #define RADIUS_OFFSET 2
 

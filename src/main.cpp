@@ -42,10 +42,10 @@ int main()
 
     while (1)
     {
+        std::cout << "gen: " << gen << std::endl;
 
-        if (!(gen % 10))
+        if (!(gen % 20))
         {
-            std::cout << "gen: " << gen << std::endl;
             bestModerator->gameOfBest();
             bestModerator->resetAllPlayers(false);
             bestModerator->gameOfBest();
@@ -57,9 +57,23 @@ int main()
             bestModerator->game();
         }
 
+        //bestModerator->gameOfBest();
+        //bestModerator->resetAllPlayers(false);
+        //bestModerator->gameOfBest();
+
         bestModerator->calculateScore();
-        evolution->tournamentAll();
-        //evolution->eletismAll();
+        //evolution->tournamentAll();
+        evolution->eletismAll();
+
+        std::cout << "best inocent: " << bestModerator->bestInocent->player->getPlayerID()
+                  << " | score: " << bestModerator->bestInocent->score << std::endl;
+
+        std::cout << "best traitor: " << bestModerator->bestTraitor->player->getPlayerID()
+                  << " | score: " << bestModerator->bestTraitor->score << std::endl;
+
+        std::cout << "best detectives: " << bestModerator->bestDetective->player->getPlayerID()
+                  << " | score: " << bestModerator->bestDetective->score << std::endl;
+
         bestModerator->resetAllPlayers(true);
 
         gen++;
