@@ -17,6 +17,9 @@
 #define RADIUS 10
 #define RADIUS_OFFSET 2
 
+//shot
+#define SHOT_INTERVAL 0
+
 const int _RADIUS_TOTAL_DISTANCE = RADIUS + RADIUS_OFFSET;
 const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
@@ -64,6 +67,7 @@ protected:
     int numberOfRays;
     int damage; //player damage
     int timeStand;
+    int timeShot;
 
     //ray info
     int *raysID;
@@ -133,4 +137,4 @@ public:
 
 #include "Moderator.h"
 
-const int MAX_TIME_STAND = 50;
+const int MAX_TIME_STAND = 25;

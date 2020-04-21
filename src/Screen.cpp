@@ -168,6 +168,23 @@ void Screen::createObstacle()
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 
+    pt1.x = LENGTH / 5;
+    pt1.y = HEIGHT / 1.3;
+
+    pt2.x = pt1.x + _OBSTACLE_LENGTH;
+    pt2.y = pt1.y - HEIGHT / 3;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 3.5 * LENGTH / 5;
+    pt1.y = HEIGHT / 1.3;
+
+    pt2.x = pt1.x + _OBSTACLE_LENGTH;
+    pt2.y = pt1.y - HEIGHT / 3;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    //limits:
     pt1.x = 0;
     pt1.y = OFFSET_LIMIT;
 

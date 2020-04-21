@@ -1,6 +1,6 @@
 #pragma once
 
-#define NUMBER_OF_TRAITORS 20
+#define NUMBER_OF_TRAITORS 17
 #define TRAITOR_HEALTH 75
 #define TRAITOR_DAMAGE 35
 

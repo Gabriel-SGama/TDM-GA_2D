@@ -17,6 +17,7 @@ Player::Player()
     raysDist = new int[numberOfRays];
 
     timeStand = MAX_TIME_STAND;
+    timeShot = SHOT_INTERVAL;
 }
 
 Player::~Player()
@@ -182,8 +183,15 @@ void Player::move()
 
 enemyInfo_t Player::killPlayer(int rayNumber)
 {
-    if (rayNumber < 0 || rayNumber > numberOfRays /*|| raysID[rayNumber] == NOTHING || raysID[rayNumber] == OBSTACLE*/) //invalid position
+    if (rayNumber < 0 || rayNumber > numberOfRays /*|| raysID[rayNumber] == NOTHING || raysID[rayNumber] == OBSTACLE */ || timeShot > 0 || raysDist[rayNumber] > VISION_DIST / 1.2)
+    {
+        if (rayNumber > 0 && rayNumber < numberOfRays)
+            timeShot = SHOT_INTERVAL;
+
         return {cv::Point(-1, -1), NOTHING};
+    }
+
+    timeShot = SHOT_INTERVAL;
 
     //score += 1.1;
 
@@ -228,6 +236,8 @@ void Player::setComunInput()
     (*input)[numberOfRays * 2] = center.x;
     (*input)[numberOfRays * 2 + 1] = center.y;
     (*input)[numberOfRays * 2 + 2] = life;
+
+    timeShot--;
 }
 
 void Player::reset(int life, bool resetScore)

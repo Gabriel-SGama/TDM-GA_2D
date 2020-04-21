@@ -34,7 +34,9 @@ void copyModerator()
     while (true)
     {
         mtx.lock();
+        std::cout << "copying " << std::endl;
         copyModerator->copyAllWeights(inocents, traitors, detectives);
+        std::cout << "finish copy " << std::endl;
         mtx.unlock();
         std::thread th(runModerator, copyModerator);
         th.join();
@@ -62,7 +64,7 @@ int main()
     bestModerator = new Moderator;
     bestModerator->setScreen(screenOfBest);
     bestModerator->setAllPlayersValues();
-    bestModerator->screen->setScreenParam("best indvs");
+    //bestModerator->screen->setScreenParam("best indvs");
 
     Evolution *evolution = new Evolution;
 
@@ -74,25 +76,10 @@ int main()
     {
         std::cout << "gen: " << gen << std::endl;
 
-        if (!(gen % 20))
-        {
-            //bestModerator->gameOfBest();
-            //bestModerator->resetAllPlayers(false);
-            //bestModerator->gameOfBest();
-            bestModerator->game();
-            bestModerator->resetAllPlayers(false);
-            bestModerator->game();
-        }
-        else
-        {
-            bestModerator->game();
-            bestModerator->resetAllPlayers(false);
-            bestModerator->game();
-        }
-
-        //bestModerator->gameOfBest();
-        //bestModerator->resetAllPlayers(false);
-        //bestModerator->gameOfBest();
+        mtx.lock();
+        bestModerator->game();
+        bestModerator->resetAllPlayers(false);
+        bestModerator->game();
 
         bestModerator->calculateScore();
         //evolution->tournamentAll();
@@ -108,6 +95,7 @@ int main()
                   << " | score: " << bestModerator->bestDetective->score << std::endl;
 
         bestModerator->resetAllPlayers(true);
+        mtx.unlock();
 
         gen++;
     }

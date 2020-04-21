@@ -153,6 +153,12 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
             //std::cout << "center: " << shooter->getCenter() << std::endl;
             //std::cout << "enemy: " << enemyPoint << std::endl;
             players[i].takeDamage(shooter->getDamage());
+
+            if (shooter->getPlayerType() == TRAITOR && players[i].getPlayerType() == TRAITOR)
+                players[i].updateScore(3);
+
+            if (shooter->getPlayerType() != TRAITOR && players[i].getPlayerType() != TRAITOR)
+                players[i].updateScore(3);
             //std::cout << shooter->getPlayerID() << "matou " << players[i].getPlayerID() << std::endl;
             //std::cout << "vida: " << players[i].getLife() << std::endl;
             //cv::waitKey(0);
