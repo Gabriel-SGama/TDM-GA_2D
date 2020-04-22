@@ -1,5 +1,4 @@
-#ifndef DETECTIVE_H
-#define DETECTIVE_H
+#pragma once
 
 #define NUMBER_OF_DETECTIVES 13
 #define DETECTIVE_HEALTH 100
@@ -17,5 +16,3 @@ public:
     Detective();
     ~Detective();
 };
-
-#endif

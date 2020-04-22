@@ -5,6 +5,8 @@
 #include <opencv2/opencv.hpp>
 #include <eigen3/Eigen/Dense>
 
+class Player;
+
 //Player ID:
 #define NOTHING 1
 #define INOCENT 2
@@ -37,6 +39,8 @@ const cv::Point aux = cv::Point(-RADIUS / 2, RADIUS / 2); //offset to print text
 
 #include "ANN.h"
 #include "Screen.h"
+
+const int MAX_TIME_STAND = 25;
 
 using namespace Eigen;
 
@@ -80,6 +84,9 @@ protected:
 
     Screen *screen;
 
+    //Moderator* moderator;
+    cv::Point **playersCenter;
+    
     VectorXf *input;
 
 public:
@@ -101,6 +108,7 @@ public:
     inline int getLife() { return life; }
     inline int getDamage() { return damage; }
     inline cv::Point getCenter() { return center; }
+    inline cv::Point *getCenterPtr() { return &center; }
     inline float getScore() { return score; }
     inline void updateScore(float change) { score += change; }
 
@@ -109,7 +117,7 @@ public:
     void setAlive(bool alive);
 
     //initial values
-    void setPlayerValues(Screen *screen, int playerID, int life); //inicial values
+    void setPlayerValues(Screen *screen, int playerID, int life, cv::Point **playersCenter); //inicial values
     void setPosition();                                           //initial position
     int checkPosition();
 
@@ -136,5 +144,3 @@ public:
 };
 
 #include "Moderator.h"
-
-const int MAX_TIME_STAND = 25;

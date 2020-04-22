@@ -18,6 +18,26 @@ Moderator::Moderator()
     bestInocent = new dataOfBestPlayers_t;
     bestTraitor = new dataOfBestPlayers_t;
     bestDetective = new dataOfBestPlayers_t;
+
+    playersCenter = new cv::Point *[NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES];
+
+    setPlayerPtr(inocents, NUMBER_OF_INOCENTS, 0);
+    setPlayerPtr(traitors, NUMBER_OF_TRAITORS, NUMBER_OF_INOCENTS);
+    setPlayerPtr(detectives, NUMBER_OF_DETECTIVES, NUMBER_OF_TRAITORS + NUMBER_OF_INOCENTS);
+
+    /*
+    for (int i = 0; i < NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES; i++)
+    {
+        playersCenter[i] = new cv::Point;
+    }*/
+}
+
+void Moderator::setPlayerPtr(Player *players, int NUMBER_OF_PLAYERS, int offset)
+{
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
+    {
+        playersCenter[i + offset] = players[i].getCenterPtr();
+    }
 }
 
 Moderator::~Moderator()
@@ -39,12 +59,17 @@ void Moderator::setAllPlayersValues()
     setPlayersValues(playerNumber, inocents, NUMBER_OF_INOCENTS);
     setPlayersValues(playerNumber, traitors, NUMBER_OF_TRAITORS);
     setPlayersValues(playerNumber, detectives, NUMBER_OF_DETECTIVES);
+
+    for (int i = 0; i < NUMBER_OF_DETECTIVES + NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS; i++)
+    {
+        std::cout << *playersCenter[i] << std::endl;
+    }
 }
 
 void Moderator::setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS)
 {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++, playerNumber++)
-        players[i].setPlayerValues(screen, playerNumber, INOCENT_HEALTH);
+        players[i].setPlayerValues(screen, playerNumber, INOCENT_HEALTH, playersCenter);
 }
 
 void Moderator::drawAllPlayers()

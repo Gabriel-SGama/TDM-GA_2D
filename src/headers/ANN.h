@@ -13,7 +13,7 @@
 
 using namespace Eigen;
 
-const std::vector<int> layers({15, 9});
+const std::vector<int> layers({15, 10, 10});
 //const std::vector<int> layers({3, 2});
 
 class ANN

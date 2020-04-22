@@ -2,6 +2,8 @@
 
 #define DURATION 250
 
+class Moderator;
+
 #include "Screen.h"
 #include "Player.h"
 #include "Inocent.h"
@@ -41,12 +43,16 @@ public:
     float inocentsScore;
     float traitorScore;
 
+    cv::Point **playersCenter;
+
     Moderator();
     ~Moderator();
 
     Screen *screen; //commun screen obj
 
     //initial values:
+    void setPlayerPtr(Player *players, int NUMBER_OF_PLAYERS, int offset);
+    inline cv::Point** getPlayersCenterPtr(){return playersCenter;}
     void setScreen(Screen *screen);
     void setAllPlayersValues();
     void setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS);

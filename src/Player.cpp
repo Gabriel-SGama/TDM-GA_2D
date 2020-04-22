@@ -1,5 +1,5 @@
-#include "headers/Player.h"
 #include "string.h"
+#include "headers/Player.h"
 
 Player::Player()
 {
@@ -8,6 +8,9 @@ Player::Player()
 
     separationAngle = _RADIUS_TOTAL_DISTANCE * 2.0 / VISION_DIST;
     numberOfRays = round(2 * M_PI / separationAngle);
+
+    numberOfRays = 15;
+    separationAngle = 2.0 * M_PI / numberOfRays;
 
     angleCorrection = M_PI * 2 / numberOfRays - separationAngle;
 
@@ -29,13 +32,14 @@ bool Player::isAlive()
     return alive;
 }
 
-void Player::setPlayerValues(Screen *screen, int playerID, int life)
+void Player::setPlayerValues(Screen *screen, int playerID, int life, cv::Point **playersCenter)
 {
     this->playerType = playerType;
     this->playerID = playerID;
     playerIDStr = std::to_string(playerID);
     this->screen = screen;
     this->life = life;
+    this->playersCenter = playersCenter;
 
     setPosition();
     drawPlayer();
@@ -227,15 +231,33 @@ void Player::setAlive(bool alive)
 
 void Player::setComunInput()
 {
-    for (int i = 0; i < numberOfRays; i++)
+    int i;
+
+    for (i = 0; i < numberOfRays; i++)
     {
         (*input)[i * 2] = i;
         (*input)[i * 2] = raysDist[i];
     }
 
-    (*input)[numberOfRays * 2] = center.x;
-    (*input)[numberOfRays * 2 + 1] = center.y;
-    (*input)[numberOfRays * 2 + 2] = life;
+    int j = rand() % (NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES);
+
+    for (; i < 2 * (NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES); i += 2, j++)
+    {
+        if (j >= NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES)
+            j = 0;
+        
+        if(j == playerID){
+            i -= 2;
+            continue;
+        }
+
+        (*input)[i] = playersCenter[j]->x;
+        (*input)[i + 1] = playersCenter[j]->y;
+    }
+
+    (*input)[i] = center.x;
+    (*input)[i + 1] = center.y;
+    (*input)[i + 2] = life;
 
     timeShot--;
 }
@@ -250,6 +272,7 @@ void Player::reset(int life, bool resetScore)
     this->life = life;
 
     timeStand = MAX_TIME_STAND;
+    timeShot = SHOT_INTERVAL;
 
     setPosition();
     drawPlayer();

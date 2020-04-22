@@ -8,7 +8,7 @@ Traitor::Traitor() : Player()
     life = TRAITOR_HEALTH;
 
     //vision + position + life
-    ANNInputSize = numberOfRays * 2 + 2 + 1;
+    ANNInputSize = numberOfRays * 2 + 2*(NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES - 1) + 2 + 1;
     //angle + distance + shot id
     ANNOutputSize = 1 + 1 + 1;
 
