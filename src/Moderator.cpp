@@ -19,20 +19,14 @@ Moderator::Moderator()
     bestTraitor = new dataOfBestPlayers_t;
     bestDetective = new dataOfBestPlayers_t;
 
-    playersCenter = new cv::Point *[NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES];
+    playersCenter = new cv::Point *[NUMBER_OF_TOTAL_PLAYERS];
 
-    setPlayerPtr(inocents, NUMBER_OF_INOCENTS, 0);
-    setPlayerPtr(traitors, NUMBER_OF_TRAITORS, NUMBER_OF_INOCENTS);
-    setPlayerPtr(detectives, NUMBER_OF_DETECTIVES, NUMBER_OF_TRAITORS + NUMBER_OF_INOCENTS);
-
-    /*
-    for (int i = 0; i < NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES; i++)
-    {
-        playersCenter[i] = new cv::Point;
-    }*/
+    setPlayerCenterPtr(inocents, NUMBER_OF_INOCENTS, 0);
+    setPlayerCenterPtr(traitors, NUMBER_OF_TRAITORS, NUMBER_OF_INOCENTS);
+    setPlayerCenterPtr(detectives, NUMBER_OF_DETECTIVES, NUMBER_OF_TRAITORS + NUMBER_OF_INOCENTS);
 }
 
-void Moderator::setPlayerPtr(Player *players, int NUMBER_OF_PLAYERS, int offset)
+void Moderator::setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset)
 {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
@@ -124,7 +118,6 @@ void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS)
         {
             enemyInfo = players[i].killPlayer((int)players[i].output[0][INDEX_SHOT]);
 
-            //if(players->getPlayerType() == INOCENT || players->getPlayerType()==DETECTIVE)
             if (enemyInfo.playerType == NOTHING || enemyInfo.playerType == OBSTACLE)
                 continue;
 
@@ -174,9 +167,6 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
 
         if (distance <= RADIUS)
         {
-            //std::cout << "distance:" << distance << std::endl;
-            //std::cout << "center: " << shooter->getCenter() << std::endl;
-            //std::cout << "enemy: " << enemyPoint << std::endl;
             players[i].takeDamage(shooter->getDamage());
 
             if (shooter->getPlayerType() == TRAITOR && players[i].getPlayerType() == TRAITOR)
@@ -184,10 +174,7 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
 
             if (shooter->getPlayerType() != TRAITOR && players[i].getPlayerType() != TRAITOR)
                 players[i].updateScore(3);
-            //std::cout << shooter->getPlayerID() << "matou " << players[i].getPlayerID() << std::endl;
-            //std::cout << "vida: " << players[i].getLife() << std::endl;
-            //cv::waitKey(0);
-
+         
             return 1;
         }
     }
@@ -318,8 +305,6 @@ void Moderator::calculateScore()
         }
     }
 
-    //std::cout << "inocent Score: " << inocentsScore << std::endl;
-    //std::cout << "traitor Score: " << traitorScore << std::endl;
 }
 
 void Moderator::resetAllPlayers(bool resetScore)
@@ -363,12 +348,7 @@ void Moderator::setAllWeights(Inocent *bestInocents, Traitor *bestTraitors, Dete
 void Moderator::setWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS)
 {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
-    {
-        //std::cout << players[i].ann->getMatrixPtr() << std::endl;
-        //delete[] players[i].ann->getMatrixPtr();
         players[i].ann->setMatrix(bestPlayers[i].ann->getMatrixPtr());
-        //std::cout << players[i].ann->getMatrixPtr()[2] << std::endl;
-    }
 }
 
 void Moderator::copyAllWeights(Inocent *bestInocents, Traitor *bestTraitors, Detective *bestDetectives)

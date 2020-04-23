@@ -11,6 +11,8 @@ class Moderator;
 #include "Detective.h"
 
 
+const int NUMBER_OF_TOTAL_PLAYERS = NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES;
+
 typedef struct dataOfBestPlayers_t
 {
     int index;
@@ -52,8 +54,9 @@ public:
     Screen *screen; //commun screen obj
 
     //initial values:
-    void setPlayerPtr(Player *players, int NUMBER_OF_PLAYERS, int offset);
+    void setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset);
     inline cv::Point** getPlayersCenterPtr(){return playersCenter;}
+    
     void setScreen(Screen *screen);
     void setAllPlayersValues();
     void setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS);

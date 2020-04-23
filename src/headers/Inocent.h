@@ -1,6 +1,6 @@
 #pragma once
 
-#define NUMBER_OF_INOCENTS 25
+#define NUMBER_OF_INOCENTS 8
 #define INOCENT_HEALTH 50
 
 #define INOCENT_DAMAGE 25

@@ -13,8 +13,7 @@
 std::mutex mtx;
 Moderator *bestModerator;
 
-int gen = 1;
-
+/*
 void runModerator(Moderator *copyModerator)
 {
     copyModerator->gameOfBest();
@@ -44,14 +43,15 @@ void copyModerator()
         th.join();
     }
 }
+*/
 
 int main()
 {
-    int gen = 0;
+    int gen = 1;
 
     srand(time(0));
 
-    Screen *screenOfBest = new Screen;
+    //Screen *screenOfBest = new Screen;
 
     /*
     if (!screen->getMap().isContinuous())
@@ -61,44 +61,51 @@ int main()
     }
     */
 
-    screenOfBest->createObstacle();
+    //screenOfBest->createObstacle();
 
-    bestModerator = new Moderator;
-    bestModerator->setScreen(screenOfBest);
-    bestModerator->setAllPlayersValues();
+    //bestModerator = new Moderator;
+    //bestModerator->setScreen(new Screen);
+    //bestModerator->setAllPlayersValues();
     //bestModerator->screen->setScreenParam("best indvs");
 
     Evolution *evolution = new Evolution;
 
-    evolution->setParam(bestModerator);
+    //evolution->setParam(bestModerator);
 
-    std::thread th(copyModerator);
+    //std::thread th(copyModerator);
 
     while (1)
     {
         std::cout << "gen: " << gen << std::endl;
 
-        mtx.lock();
-        bestModerator->game();
-        bestModerator->resetAllPlayers(false);
-        bestModerator->game();
+        evolution->game();
+        evolution->tournamentAll();
+        evolution->reset();
+        if (!(gen % 10))
+            evolution->bestPlayers->gameOfBest();
 
-        bestModerator->calculateScore();
         //evolution->tournamentAll();
-        evolution->eletismAll();
+        // mtx.lock();
+        // bestModerator->game();
+        // bestModerator->resetAllPlayers(false);
+        // bestModerator->game();
 
-        mtx.unlock();
+        // bestModerator->calculateScore();
+        // evolution->tournamentAll();
+        // evolution->eletismAll();
 
-        std::cout << "best inocent: " << bestModerator->bestInocent->player->getPlayerID()
-                  << " | score: " << bestModerator->bestInocent->score << std::endl;
+        // mtx.unlock();
 
-        std::cout << "best traitor: " << bestModerator->bestTraitor->player->getPlayerID()
-                  << " | score: " << bestModerator->bestTraitor->score << std::endl;
+        // std::cout << "best inocent: " << bestModerator->bestInocent->player->getPlayerID()
+        //           << " | score: " << bestModerator->bestInocent->score << std::endl;
 
-        std::cout << "best detectives: " << bestModerator->bestDetective->player->getPlayerID()
-                  << " | score: " << bestModerator->bestDetective->score << std::endl;
+        // std::cout << "best traitor: " << bestModerator->bestTraitor->player->getPlayerID()
+        //           << " | score: " << bestModerator->bestTraitor->score << std::endl;
 
-        bestModerator->resetAllPlayers(true);
+        // std::cout << "best detectives: " << bestModerator->bestDetective->player->getPlayerID()
+        //           << " | score: " << bestModerator->bestDetective->score << std::endl;
+
+        // bestModerator->resetAllPlayers(true);
 
         gen++;
     }

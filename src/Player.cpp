@@ -243,11 +243,11 @@ void Player::setComunInput()
         (*input)[i * 2] = raysDist[i];
     }
 
-    int j = rand() % (NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES);
+    int j = rand() % (NUMBER_OF_TOTAL_PLAYERS);
 
-    for (; i < 2 * (NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES); i += 2, j++)
+    for (; i < 2 * (NUMBER_OF_TOTAL_PLAYERS); i += 2, j++)
     {
-        if (j >= NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES)
+        if (j >= NUMBER_OF_TOTAL_PLAYERS)
             j = 0;
         
         if(j == playerID){

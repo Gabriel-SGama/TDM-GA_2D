@@ -6,8 +6,8 @@
 class Screen;
 
 //screen dimensions
-#define LENGTH 1200
-#define HEIGHT 800
+#define LENGTH 800
+#define HEIGHT 600
 #define LIMIT_SIZE 5
 #define OFFSET_LIMIT 2.5
 
