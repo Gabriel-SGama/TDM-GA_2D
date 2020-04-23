@@ -225,8 +225,12 @@ void Player::takeDamage(int damage)
 void Player::setAlive(bool alive)
 {
     this->alive = alive;
-    if (!alive)
+    
+    if (!alive){
         updateScore(-3);
+        center.x = 0;
+        center.y = 0;
+    }
 }
 
 void Player::setComunInput()

@@ -10,10 +10,9 @@
 #define INDEX_POSI_Y 1
 #define INDEX_SHOT 2
 
-
 using namespace Eigen;
 
-const std::vector<int> layers({15, 10, 10});
+const std::vector<int> layers({80, 10});
 //const std::vector<int> layers({3, 2});
 
 class ANN

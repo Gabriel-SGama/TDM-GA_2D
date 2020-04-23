@@ -13,6 +13,8 @@
 std::mutex mtx;
 Moderator *bestModerator;
 
+int gen = 1;
+
 void runModerator(Moderator *copyModerator)
 {
     copyModerator->gameOfBest();
@@ -85,6 +87,8 @@ int main()
         //evolution->tournamentAll();
         evolution->eletismAll();
 
+        mtx.unlock();
+
         std::cout << "best inocent: " << bestModerator->bestInocent->player->getPlayerID()
                   << " | score: " << bestModerator->bestInocent->score << std::endl;
 
@@ -95,7 +99,6 @@ int main()
                   << " | score: " << bestModerator->bestDetective->score << std::endl;
 
         bestModerator->resetAllPlayers(true);
-        mtx.unlock();
 
         gen++;
     }

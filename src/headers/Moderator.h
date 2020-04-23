@@ -1,6 +1,6 @@
 #pragma once
 
-#define DURATION 250
+#define DURATION 500
 
 class Moderator;
 
@@ -9,6 +9,7 @@ class Moderator;
 #include "Inocent.h"
 #include "Traitor.h"
 #include "Detective.h"
+
 
 typedef struct dataOfBestPlayers_t
 {
