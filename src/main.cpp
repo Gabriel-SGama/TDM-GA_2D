@@ -12,8 +12,8 @@
 
 std::mutex mtx;
 Moderator *bestModerator;
+Evolution *evolution;
 
-/*
 void runModerator(Moderator *copyModerator)
 {
     copyModerator->gameOfBest();
@@ -24,13 +24,13 @@ void copyModerator()
 {
     Moderator *copyModerator = new Moderator;
     Screen *screen = new Screen;
-    Inocent *inocents = bestModerator->getInocents();
-    Traitor *traitors = bestModerator->getTraitors();
-    Detective *detectives = bestModerator->getDetectives();
+    Inocent *inocents = evolution->bestPlayers->getInocents();
+    Traitor *traitors = evolution->bestPlayers->getTraitors();
+    Detective *detectives = evolution->bestPlayers->getDetectives();
 
     copyModerator->setScreen(screen);
     copyModerator->setAllPlayersValues();
-    copyModerator->screen->setScreenParam("indvs");
+    copyModerator->screen->setScreenParam("best teams");
 
     while (true)
     {
@@ -43,7 +43,6 @@ void copyModerator()
         th.join();
     }
 }
-*/
 
 int main()
 {
@@ -68,21 +67,32 @@ int main()
     //bestModerator->setAllPlayersValues();
     //bestModerator->screen->setScreenParam("best indvs");
 
-    Evolution *evolution = new Evolution;
+    //Evolution *evolution = new Evolution;
+
+    evolution = new Evolution;
 
     //evolution->setParam(bestModerator);
 
-    //std::thread th(copyModerator);
+    std::thread th(copyModerator);
 
     while (1)
     {
         std::cout << "gen: " << gen << std::endl;
 
+        mtx.lock();
         evolution->game();
         evolution->tournamentAll();
+
+        std::cout << "best inocent team score: " << evolution->bestInocentTeamScore << std::endl;
+        std::cout << "best traitor team score: " << evolution->bestTraitorTeamScore << std::endl;
+
         evolution->reset();
-        if (!(gen % 10))
-            evolution->bestPlayers->gameOfBest();
+        mtx.unlock();
+
+        cv::waitKey(1);
+
+        // if (!(gen % 10))
+        //     evolution->bestPlayers->gameOfBest();
 
         //evolution->tournamentAll();
         // mtx.lock();

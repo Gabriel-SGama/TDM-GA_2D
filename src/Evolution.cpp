@@ -2,7 +2,7 @@
 
 using namespace Eigen;
 
-Evolution::Evolution(/* args */)
+Evolution::Evolution()
 {
     bestInocentTeamScore = -100000;
     bestTraitorTeamScore = -100000;
@@ -11,7 +11,7 @@ Evolution::Evolution(/* args */)
 
     bestPlayers = new Moderator[POP_SIZE];
     bestPlayers->setScreen(new Screen);
-    bestPlayers->screen->setScreenParam("best players game");
+    //bestPlayers->screen->setScreenParam("best players game");
     bestPlayers->setAllPlayersValues();
 
     inocentsTraining = new Moderator[POP_SIZE];
@@ -192,12 +192,12 @@ void Evolution::eletism(Player *players, int NUMBER_OF_PLAYERS, MatrixXf *matrix
 
 void Evolution::tournamentAll()
 {
-    tournament(allInocents, TOTAL_INOCENTS, inocentsChilds, 0 /*moderators->bestInocent->index*/);
-    tournament(allTraitors, TOTAL_TRAITORS, traitorsChilds, 0 /*moderators->bestTraitor->index*/);
-    tournament(allDetectives, TOTAL_DETECTIVES, detectivesChilds, 0 /*moderators->bestDetective->index*/);
+    tournament(allInocents, TOTAL_INOCENTS, inocentsChilds, TOUTNAMENT_K_INOCENTS /*moderators->bestInocent->index*/);
+    tournament(allTraitors, TOTAL_TRAITORS, traitorsChilds, TOUTNAMENT_K_TRAITORS /*moderators->bestTraitor->index*/);
+    tournament(allDetectives, TOTAL_DETECTIVES, detectivesChilds, TOUTNAMENT_K_DETECTIVES /*moderators->bestDetective->index*/);
 }
 
-void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs, int indexOfBest)
+void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs, int TOURNAMENT_K)
 {
     int i;
     unsigned int j;
