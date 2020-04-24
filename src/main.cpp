@@ -22,25 +22,57 @@ void runModerator(Moderator *copyModerator)
 
 void copyModerator()
 {
+    cv::waitKey(1000);
+
     Moderator *copyModerator = new Moderator;
     Screen *screen = new Screen;
-    Inocent *inocents = evolution->bestPlayers->getInocents();
-    Traitor *traitors = evolution->bestPlayers->getTraitors();
-    Detective *detectives = evolution->bestPlayers->getDetectives();
+    Inocent *inocents = evolution->bestTeams->getInocents();
+    Traitor *traitors = evolution->bestTeams->getTraitors();
+    Detective *detectives = evolution->bestTeams->getDetectives();
 
     copyModerator->setScreen(screen);
     copyModerator->setAllPlayersValues();
     copyModerator->screen->setScreenParam("best teams");
 
+    //Moderator *copyModeratorIndvs = new Moderator;
+
+    //copyModeratorIndvs->setScreen(screen);
+    //copyModeratorIndvs->setAllPlayersValues();
+    //copyModeratorIndvs->screen->setScreenParam("best indvs");
+
+    // mtx.lock();
+    // evolution->setBestIndvs();
+    // ANN *bestInocentMatrix = evolution->bestInocentANN;
+    // ANN *bestTraitorMatrix = evolution->bestTraitorANN;
+    // ANN *bestDetectiveMatrix = evolution->bestDetectiveANN;
+
+    // copyModeratorIndvs->setAllWeightsOneMatrix(bestInocentMatrix->getMatrixPtr(), bestTraitorMatrix->getMatrixPtr(), bestDetectiveMatrix->getMatrixPtr());
+    
+    // mtx.unlock();
+    
+    //Inocent *bestInocent = (Inocent*) evolution->bestIndvs->bestInocent->player;
+    //Traitor *bestTraitor = (Traitor*) evolution->bestIndvs->bestTraitor->player;
+    //Detective *bestDetective = (Detective*) evolution->bestIndvs->bestDetective->player;
+
+    //mtx.lock();
+    //evolution->bestIndvs->screen->setScreenParam("best Indvs");
+    //mtx.unlock();
+
     while (true)
     {
         mtx.lock();
+        //evolution->setBestIndvs();
         std::cout << "copying " << std::endl;
         copyModerator->copyAllWeights(inocents, traitors, detectives);
         std::cout << "finish copy " << std::endl;
+
+        std::thread th1(runModerator, copyModerator);
+        //std::thread th2(runModerator, copyModeratorIndvs);
+
         mtx.unlock();
-        std::thread th(runModerator, copyModerator);
-        th.join();
+
+        th1.join();
+        //th2.join();
     }
 }
 
@@ -85,11 +117,13 @@ int main()
 
         std::cout << "best inocent team score: " << evolution->bestInocentTeamScore << std::endl;
         std::cout << "best traitor team score: " << evolution->bestTraitorTeamScore << std::endl;
+        std::cout << "best detective team score: " << evolution->bestDetectiveTeamScore << std::endl;
 
+        //evolution->setBestIndvs();
         evolution->reset();
         mtx.unlock();
 
-        cv::waitKey(1);
+        cv::waitKey(1); //time to copy
 
         // if (!(gen % 10))
         //     evolution->bestPlayers->gameOfBest();

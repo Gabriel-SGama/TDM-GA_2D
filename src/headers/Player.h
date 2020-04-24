@@ -86,7 +86,7 @@ protected:
 
     //Moderator* moderator;
     cv::Point **playersCenter;
-    
+
     VectorXf *input;
 
 public:
@@ -112,13 +112,11 @@ public:
     inline float getScore() { return score; }
     inline void updateScore(float change) { score += change; }
 
-    //int getRadius();
-
     void setAlive(bool alive);
 
     //initial values
     void setPlayerValues(Screen *screen, int playerID, int life, cv::Point **playersCenter); //inicial values
-    void setPosition();                                           //initial position
+    void setPosition();                                                                      //initial position
     int checkPosition();
 
     //draw

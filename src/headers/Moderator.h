@@ -1,5 +1,7 @@
 #pragma once
 
+#include <eigen3/Eigen/Dense>
+
 #define DURATION 500
 
 class Moderator;
@@ -10,8 +12,9 @@ class Moderator;
 #include "Traitor.h"
 #include "Detective.h"
 
-
 const int NUMBER_OF_TOTAL_PLAYERS = NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES;
+
+using namespace Eigen;
 
 typedef struct dataOfBestPlayers_t
 {
@@ -45,6 +48,7 @@ public:
 
     float inocentsScore;
     float traitorScore;
+    float detectiveScore;
 
     cv::Point **playersCenter;
 
@@ -55,8 +59,8 @@ public:
 
     //initial values:
     void setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset);
-    inline cv::Point** getPlayersCenterPtr(){return playersCenter;}
-    
+    inline cv::Point **getPlayersCenterPtr() { return playersCenter; }
+
     void setScreen(Screen *screen);
     void setAllPlayersValues();
     void setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS);
@@ -107,6 +111,8 @@ public:
 
     void copyAllWeights(Inocent *inocents, Traitor *traitors, Detective *detectives);
     void copyWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
+
+    void setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *traitorMatrix, MatrixXf *detectiveMatrix);
 
     void game();
     void gameOfBest();

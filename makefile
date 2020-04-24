@@ -71,7 +71,7 @@ debug: objFolderDebug $(PROJ_NAME_DEBUG)
 
 $(PROJ_NAME_DEBUG): $(OBJ_DEBUG)
 	@ echo 'Building binary using GCC linker: $@'
-	$(CC) $^ -o $@ $(LIBS)
+	$(CC) $^ -o $@ $(LIBS) -lpthread
 	@ echo 'Finished building binary: $@'
 	@ echo ' '
 
