@@ -8,7 +8,6 @@
 #include "headers/Evolution.h"
 
 // g++ *.cpp -o main `pkg-config --cflags --libs opencv4`
-//https://stackoverflow.com/questions/23683023/how-to-store-a-matrix-of-custom-objects-in-c
 
 std::mutex mtx;
 Moderator *bestModerator;
@@ -94,8 +93,6 @@ int main()
 
     srand(time(0));
 
-    //Screen *screenOfBest = new Screen;
-
     /*
     if (!screen->getMap().isContinuous())
     {
@@ -104,18 +101,7 @@ int main()
     }
     */
 
-    //screenOfBest->createObstacle();
-
-    //bestModerator = new Moderator;
-    //bestModerator->setScreen(new Screen);
-    //bestModerator->setAllPlayersValues();
-    //bestModerator->screen->setScreenParam("best indvs");
-
-    //Evolution *evolution = new Evolution;
-
     evolution = new Evolution;
-
-    //evolution->setParam(bestModerator);
 
     std::thread th(copyModerator);
 
@@ -136,32 +122,6 @@ int main()
         mtx.unlock();
 
         cv::waitKey(1); //time to copy
-
-        // if (!(gen % 10))
-        //     evolution->bestPlayers->gameOfBest();
-
-        //evolution->tournamentAll();
-        // mtx.lock();
-        // bestModerator->game();
-        // bestModerator->resetAllPlayers(false);
-        // bestModerator->game();
-
-        // bestModerator->calculateScore();
-        // evolution->tournamentAll();
-        // evolution->eletismAll();
-
-        // mtx.unlock();
-
-        // std::cout << "best inocent: " << bestModerator->bestInocent->player->getPlayerID()
-        //           << " | score: " << bestModerator->bestInocent->score << std::endl;
-
-        // std::cout << "best traitor: " << bestModerator->bestTraitor->player->getPlayerID()
-        //           << " | score: " << bestModerator->bestTraitor->score << std::endl;
-
-        // std::cout << "best detectives: " << bestModerator->bestDetective->player->getPlayerID()
-        //           << " | score: " << bestModerator->bestDetective->score << std::endl;
-
-        // bestModerator->resetAllPlayers(true);
 
         gen++;
     }

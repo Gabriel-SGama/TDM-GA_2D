@@ -5,7 +5,7 @@
 
 using namespace Eigen;
 
-#define POP_SIZE 3
+#define POP_SIZE 10
 #define INICIAL_SCORE -100000
 //#define TOURNAMENT_K 4
 
@@ -17,6 +17,7 @@ const int TOUTNAMENT_K_INOCENTS = (NUMBER_OF_INOCENTS * POP_SIZE) / 4;
 const int TOUTNAMENT_K_TRAITORS = (NUMBER_OF_TRAITORS * POP_SIZE) / 4;
 const int TOUTNAMENT_K_DETECTIVES = (NUMBER_OF_DETECTIVES * POP_SIZE) / 4;
 
+//static int turn = 1;
 class Evolution
 {
 private:

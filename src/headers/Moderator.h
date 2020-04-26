@@ -27,11 +27,6 @@ typedef struct dataOfBestPlayers_t
 
 } dataOfBestPlayers_t;
 
-typedef struct playerList_t
-{
-    Player *player;
-} playerList_t;
-
 //repeats the same function call for all players alive
 class Moderator
 {

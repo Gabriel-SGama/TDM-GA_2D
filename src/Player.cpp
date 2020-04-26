@@ -3,6 +3,7 @@
 
 Player::Player()
 {
+    turn = 1;
     score = 0;
     alive = true;
 
@@ -19,6 +20,8 @@ Player::Player()
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
 
+    distSumX = 0;
+    distSumY = 0;
     timeStand = MAX_TIME_STAND;
     timeShot = SHOT_INTERVAL;
 }
@@ -164,15 +167,25 @@ int Player::checkMove(cv::Point offset)
 
 void Player::move()
 {
+    turn++;
+
     cv::Point offset = cv::Point((*output)[INDEX_POSI_X], (*output)[INDEX_POSI_Y]);
     center += offset;
+
+    if (!(turn % MAX_TIME_STAND) && distSumX + distSumY < MIN_DIST_TO_MOVE)
+    {
+        score -= 4;
+
+        distSumX = 0;
+        distSumY = 0;
+    }
 
     if (!checkMove(offset) || offset == cv::Point(0, 0))
     {
         center -= offset;
         timeStand--;
 
-        if (timeStand <= 0 && alive)
+        if (timeStand <= 0)
         {
             timeStand = MAX_TIME_STAND / 2;
             score -= 4;
@@ -182,6 +195,8 @@ void Player::move()
     else
     {
         timeStand = MAX_TIME_STAND;
+        distSumX += offset.x;
+        distSumY += offset.y;
     }
 }
 
@@ -225,8 +240,9 @@ void Player::takeDamage(int damage)
 void Player::setAlive(bool alive)
 {
     this->alive = alive;
-    
-    if (!alive){
+
+    if (!alive)
+    {
         updateScore(-3);
         center.x = 0;
         center.y = 0;
@@ -249,8 +265,9 @@ void Player::setComunInput()
     {
         if (j >= NUMBER_OF_TOTAL_PLAYERS)
             j = 0;
-        
-        if(j == playerID){
+
+        if (j == playerID)
+        {
             i -= 2;
             continue;
         }
@@ -271,6 +288,7 @@ void Player::reset(int life, bool resetScore)
     if (resetScore)
         score = 0;
 
+    turn = 1;
     alive = true;
 
     this->life = life;

@@ -22,6 +22,8 @@ class Player;
 //shot
 #define SHOT_INTERVAL 0
 
+#define MIN_DIST_TO_MOVE 40
+
 const int _RADIUS_TOTAL_DISTANCE = RADIUS + RADIUS_OFFSET;
 const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
@@ -72,6 +74,9 @@ protected:
     int damage; //player damage
     int timeStand;
     int timeShot;
+    int distSumX;
+    int distSumY;
+    int turn;
 
     //ray info
     int *raysID;
@@ -142,3 +147,4 @@ public:
 };
 
 #include "Moderator.h"
+

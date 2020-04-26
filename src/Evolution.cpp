@@ -223,6 +223,8 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
     int i;
     unsigned int j;
 
+    float score = INICIAL_SCORE;
+
     Player *father1;
     Player *father2;
 
@@ -247,6 +249,9 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
         }
         best1 = father1;
 
+        if (best1->getScore() > score)
+            score = best1->getScore();
+
         father1 = players[rand() % NUMBER_OF_PLAYERS];
 
         for (j = 0; j < TOURNAMENT_K; j++)
@@ -256,6 +261,9 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
                 father1 = father2;
         }
         best2 = father1;
+
+        if (best2->getScore() > score)
+            score = best2->getScore();
 
         matrixArrayBest1 = best1->ann->getMatrixPtr();
         matrixArrayBest2 = best2->ann->getMatrixPtr();
@@ -272,6 +280,8 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
     {
         //if (i == indexOfBest)
         //    continue;
+        if (players[i]->getScore() >= score)
+            continue;
 
         childs[i].setMatrix(players[i]->ann->setMatrix(childs[i].getMatrixPtr()));
     }
