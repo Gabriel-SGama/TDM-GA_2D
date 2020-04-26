@@ -1,6 +1,4 @@
 #include "headers/Detective.h"
-//#include "headers/Inocent.h"
-//#include "headers/Traitor.h"
 
 Detective::Detective() : Player()
 {
@@ -10,7 +8,7 @@ Detective::Detective() : Player()
     life = DETECTIVE_HEALTH;
 
     //vision + positions + life
-    ANNInputSize = numberOfRays * 2 + 2 * (NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES - 1) + 2 + 1;
+    ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1;
     //angle + distance + shot id
     ANNOutputSize = 1 + 1 + 1;
 

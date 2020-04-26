@@ -91,15 +91,11 @@ MatrixXf *ANN::setMatrix(MatrixXf *matrixArray)
 void ANN::copyWheights(MatrixXf *matrixArray)
 {
     for (unsigned int i = 0; i < layers.size() + 1; i++)
-    {
         this->matrixArray[i] = matrixArray[i];
-    }
 }
 
 void ANN::simpleBreeding(MatrixXf *matrixArray)
 {
     for (unsigned int i = 0; i < layers.size() + 1; i++)
-    {
         this->matrixArray[i] = (matrixArray[i] + this->matrixArray[i]) / 2;
-    }
 }

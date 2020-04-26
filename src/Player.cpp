@@ -202,9 +202,9 @@ void Player::move()
 
 enemyInfo_t Player::killPlayer(int rayNumber)
 {
-    if (rayNumber < 0 || rayNumber > numberOfRays /*|| raysID[rayNumber] == NOTHING || raysID[rayNumber] == OBSTACLE */ || timeShot > 0 || raysDist[rayNumber] > VISION_DIST / 1.2)
+    if (rayNumber < 0 || rayNumber > numberOfRays || timeShot > 0 || raysDist[rayNumber] > VISION_DIST / 1.2)
     {
-        if (rayNumber > 0 && rayNumber < numberOfRays)
+        if (timeShot <= 0)
             timeShot = SHOT_INTERVAL;
 
         return {cv::Point(-1, -1), NOTHING};

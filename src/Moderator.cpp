@@ -7,13 +7,25 @@
 
 Moderator::Moderator()
 {
+}
+
+Moderator::~Moderator()
+{
+}
+
+void Moderator::setModerator(int NUMBER_OF_INOCENT_TRAIN, int NUMBER_OF_TRAITOR_TRAIN, int NUMBER_OF_DETECTIVE_TRAIN)
+{
     inocentsScore = 0;
     traitorScore = 0;
 
+    this->NUMBER_OF_INOCENT_TRAIN = NUMBER_OF_INOCENT_TRAIN;
+    this->NUMBER_OF_TRAITOR_TRAIN = NUMBER_OF_TRAITOR_TRAIN;
+    this->NUMBER_OF_DETECTIVE_TRAIN = NUMBER_OF_DETECTIVE_TRAIN;
+
     //allocs all memory
-    inocents = new Inocent[NUMBER_OF_INOCENTS];
-    traitors = new Traitor[NUMBER_OF_TRAITORS];
-    detectives = new Detective[NUMBER_OF_DETECTIVES];
+    inocents = new Inocent[NUMBER_OF_INOCENT_TRAIN];
+    traitors = new Traitor[NUMBER_OF_TRAITOR_TRAIN];
+    detectives = new Detective[NUMBER_OF_DETECTIVE_TRAIN];
 
     bestInocent = new dataOfBestPlayers_t;
     bestTraitor = new dataOfBestPlayers_t;
@@ -25,9 +37,9 @@ Moderator::Moderator()
 
     playersCenter = new cv::Point *[NUMBER_OF_TOTAL_PLAYERS];
 
-    setPlayerCenterPtr(inocents, NUMBER_OF_INOCENTS, 0);
-    setPlayerCenterPtr(traitors, NUMBER_OF_TRAITORS, NUMBER_OF_INOCENTS);
-    setPlayerCenterPtr(detectives, NUMBER_OF_DETECTIVES, NUMBER_OF_TRAITORS + NUMBER_OF_INOCENTS);
+    setPlayerCenterPtr(inocents, NUMBER_OF_INOCENT_TRAIN, 0);
+    setPlayerCenterPtr(traitors, NUMBER_OF_TRAITOR_TRAIN, NUMBER_OF_INOCENT_TRAIN);
+    setPlayerCenterPtr(detectives, NUMBER_OF_DETECTIVE_TRAIN, NUMBER_OF_TRAITOR_TRAIN + NUMBER_OF_INOCENT_TRAIN);
 }
 
 void Moderator::setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset)
@@ -36,10 +48,6 @@ void Moderator::setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int o
     {
         playersCenter[i + offset] = players[i].getCenterPtr();
     }
-}
-
-Moderator::~Moderator()
-{
 }
 
 void Moderator::setScreen(Screen *screen)
@@ -54,10 +62,9 @@ void Moderator::setAllPlayersValues()
 {
     int playerNumber = 0;
 
-    setPlayersValues(playerNumber, inocents, NUMBER_OF_INOCENTS);
-    setPlayersValues(playerNumber, traitors, NUMBER_OF_TRAITORS);
-    setPlayersValues(playerNumber, detectives, NUMBER_OF_DETECTIVES);
-
+    setPlayersValues(playerNumber, inocents, NUMBER_OF_INOCENT_TRAIN);
+    setPlayersValues(playerNumber, traitors, NUMBER_OF_TRAITOR_TRAIN);
+    setPlayersValues(playerNumber, detectives, NUMBER_OF_DETECTIVE_TRAIN);
 }
 
 void Moderator::setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS)
@@ -71,9 +78,9 @@ void Moderator::drawAllPlayers()
     screen->resetImage();
     screen->createObstacle();
 
-    drawPlayers(inocents, NUMBER_OF_INOCENTS);
-    drawPlayers(traitors, NUMBER_OF_TRAITORS);
-    drawPlayers(detectives, NUMBER_OF_DETECTIVES);
+    drawPlayers(inocents, NUMBER_OF_INOCENT_TRAIN);
+    drawPlayers(traitors, NUMBER_OF_TRAITOR_TRAIN);
+    drawPlayers(detectives, NUMBER_OF_DETECTIVE_TRAIN);
 }
 
 void Moderator::drawPlayers(Player *players, int NUMBER_OF_PLAYERS)
@@ -87,9 +94,9 @@ void Moderator::drawPlayers(Player *players, int NUMBER_OF_PLAYERS)
 
 void Moderator::updateAllPlayersVision()
 {
-    updatePlayersVision(inocents, NUMBER_OF_INOCENTS);
-    updatePlayersVision(traitors, NUMBER_OF_TRAITORS);
-    updatePlayersVision(detectives, NUMBER_OF_DETECTIVES);
+    updatePlayersVision(inocents, NUMBER_OF_INOCENT_TRAIN);
+    updatePlayersVision(traitors, NUMBER_OF_TRAITOR_TRAIN);
+    updatePlayersVision(detectives, NUMBER_OF_DETECTIVE_TRAIN);
 }
 
 void Moderator::updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS)
@@ -103,9 +110,9 @@ void Moderator::updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS)
 
 void Moderator::conflictsAllPlayers()
 {
-    conflictsPlayers(inocents, NUMBER_OF_INOCENTS);
-    conflictsPlayers(traitors, NUMBER_OF_TRAITORS);
-    conflictsPlayers(detectives, NUMBER_OF_DETECTIVES);
+    conflictsPlayers(inocents, NUMBER_OF_INOCENT_TRAIN);
+    conflictsPlayers(traitors, NUMBER_OF_TRAITOR_TRAIN);
+    conflictsPlayers(detectives, NUMBER_OF_DETECTIVE_TRAIN);
 }
 
 void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS)
@@ -129,7 +136,7 @@ void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS)
 void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
 {
     //find the player that was shot
-    if (enemyInfo.playerType == INOCENT && findPlayer(shooter, inocents, NUMBER_OF_INOCENTS, enemyInfo.posiAprox))
+    if (enemyInfo.playerType == INOCENT && findPlayer(shooter, inocents, NUMBER_OF_INOCENT_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
             shooter->updateScore(1.75 * shooter->getDamage() / INOCENT_DAMAGE);
@@ -137,14 +144,14 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
             shooter->updateScore(-1.75 * shooter->getDamage() / INOCENT_DAMAGE);
     }
 
-    else if ((enemyInfo.playerType == TRAITOR || enemyInfo.playerType == INOCENT) && findPlayer(shooter, traitors, NUMBER_OF_TRAITORS, enemyInfo.posiAprox))
+    else if ((enemyInfo.playerType == TRAITOR || enemyInfo.playerType == INOCENT) && findPlayer(shooter, traitors, NUMBER_OF_TRAITOR_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
             shooter->updateScore(-1.75 * shooter->getDamage() / INOCENT_DAMAGE);
         else
             shooter->updateScore(2 * shooter->getDamage() / INOCENT_DAMAGE);
     }
-    else if (enemyInfo.playerType == DETECTIVE && findPlayer(shooter, detectives, NUMBER_OF_DETECTIVES, enemyInfo.posiAprox))
+    else if (enemyInfo.playerType == DETECTIVE && findPlayer(shooter, detectives, NUMBER_OF_DETECTIVE_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
             shooter->updateScore(2.25 * shooter->getDamage() / INOCENT_DAMAGE);
@@ -183,9 +190,9 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
 
 void Moderator::checkAllPlayersLife()
 {
-    checkPlayersLife(inocents, NUMBER_OF_INOCENTS);
-    checkPlayersLife(traitors, NUMBER_OF_TRAITORS);
-    checkPlayersLife(detectives, NUMBER_OF_DETECTIVES);
+    checkPlayersLife(inocents, NUMBER_OF_INOCENT_TRAIN);
+    checkPlayersLife(traitors, NUMBER_OF_TRAITOR_TRAIN);
+    checkPlayersLife(detectives, NUMBER_OF_DETECTIVE_TRAIN);
 }
 
 void Moderator::checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS)
@@ -199,9 +206,9 @@ void Moderator::checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS)
 
 void Moderator::moveAllPlayers()
 {
-    movePlayers(inocents, NUMBER_OF_INOCENTS);
-    movePlayers(traitors, NUMBER_OF_TRAITORS);
-    movePlayers(detectives, NUMBER_OF_DETECTIVES);
+    movePlayers(inocents, NUMBER_OF_INOCENT_TRAIN);
+    movePlayers(traitors, NUMBER_OF_TRAITOR_TRAIN);
+    movePlayers(detectives, NUMBER_OF_DETECTIVE_TRAIN);
 }
 
 void Moderator::movePlayers(Player *players, int NUMBER_OF_PLAYERS)
@@ -215,9 +222,9 @@ void Moderator::movePlayers(Player *players, int NUMBER_OF_PLAYERS)
 
 void Moderator::multiplyAllPlayers()
 {
-    multiplyPlayers(inocents, NUMBER_OF_INOCENTS);
-    multiplyPlayers(traitors, NUMBER_OF_TRAITORS);
-    multiplyPlayers(detectives, NUMBER_OF_DETECTIVES);
+    multiplyPlayers(inocents, NUMBER_OF_INOCENT_TRAIN);
+    multiplyPlayers(traitors, NUMBER_OF_TRAITOR_TRAIN);
+    multiplyPlayers(detectives, NUMBER_OF_DETECTIVE_TRAIN);
 }
 
 void Moderator::multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS)
@@ -232,9 +239,9 @@ void Moderator::multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS)
 
 void Moderator::defineAllPlayersInput()
 {
-    definePlayersInput(inocents, NUMBER_OF_INOCENTS);
-    definePlayersInput(traitors, NUMBER_OF_TRAITORS);
-    definePlayersInput(detectives, NUMBER_OF_DETECTIVES);
+    definePlayersInput(inocents, NUMBER_OF_INOCENT_TRAIN);
+    definePlayersInput(traitors, NUMBER_OF_TRAITOR_TRAIN);
+    definePlayersInput(detectives, NUMBER_OF_DETECTIVE_TRAIN);
 }
 
 void Moderator::definePlayersInput(Player *players, int NUMBER_OF_PLAYERS)
@@ -251,7 +258,7 @@ void Moderator::calculateScore()
     int i;
     float indvScore;
 
-    for (i = 0; i < NUMBER_OF_INOCENTS; i++)
+    for (i = 0; i < NUMBER_OF_INOCENT_TRAIN; i++)
     {
         indvScore = inocents[i].getScore();
         inocentsScore += indvScore;
@@ -269,7 +276,7 @@ void Moderator::calculateScore()
         }
     }
 
-    for (i = 0; i < NUMBER_OF_TRAITORS; i++)
+    for (i = 0; i < NUMBER_OF_TRAITOR_TRAIN; i++)
     {
         indvScore = traitors[i].getScore();
         traitorScore += indvScore;
@@ -287,7 +294,7 @@ void Moderator::calculateScore()
         }
     }
 
-    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
+    for (i = 0; i < NUMBER_OF_DETECTIVE_TRAIN; i++)
     {
         indvScore = detectives[i].getScore();
         detectiveScore += indvScore;
@@ -321,9 +328,9 @@ void Moderator::resetAllPlayers(bool resetScore)
     inocentsScore = 0;
     traitorScore = 0;
 
-    resetPlayers(inocents, NUMBER_OF_INOCENTS, INOCENT_HEALTH, resetScore);
-    resetPlayers(traitors, NUMBER_OF_TRAITORS, TRAITOR_HEALTH, resetScore);
-    resetPlayers(detectives, NUMBER_OF_DETECTIVES, DETECTIVE_HEALTH, resetScore);
+    resetPlayers(inocents, NUMBER_OF_INOCENT_TRAIN, INOCENT_HEALTH, resetScore);
+    resetPlayers(traitors, NUMBER_OF_TRAITOR_TRAIN, TRAITOR_HEALTH, resetScore);
+    resetPlayers(detectives, NUMBER_OF_DETECTIVE_TRAIN, DETECTIVE_HEALTH, resetScore);
 }
 
 void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, bool resetScore)
@@ -332,16 +339,43 @@ void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, b
         players[i].reset(life, resetScore);
 }
 
+Detective *Moderator::getDetectives()
+{
+    int i;
+    int j;
+
+    Player *best;
+    float bestScore;
+
+    //put the top 'NUMBER_OF_DETECTIVES'(2) in the start
+    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
+    {
+        best = &detectives[i];
+        bestScore = best->getScore();
+
+        for (j = i + 1; j < NUMBER_OF_DETECTIVE_TRAIN; j++)
+        {
+            if (detectives[j].getScore() > bestScore)
+            {
+                best = &detectives[j];
+                bestScore = best->getScore();
+            }
+        }
+    }
+
+    return detectives;
+}
+
 void Moderator::setAllWeights(Inocent *bestInocents, Traitor *bestTraitors, Detective *bestDetectives)
 {
     if (bestInocents != nullptr)
-        setWeights(bestInocents, inocents, NUMBER_OF_INOCENTS);
+        setWeights(bestInocents, inocents, NUMBER_OF_INOCENT_TRAIN);
 
     if (bestTraitors != nullptr)
-        setWeights(bestTraitors, traitors, NUMBER_OF_TRAITORS);
+        setWeights(bestTraitors, traitors, NUMBER_OF_TRAITOR_TRAIN);
 
     if (bestDetectives != nullptr)
-        setWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVES);
+        setWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVE_TRAIN);
 }
 
 void Moderator::setWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS)
@@ -353,13 +387,13 @@ void Moderator::setWeights(Player *bestPlayers, Player *players, int NUMBER_OF_P
 void Moderator::copyAllWeights(Inocent *bestInocents, Traitor *bestTraitors, Detective *bestDetectives)
 {
     if (bestInocents != nullptr)
-        copyWeights(bestInocents, inocents, NUMBER_OF_INOCENTS);
+        copyWeights(bestInocents, inocents, NUMBER_OF_INOCENT_TRAIN);
 
     if (bestTraitors != nullptr)
-        copyWeights(bestTraitors, traitors, NUMBER_OF_TRAITORS);
+        copyWeights(bestTraitors, traitors, NUMBER_OF_TRAITOR_TRAIN);
 
     if (bestDetectives != nullptr)
-        copyWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVES);
+        copyWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVE_TRAIN);
 }
 
 void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS)
@@ -386,16 +420,16 @@ void Moderator::setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *traito
 {
     int i;
 
-    for (i = 0; i < NUMBER_OF_INOCENTS; i++)
+    for (i = 0; i < NUMBER_OF_INOCENT_TRAIN; i++)
     {
         inocents[i].ann->setMatrix(inocentMatrix);
     }
 
-    for (i = 0; i < NUMBER_OF_TRAITORS; i++)
+    for (i = 0; i < NUMBER_OF_TRAITOR_TRAIN; i++)
     {
         traitors[i].ann->setMatrix(traitorMatrix);
     }
-    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
+    for (i = 0; i < NUMBER_OF_DETECTIVE_TRAIN; i++)
     {
         detectives[i].ann->setMatrix(detectiveMatrix);
     }

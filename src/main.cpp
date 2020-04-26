@@ -30,12 +30,14 @@ void copyModerator()
     Traitor *traitors = evolution->bestTeams->getTraitors();
     Detective *detectives = evolution->bestTeams->getDetectives();
 
+    copyModerator->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_TRAITORS, NUMBER_OF_DETECTIVES);
     copyModerator->setScreen(new Screen);
     copyModerator->screen->setScreenParam("best teams");
     copyModerator->setAllPlayersValues();
 
     Moderator *bestIndvsCopy = new Moderator;
 
+    bestIndvsCopy->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_TRAITORS, NUMBER_OF_DETECTIVES);
     bestIndvsCopy->setScreen(new Screen);
     bestIndvsCopy->screen->setScreenParam("best indvs");
     bestIndvsCopy->setAllPlayersValues();

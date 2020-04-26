@@ -7,22 +7,29 @@ using namespace Eigen;
 
 #define POP_SIZE 10
 #define INICIAL_SCORE -100000
-//#define TOURNAMENT_K 4
 
-const int TOTAL_INOCENTS = NUMBER_OF_INOCENTS * POP_SIZE;
-const int TOTAL_TRAITORS = NUMBER_OF_TRAITORS * POP_SIZE;
-const int TOTAL_DETECTIVES = NUMBER_OF_DETECTIVES * POP_SIZE;
+//total pop needs to be equal to
+//NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES
+//and DETECTIVE_POP_DET_TRAIN > NUMBER_OF_DETECTIVES
+const int INOCENTS_POP_DET_TRAIN = NUMBER_OF_INOCENTS - 3;
+const int TRAITOR_POP_DET_TRAIN = NUMBER_OF_TRAITORS - 1;
+const int DETECTIVE_POP_DET_TRAIN = NUMBER_OF_DETECTIVES + 4;
 
 const int TOUTNAMENT_K_INOCENTS = (NUMBER_OF_INOCENTS * POP_SIZE) / 4;
 const int TOUTNAMENT_K_TRAITORS = (NUMBER_OF_TRAITORS * POP_SIZE) / 4;
-const int TOUTNAMENT_K_DETECTIVES = (NUMBER_OF_DETECTIVES * POP_SIZE) / 4;
+const int TOUTNAMENT_K_DETECTIVES = (DETECTIVE_POP_DET_TRAIN * POP_SIZE) / 4;
 
 //static int turn = 1;
 class Evolution
 {
 private:
+    int TOTAL_NUMBER_OF_INOCENTS;
+    int TOTAL_NUMBER_OF_TRAITORS;
+    int TOTAL_NUMBER_OF_DETECTIVES;
+
     Moderator *inocentsTraining;
     Moderator *traitorsTraining;
+    Moderator *detectivesTraining;
 
     Player **allInocents;
     Player **allTraitors;
