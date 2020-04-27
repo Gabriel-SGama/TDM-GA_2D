@@ -306,9 +306,9 @@ void Evolution::setBestIndvs()
             BII = i;
         }
 
-        if (inocentsTraining[i].bestDetective->score > BDS)
+        if (detectivesTraining[i].bestDetective->score > BDS)
         {
-            BIS = inocentsTraining[i].bestDetective->score;
+            BDS = detectivesTraining[i].bestDetective->score;
             BDI = i;
         }
 
@@ -321,7 +321,7 @@ void Evolution::setBestIndvs()
 
     bestInocentANN->copyWheights(inocentsTraining[BII].bestInocent->player->ann->getMatrixPtr());
     bestTraitorANN->copyWheights(traitorsTraining[BTI].bestTraitor->player->ann->getMatrixPtr());
-    bestDetectiveANN->copyWheights(inocentsTraining[BDI].bestDetective->player->ann->getMatrixPtr());
+    bestDetectiveANN->copyWheights(detectivesTraining[BDI].bestDetective->player->ann->getMatrixPtr());
 
     bestIndvs->setAllWeightsOneMatrix(bestInocentANN->getMatrixPtr(), bestTraitorANN->getMatrixPtr(), bestDetectiveANN->getMatrixPtr());
 }

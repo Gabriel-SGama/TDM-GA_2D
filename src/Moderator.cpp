@@ -327,6 +327,7 @@ void Moderator::resetAllPlayers(bool resetScore)
 
     inocentsScore = 0;
     traitorScore = 0;
+    detectiveScore = 0;
 
     resetPlayers(inocents, NUMBER_OF_INOCENT_TRAIN, INOCENT_HEALTH, resetScore);
     resetPlayers(traitors, NUMBER_OF_TRAITOR_TRAIN, TRAITOR_HEALTH, resetScore);
@@ -344,7 +345,8 @@ Detective *Moderator::getDetectives()
     int i;
     int j;
 
-    Player *best;
+    Detective *best;
+
     float bestScore;
 
     //put the top 'NUMBER_OF_DETECTIVES'(2) in the start
@@ -361,6 +363,9 @@ Detective *Moderator::getDetectives()
                 bestScore = best->getScore();
             }
         }
+
+        //changes matrix ptr
+        best->ann->setMatrix(detectives[i].ann->setMatrix(best->ann->getMatrixPtr()));
     }
 
     return detectives;

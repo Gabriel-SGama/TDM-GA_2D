@@ -42,7 +42,7 @@ const cv::Point aux = cv::Point(-RADIUS / 2, RADIUS / 2); //offset to print text
 #include "ANN.h"
 #include "Screen.h"
 
-const int MAX_TIME_STAND = 25;
+const int MAX_TIME_STAND = 17;
 
 using namespace Eigen;
 

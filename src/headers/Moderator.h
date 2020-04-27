@@ -2,7 +2,7 @@
 
 #include <eigen3/Eigen/Dense>
 
-#define DURATION 500
+#define DURATION 400
 
 class Moderator;
 
