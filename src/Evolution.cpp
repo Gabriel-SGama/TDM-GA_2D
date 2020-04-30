@@ -149,9 +149,9 @@ void Evolution::game()
 
         //select best team
 
-        if (inocentsTraining[i].inocentsScore > bestInocentTeamScore)
+        if (inocentsTraining[i].inocentScore > bestInocentTeamScore)
         {
-            bestInocentTeamScore = inocentsTraining[i].inocentsScore;
+            bestInocentTeamScore = inocentsTraining[i].inocentScore;
             bestInocents = &inocentsTraining[i];
         }
 

@@ -270,8 +270,8 @@ void Player::setComunInput()
             continue;
         }
 
-        (*input)[i] = playersCenter[j]->x;
-        (*input)[i + 1] = playersCenter[j]->y;
+        (*input)[i] = playersCenter[j]->x/cv::norm(center.x, playersCenter[j]->x);
+        (*input)[i + 1] = playersCenter[j]->y/cv::norm(center.y, playersCenter[j]->y);
     }
 
     (*input)[i] = center.x;

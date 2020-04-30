@@ -15,7 +15,7 @@ Moderator::~Moderator()
 
 void Moderator::setModerator(int NUMBER_OF_INOCENT_TRAIN, int NUMBER_OF_TRAITOR_TRAIN, int NUMBER_OF_DETECTIVE_TRAIN)
 {
-    inocentsScore = 0;
+    inocentScore = 0;
     traitorScore = 0;
     detectiveScore = 0;
 
@@ -143,24 +143,53 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
     if (enemyInfo.playerType == INOCENT && findPlayer(shooter, inocents, NUMBER_OF_INOCENT_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
+        {
             shooter->updateScore(1.75 * shooter->getDamage() / INOCENT_DAMAGE);
+            traitorScore += 2;
+        }
         else
+        {
             shooter->updateScore(-2.0 * shooter->getDamage() / INOCENT_DAMAGE);
+
+            if (shooter->getPlayerType() == INOCENT)
+                inocentScore -= 2;
+            else
+                detectiveScore -= 2;
+        }
     }
 
     else if ((enemyInfo.playerType == TRAITOR || enemyInfo.playerType == INOCENT) && findPlayer(shooter, traitors, NUMBER_OF_TRAITOR_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
+        {
             shooter->updateScore(-2.5 * shooter->getDamage() / INOCENT_DAMAGE);
+            traitorScore -= 4;
+        }
         else
+        {
             shooter->updateScore(2 * shooter->getDamage() / INOCENT_DAMAGE);
+
+            if (shooter->getPlayerType() == INOCENT)
+                inocentScore += 2;
+            else
+                detectiveScore += 2;
+        }
     }
     else if (enemyInfo.playerType == DETECTIVE && findPlayer(shooter, detectives, NUMBER_OF_DETECTIVE_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
+        {
             shooter->updateScore(2.5 * shooter->getDamage() / INOCENT_DAMAGE);
+            traitorScore += 5;
+        }
         else
+        {
             shooter->updateScore(-3.0 * shooter->getDamage() / INOCENT_DAMAGE);
+            if (shooter->getPlayerType() == INOCENT)
+                inocentScore -= 5;
+            else
+                detectiveScore -= 5;
+        }
     }
 }
 
@@ -171,7 +200,7 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
     //find the player that was shot
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        if (!players[i].isAlive())
+        if (!players[i].isAlive() || players[i].getPlayerID() == shooter[i].getPlayerID())
             continue;
 
         distance = cv::norm(players[i].getCenter() - enemyPoint);
@@ -179,7 +208,7 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
         if (distance <= RADIUS)
         {
             players[i].takeDamage(shooter->getDamage());
-
+            //friend fire doesnt count to score
             if (shooter->getPlayerType() == TRAITOR && players[i].getPlayerType() == TRAITOR && players[i].getLife() <= 0)
                 players[i].updateScore(3);
 
@@ -265,13 +294,7 @@ void Moderator::calculateScore()
     for (i = 0; i < NUMBER_OF_INOCENT_TRAIN; i++)
     {
         indvScore = inocents[i].getScore();
-        inocentsScore += indvScore;
-
-        if (inocents[i].isAlive())
-            inocentsScore++;
-        else
-            traitorScore += 2;
-
+        
         if (indvScore > bestInocent->score)
         {
             bestInocent->score = indvScore;
@@ -283,13 +306,7 @@ void Moderator::calculateScore()
     for (i = 0; i < NUMBER_OF_TRAITOR_TRAIN; i++)
     {
         indvScore = traitors[i].getScore();
-        traitorScore += indvScore;
-
-        if (traitors[i].isAlive())
-            traitorScore++;
-        else
-            inocentsScore += 3;
-
+        
         if (indvScore > bestTraitor->score)
         {
             bestTraitor->score = indvScore;
@@ -301,13 +318,7 @@ void Moderator::calculateScore()
     for (i = 0; i < NUMBER_OF_DETECTIVE_TRAIN; i++)
     {
         indvScore = detectives[i].getScore();
-        detectiveScore += indvScore;
-
-        if (detectives[i].isAlive())
-            detectiveScore += 2;
-        else
-            traitorScore += 4;
-
+        
         if (indvScore > bestDetective->score)
         {
             bestDetective->score = indvScore;
@@ -329,7 +340,7 @@ void Moderator::resetAllPlayers(bool resetScore)
         bestDetective->score = INICIAL_SCORE;
     }
 
-    inocentsScore = 0;
+    inocentScore = 0;
     traitorScore = 0;
     detectiveScore = 0;
 

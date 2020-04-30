@@ -45,7 +45,7 @@ public:
     dataOfBestPlayers_t *bestDetective;
     dataOfBestPlayers_t *bestTraitor;
 
-    float inocentsScore;
+    float inocentScore;
     float traitorScore;
     float detectiveScore;
 

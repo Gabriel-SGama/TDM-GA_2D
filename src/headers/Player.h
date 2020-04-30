@@ -8,11 +8,11 @@
 class Player;
 
 //Player ID:
-#define NOTHING 1
-#define INOCENT 2
-#define DETECTIVE 3
-#define TRAITOR 4
-#define OBSTACLE 5
+#define NOTHING 0
+#define INOCENT 10
+#define DETECTIVE 20
+#define TRAITOR 30
+#define OBSTACLE 40
 
 //Vision and player paramters
 #define VISION_DIST 125
