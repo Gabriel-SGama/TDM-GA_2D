@@ -136,9 +136,7 @@ void Player::drawVisionLines(double currentAngle, int id)
         color = INOCENT_RAY;
     }
     else
-    {
         color = screen->idToRay(raysID[id]);
-    }
 
     if (raysID[id] != NOTHING)
         cv::line(screen->getMap(), center + offset, finalPt, color);
@@ -174,7 +172,7 @@ void Player::move()
 
     if (!(turn % MAX_TIME_STAND) && distSumX + distSumY < MIN_DIST_TO_MOVE)
     {
-        score -= 4;
+        score -= 1;
 
         distSumX = 0;
         distSumY = 0;
@@ -188,7 +186,7 @@ void Player::move()
         if (timeStand <= 0)
         {
             timeStand = MAX_TIME_STAND / 2;
-            score -= 4;
+            score -= 1;
         }
         //std::cout << "posisao invalida" << std::endl;
     }

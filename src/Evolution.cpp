@@ -171,6 +171,9 @@ void Evolution::game()
 
 void Evolution::reset()
 {
+    if(bestDetectiveTeamScore <= INICIAL_SCORE)
+        bestDetectives = detectivesTraining;
+
     bestInocentTeamScore = INICIAL_SCORE;
     bestTraitorTeamScore = INICIAL_SCORE;
     bestDetectiveTeamScore = INICIAL_SCORE;
@@ -318,6 +321,10 @@ void Evolution::setBestIndvs()
             BTI = i;
         }
     }
+
+    std::cout << "best inocent score: " << BIS << std::endl;
+    std::cout << "best traitor score: " << BTS << std::endl;
+    std::cout << "best detective score: " << BDS << std::endl;
 
     bestInocentANN->copyWheights(inocentsTraining[BII].bestInocent->player->ann->getMatrixPtr());
     bestTraitorANN->copyWheights(traitorsTraining[BTI].bestTraitor->player->ann->getMatrixPtr());

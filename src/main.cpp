@@ -50,16 +50,7 @@ void copyModerator()
 
     bestIndvsCopy->setAllWeightsOneMatrix(bestInocentMatrix->getMatrixPtr(), bestTraitorMatrix->getMatrixPtr(), bestDetectiveMatrix->getMatrixPtr());
 
-    //mtx.unlock();
-
-    //Inocent *bestInocent = (Inocent*) evolution->bestIndvs->bestInocent->player;
-    //Traitor *bestTraitor = (Traitor*) evolution->bestIndvs->bestTraitor->player;
-    //Detective *bestDetective = (Detective*) evolution->bestIndvs->bestDetective->player;
-
-    //mtx.lock();
-    //evolution->bestIndvs->screen->setScreenParam("best Indvs");
-    //mtx.unlock();
-
+    
     while (true)
     {
         mtx.lock();
@@ -77,12 +68,16 @@ void copyModerator()
         copyModerator->resetAllPlayers(true);
 
         mtx.lock();
-        evolution->setBestIndvs();
-        bestIndvsCopy->setAllWeightsOneMatrix(bestInocentMatrix->getMatrixPtr(), bestTraitorMatrix->getMatrixPtr(), bestDetectiveMatrix->getMatrixPtr());
-        mtx.unlock();
 
+        bestInocentMatrix = evolution->bestInocentANN;
+        bestTraitorMatrix = evolution->bestTraitorANN;
+        bestDetectiveMatrix = evolution->bestDetectiveANN;
+
+        bestIndvsCopy->setAllWeightsOneMatrix(bestInocentMatrix->getMatrixPtr(), bestTraitorMatrix->getMatrixPtr(), bestDetectiveMatrix->getMatrixPtr());
         bestIndvsCopy->gameOfBest();
         bestIndvsCopy->resetAllPlayers(true);
+
+        mtx.unlock();
 
         //th1.join();
         //th2.join();
@@ -119,7 +114,7 @@ int main()
         std::cout << "best traitor team score: " << evolution->bestTraitorTeamScore << std::endl;
         std::cout << "best detective team score: " << evolution->bestDetectiveTeamScore << std::endl;
 
-        //evolution->setBestIndvs();
+        evolution->setBestIndvs();
         evolution->reset();
         mtx.unlock();
 

@@ -17,6 +17,7 @@ void Moderator::setModerator(int NUMBER_OF_INOCENT_TRAIN, int NUMBER_OF_TRAITOR_
 {
     inocentsScore = 0;
     traitorScore = 0;
+    detectiveScore = 0;
 
     this->NUMBER_OF_INOCENT_TRAIN = NUMBER_OF_INOCENT_TRAIN;
     this->NUMBER_OF_TRAITOR_TRAIN = NUMBER_OF_TRAITOR_TRAIN;
@@ -34,6 +35,9 @@ void Moderator::setModerator(int NUMBER_OF_INOCENT_TRAIN, int NUMBER_OF_TRAITOR_
     bestInocent->player = inocents;
     bestTraitor->player = traitors;
     bestDetective->player = detectives;
+    bestInocent->score = INICIAL_SCORE;
+    bestTraitor->score = INICIAL_SCORE;
+    bestDetective->score = INICIAL_SCORE;
 
     playersCenter = new cv::Point *[NUMBER_OF_TOTAL_PLAYERS];
 
@@ -141,22 +145,22 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
         if (shooter->getPlayerType() == TRAITOR)
             shooter->updateScore(1.75 * shooter->getDamage() / INOCENT_DAMAGE);
         else
-            shooter->updateScore(-1.75 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-2.0 * shooter->getDamage() / INOCENT_DAMAGE);
     }
 
     else if ((enemyInfo.playerType == TRAITOR || enemyInfo.playerType == INOCENT) && findPlayer(shooter, traitors, NUMBER_OF_TRAITOR_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
-            shooter->updateScore(-1.75 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-2.5 * shooter->getDamage() / INOCENT_DAMAGE);
         else
             shooter->updateScore(2 * shooter->getDamage() / INOCENT_DAMAGE);
     }
     else if (enemyInfo.playerType == DETECTIVE && findPlayer(shooter, detectives, NUMBER_OF_DETECTIVE_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == TRAITOR)
-            shooter->updateScore(2.25 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(2.5 * shooter->getDamage() / INOCENT_DAMAGE);
         else
-            shooter->updateScore(-1.75 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-3.0 * shooter->getDamage() / INOCENT_DAMAGE);
     }
 }
 
@@ -176,10 +180,10 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
         {
             players[i].takeDamage(shooter->getDamage());
 
-            if (shooter->getPlayerType() == TRAITOR && players[i].getPlayerType() == TRAITOR)
+            if (shooter->getPlayerType() == TRAITOR && players[i].getPlayerType() == TRAITOR && players[i].getLife() <= 0)
                 players[i].updateScore(3);
 
-            if (shooter->getPlayerType() != TRAITOR && players[i].getPlayerType() != TRAITOR)
+            if (shooter->getPlayerType() != TRAITOR && players[i].getPlayerType() != TRAITOR && players[i].getLife() <= 0)
                 players[i].updateScore(3);
 
             return 1;
@@ -320,9 +324,9 @@ void Moderator::resetAllPlayers(bool resetScore)
 
     if (resetScore)
     {
-        bestInocent->score = -100;
-        bestTraitor->score = -100;
-        bestDetective->score = -100;
+        bestInocent->score = INICIAL_SCORE;
+        bestTraitor->score = INICIAL_SCORE;
+        bestDetective->score = INICIAL_SCORE;
     }
 
     inocentsScore = 0;
@@ -350,6 +354,7 @@ Detective *Moderator::getDetectives()
     float bestScore;
 
     //put the top 'NUMBER_OF_DETECTIVES'(2) in the start
+    //faster for small numbers of detectives
     for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
     {
         best = &detectives[i];
@@ -366,6 +371,8 @@ Detective *Moderator::getDetectives()
 
         //changes matrix ptr
         best->ann->setMatrix(detectives[i].ann->setMatrix(best->ann->getMatrixPtr()));
+        //changes the best
+        best->setScore(INICIAL_SCORE);
     }
 
     return detectives;

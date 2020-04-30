@@ -42,7 +42,7 @@ const cv::Point aux = cv::Point(-RADIUS / 2, RADIUS / 2); //offset to print text
 #include "ANN.h"
 #include "Screen.h"
 
-const int MAX_TIME_STAND = 17;
+const int MAX_TIME_STAND = 30;
 
 using namespace Eigen;
 
@@ -115,7 +115,9 @@ public:
     inline cv::Point getCenter() { return center; }
     inline cv::Point *getCenterPtr() { return &center; }
     inline float getScore() { return score; }
+
     inline void updateScore(float change) { score += change; }
+    inline void setScore(float newScore) { score = newScore; }
 
     void setAlive(bool alive);
 
@@ -147,4 +149,3 @@ public:
 };
 
 #include "Moderator.h"
-
