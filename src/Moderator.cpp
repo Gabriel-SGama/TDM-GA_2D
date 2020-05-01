@@ -262,7 +262,6 @@ void Moderator::multiplyAllPlayers()
 
 void Moderator::multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS)
 {
-
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         if (players[i].isAlive())
@@ -294,7 +293,7 @@ void Moderator::calculateScore()
     for (i = 0; i < NUMBER_OF_INOCENT_TRAIN; i++)
     {
         indvScore = inocents[i].getScore();
-        
+
         if (indvScore > bestInocent->score)
         {
             bestInocent->score = indvScore;
@@ -306,7 +305,7 @@ void Moderator::calculateScore()
     for (i = 0; i < NUMBER_OF_TRAITOR_TRAIN; i++)
     {
         indvScore = traitors[i].getScore();
-        
+
         if (indvScore > bestTraitor->score)
         {
             bestTraitor->score = indvScore;
@@ -318,7 +317,7 @@ void Moderator::calculateScore()
     for (i = 0; i < NUMBER_OF_DETECTIVE_TRAIN; i++)
     {
         indvScore = detectives[i].getScore();
-        
+
         if (indvScore > bestDetective->score)
         {
             bestDetective->score = indvScore;

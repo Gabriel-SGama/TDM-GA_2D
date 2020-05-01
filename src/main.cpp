@@ -21,7 +21,7 @@ void runModerator(Moderator *copyModerator)
 
 void copyModerator()
 {
-    cv::waitKey(1000);
+    //cv::waitKey(1000);
 
     Moderator *copyModerator = new Moderator;
     //Screen *screen = new Screen;
@@ -50,7 +50,6 @@ void copyModerator()
 
     bestIndvsCopy->setAllWeightsOneMatrix(bestInocentMatrix->getMatrixPtr(), bestTraitorMatrix->getMatrixPtr(), bestDetectiveMatrix->getMatrixPtr());
 
-    
     while (true)
     {
         mtx.lock();
@@ -74,10 +73,9 @@ void copyModerator()
         bestDetectiveMatrix = evolution->bestDetectiveANN;
 
         bestIndvsCopy->setAllWeightsOneMatrix(bestInocentMatrix->getMatrixPtr(), bestTraitorMatrix->getMatrixPtr(), bestDetectiveMatrix->getMatrixPtr());
+        mtx.unlock();
         bestIndvsCopy->gameOfBest();
         bestIndvsCopy->resetAllPlayers(true);
-
-        mtx.unlock();
 
         //th1.join();
         //th2.join();

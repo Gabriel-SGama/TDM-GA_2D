@@ -23,11 +23,13 @@ CC_FLAGS= -I /usr/local/include/eigen3 \
 		  -Wextra \
 		  -pedantic \
 		  -lpthread \
+		  -fopenmp \
 		  -O3
 
 CC_FLAGS_DEBUG = -g \
 		   		 -c \
 				 -lpthread \
+				 -fopenmp \
 		  		 -Wall
 
 # Command used at clean target
@@ -43,7 +45,7 @@ all: objFolder $(PROJ_NAME)
 
 $(PROJ_NAME): $(OBJ)
 	@ echo 'Building binary using GCC linker: $@'
-	$(CC) $^ -o $@ $(LIBS) -lpthread
+	$(CC) $^ -o $@ $(LIBS) -lpthread -fopenmp
 	@ echo 'Finished building binary: $@'
 	@ echo ' '
 
@@ -71,7 +73,7 @@ debug: objFolderDebug $(PROJ_NAME_DEBUG)
 
 $(PROJ_NAME_DEBUG): $(OBJ_DEBUG)
 	@ echo 'Building binary using GCC linker: $@'
-	$(CC) $^ -o $@ $(LIBS) -lpthread
+	$(CC) $^ -o $@ $(LIBS) -lpthread -fopenmp
 	@ echo 'Finished building binary: $@'
 	@ echo ' '
 

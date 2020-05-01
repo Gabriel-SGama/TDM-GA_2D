@@ -1,4 +1,7 @@
 #include <eigen3/Eigen/Dense>
+#include <iostream>
+#include <omp.h>
+#include <time.h>
 #include "headers/Evolution.h"
 
 using namespace Eigen;
@@ -137,18 +140,21 @@ void Evolution::game()
 {
     int i;
 
+#pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
     {
         inocentsTraining[i].game();
         traitorsTraining[i].game();
         detectivesTraining[i].game();
-
+    }
+    //select best team
+    for (i = 0; i < POP_SIZE; i++)
+    {
         inocentsTraining[i].calculateScore();
         traitorsTraining[i].calculateScore();
         detectivesTraining[i].calculateScore();
 
-        //select best team
-
+        /* code */
         if (inocentsTraining[i].inocentScore > bestInocentTeamScore)
         {
             bestInocentTeamScore = inocentsTraining[i].inocentScore;
@@ -171,7 +177,7 @@ void Evolution::game()
 
 void Evolution::reset()
 {
-    if(bestDetectiveTeamScore <= INICIAL_SCORE)
+    if (bestDetectiveTeamScore <= INICIAL_SCORE)
         bestDetectives = detectivesTraining;
 
     bestInocentTeamScore = INICIAL_SCORE;
@@ -181,6 +187,7 @@ void Evolution::reset()
     //sets weigths
     bestTeams->setAllWeights(bestInocents->getInocents(), bestTraitors->getTraitors(), bestDetectives->getDetectives());
 
+#pragma omp parallel for
     for (int i = 0; i < POP_SIZE; i++)
     {
         inocentsTraining[i].setAllWeights(nullptr, bestTeams->getTraitors(), bestTeams->getDetectives());
@@ -219,6 +226,7 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
     MatrixXf *matrixArrayBest1;
     MatrixXf *matrixArrayBest2;
 
+#pragma omp parallel for
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         matrixArray = childs[i].getMatrixPtr();
@@ -259,7 +267,8 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
 
         mutation(matrixArray);
     }
-
+    
+#pragma omp parallel for
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         if (players[i]->getScore() >= score)
