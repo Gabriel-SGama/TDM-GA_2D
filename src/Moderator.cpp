@@ -149,12 +149,12 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
         }
         else
         {
-            shooter->updateScore(-2.0 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-4.0 * shooter->getDamage() / INOCENT_DAMAGE);
 
             if (shooter->getPlayerType() == INOCENT)
-                inocentScore -= 2;
+                inocentScore -= 3;
             else
-                detectiveScore -= 2;
+                detectiveScore -= 3;
         }
     }
 
@@ -162,7 +162,7 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
     {
         if (shooter->getPlayerType() == TRAITOR)
         {
-            shooter->updateScore(-2.5 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-4.0 * shooter->getDamage() / INOCENT_DAMAGE);
             traitorScore -= 4;
         }
         else
@@ -170,9 +170,9 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
             shooter->updateScore(2 * shooter->getDamage() / INOCENT_DAMAGE);
 
             if (shooter->getPlayerType() == INOCENT)
-                inocentScore += 2;
+                inocentScore += 3;
             else
-                detectiveScore += 2;
+                detectiveScore += 3;
         }
     }
     else if (enemyInfo.playerType == DETECTIVE && findPlayer(shooter, detectives, NUMBER_OF_DETECTIVE_TRAIN, enemyInfo.posiAprox))
@@ -184,11 +184,11 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
         }
         else
         {
-            shooter->updateScore(-3.0 * shooter->getDamage() / INOCENT_DAMAGE);
+            shooter->updateScore(-6.0 * shooter->getDamage() / INOCENT_DAMAGE);
             if (shooter->getPlayerType() == INOCENT)
-                inocentScore -= 5;
+                inocentScore -= 6;
             else
-                detectiveScore -= 5;
+                detectiveScore -= 6;
         }
     }
 }

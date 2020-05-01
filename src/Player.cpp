@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <opencv2/opencv.hpp>
 #include "string.h"
 #include "headers/Player.h"
 
@@ -174,7 +175,7 @@ void Player::move()
 
     if (!(turn % MAX_TIME_STAND) && distSumX + distSumY < MIN_DIST_TO_MOVE)
     {
-        score -= 1;
+        score -= 2;
 
         distSumX = 0;
         distSumY = 0;
@@ -188,7 +189,7 @@ void Player::move()
         if (timeStand <= 0)
         {
             timeStand = MAX_TIME_STAND / 2;
-            score -= 1;
+            score -= 2;
         }
         //std::cout << "posisao invalida" << std::endl;
     }
@@ -252,6 +253,7 @@ void Player::setAlive(bool alive)
 void Player::setComunInput()
 {
     int i;
+    float distance;
 
     for (i = 0; i < numberOfRays; i++)
     {
@@ -272,10 +274,12 @@ void Player::setComunInput()
             continue;
         }
 
-        //(*input)[i] = playersCenter[j]->x / std::fabs(center.x - playersCenter[j]->x);
-        //(*input)[i + 1] = playersCenter[j]->y / std::fabs(center.y - playersCenter[j]->y);
-        (*input)[i] = center.x - playersCenter[j]->x;
-        (*input)[i + 1] = center.y - playersCenter[j]->y;
+        distance = cv::norm(center - playersCenter[j][0]) * RADIUS * 2;
+
+        (*input)[i] = playersCenter[j]->x / distance;
+        (*input)[i + 1] = playersCenter[j]->y / distance;
+        //(*input)[i] = center.x - playersCenter[j]->x;
+        //(*input)[i + 1] = center.y - playersCenter[j]->y;
     }
 
     (*input)[i] = life;
