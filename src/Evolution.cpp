@@ -35,7 +35,7 @@ Evolution::Evolution()
 
     TOTAL_NUMBER_OF_LIGHT_ASSAULTS = NUMBER_OF_LIGHT_ASSAULTS * POP_SIZE;
     TOTAL_NUMBER_OF_SNIPERS = NUMBER_OF_SNIPERS * POP_SIZE;
-    TOTAL_NUMER_OF_ASSAULTS = ASSAULT_POP_ASS_TRAIN * POP_SIZE;
+    TOTAL_NUMER_OF_ASSAULTS = NUMBER_OF_ASSAULTS * POP_SIZE;
 
     //training moderators
     lightAssaultTraining = new Moderator[POP_SIZE];
@@ -52,7 +52,7 @@ Evolution::Evolution()
         snipersTraining[i].setScreen(new Screen);
         snipersTraining[i].setAllPlayersValues();
 
-        assaultsTraining[i].setModerator(LIGHT_ASSAULT_ASS_TRAIN, SNIPER_POP_DET_TRAIN, ASSAULT_POP_ASS_TRAIN);
+        assaultsTraining[i].setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
         assaultsTraining[i].setScreen(new Screen);
         assaultsTraining[i].setAllPlayersValues();
 

@@ -114,20 +114,37 @@ void Moderator::updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS)
 
 void Moderator::conflictsAllPlayers()
 {
-    conflictsPlayers(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
-    conflictsPlayers(snipers, NUMBER_OF_SNIPER_TRAIN);
-    conflictsPlayers(assaults, NUMBER_OF_ASSAULT_TRAIN);
+    conflictsPlayers(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN, lightAssaults->numberOfRays);
+    conflictsPlayers(snipers, NUMBER_OF_SNIPER_TRAIN, snipers->numberOfRays);
+    conflictsPlayers(assaults, NUMBER_OF_ASSAULT_TRAIN, assaults->numberOfRays);
 }
 
-void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS)
+void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS, int numberOfRays)
 {
     enemyInfo_t enemyInfo;
+
+    int maxIndex = 0;
+    int k;
+    int max = -1;
 
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         if (players[i].isAlive())
         {
-            enemyInfo = players[i].killPlayer((int)players[i].output[0][INDEX_SHOT]);
+
+            for (k = INDEX_SHOT; k < numberOfRays + INDEX_SHOT; k++)
+            {
+                if (players[i].output[0][k] > max)
+                {
+                    max = players[i].output[0][k];
+                    maxIndex = k;
+                }
+            }
+
+            if (max > 0)
+                enemyInfo = players[i].killPlayer((int)players[i].output[0][maxIndex]);
+            else
+                continue;
 
             if (enemyInfo.playerType == NOTHING || enemyInfo.playerType == OBSTACLE)
                 continue;
@@ -142,54 +159,25 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
     //find the player that was shot
     if (enemyInfo.playerType == LIGHT_ASSAULT && findPlayer(shooter, lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN, enemyInfo.posiAprox))
     {
-        if (shooter->getPlayerType() == SNIPER)
-        {
-            shooter->updateScore(1.75 * shooter->getDamage() / LIGHT_ASSAULT_DAMAGE);
-            sniperScore += 2;
-        }
+        if (shooter->getPlayerType() != LIGHT_ASSAULT)
+            shooter->updateScore(LIGHT_ASSAULT_SHOT_REWARD);
         else
-        {
-            shooter->updateScore(-4.0 * shooter->getDamage() / LIGHT_ASSAULT_DAMAGE);
-
-            if (shooter->getPlayerType() == LIGHT_ASSAULT)
-                lightAssaultScore -= 3;
-            else
-                assaultScore -= 3;
-        }
+            shooter->updateScore(-LIGHT_ASSAULT_SHOT_REWARD);
     }
 
-    else if ((enemyInfo.playerType == SNIPER || enemyInfo.playerType == LIGHT_ASSAULT) && findPlayer(shooter, snipers, NUMBER_OF_SNIPER_TRAIN, enemyInfo.posiAprox))
+    else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, NUMBER_OF_SNIPER_TRAIN, enemyInfo.posiAprox))
     {
-        if (shooter->getPlayerType() == SNIPER)
-        {
-            shooter->updateScore(-4.0 * shooter->getDamage() / LIGHT_ASSAULT_DAMAGE);
-            sniperScore -= 4;
-        }
+        if (shooter->getPlayerType() != SNIPER)
+            shooter->updateScore(SNIPER_SHOT_REWARD);
         else
-        {
-            shooter->updateScore(2 * shooter->getDamage() / LIGHT_ASSAULT_DAMAGE);
-
-            if (shooter->getPlayerType() == LIGHT_ASSAULT)
-                lightAssaultScore += 3;
-            else
-                assaultScore += 3;
-        }
+            shooter->updateScore(-SNIPER_SHOT_REWARD);
     }
     else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, assaults, NUMBER_OF_ASSAULT_TRAIN, enemyInfo.posiAprox))
     {
-        if (shooter->getPlayerType() == SNIPER)
-        {
-            shooter->updateScore(2.5 * shooter->getDamage() / LIGHT_ASSAULT_DAMAGE);
-            sniperScore += 5;
-        }
+        if (shooter->getPlayerType() != ASSAULT)
+            shooter->updateScore(ASSAULT_SHOT_REWARD);
         else
-        {
-            shooter->updateScore(-6.0 * shooter->getDamage() / LIGHT_ASSAULT_DAMAGE);
-            if (shooter->getPlayerType() == LIGHT_ASSAULT)
-                lightAssaultScore -= 6;
-            else
-                assaultScore -= 6;
-        }
+            shooter->updateScore(-ASSAULT_SHOT_REWARD);
     }
 }
 
@@ -209,11 +197,17 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
         {
             players[i].takeDamage(shooter->getDamage());
             //friend fire doesnt count to score
-            if (shooter->getPlayerType() == ASSAULT && players[i].getPlayerType() == ASSAULT && players[i].getLife() <= 0)
-                players[i].updateScore(3);
-
-            if (shooter->getPlayerType() != ASSAULT && players[i].getPlayerType() != ASSAULT && players[i].getLife() <= 0)
-                players[i].updateScore(3);
+            if (players[i].getLife() <= 0)
+            {
+                if (shooter->getPlayerType() == players[i].getPlayerType())
+                    players[i].updateScore(3);
+                else if (shooter->getPlayerType() == LIGHT_ASSAULT)
+                    lightAssaultScore += 1;
+                else if (shooter->getPlayerType() == SNIPER)
+                    sniperScore += 1;
+                else
+                    assaultScore += 1;
+            }
 
             return 1;
         }
@@ -354,6 +348,7 @@ void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, b
         players[i].reset(life, resetScore);
 }
 
+/*
 Assault *Moderator::getAssaults()
 {
     int i;
@@ -387,6 +382,7 @@ Assault *Moderator::getAssaults()
 
     return assaults;
 }
+*/
 
 void Moderator::setAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnipers, Assault *bestAssaults)
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#define NUMBER_OF_ASSAULTS 2
+#define NUMBER_OF_ASSAULTS 6
 #define ASSAULT_HEALTH 100
 #define ASSAULT_DAMAGE 50
 

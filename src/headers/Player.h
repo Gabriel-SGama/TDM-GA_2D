@@ -17,7 +17,7 @@ class Player;
 //Vision and player paramters
 #define VISION_DIST 125
 #define RADIUS 10
-#define RADIUS_OFFSET 2
+#define RADIUS_OFFSET 3
 
 //shot
 #define SHOT_INTERVAL 0
@@ -28,14 +28,14 @@ const int _RADIUS_TOTAL_DISTANCE = RADIUS + RADIUS_OFFSET;
 const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
 //Colors
-const cv::Scalar LIGHT_ASSAULT_COLOR = cv::Scalar(0, 255, 0);   //green
-const cv::Scalar SNIPER_COLOR = cv::Scalar(0, 0, 255);   //red
-const cv::Scalar ASSAULT_COLOR = cv::Scalar(255, 0, 0); //blue
+const cv::Scalar LIGHT_ASSAULT_COLOR = cv::Scalar(0, 255, 0); //green
+const cv::Scalar SNIPER_COLOR = cv::Scalar(0, 0, 255);        //red
+const cv::Scalar ASSAULT_COLOR = cv::Scalar(255, 0, 0);       //blue
 
 //Ray colors
-const cv::Scalar LIGHT_ASSAULT_RAY = cv::Scalar(1, 255, 0);   //green ray
-const cv::Scalar ASSAULT_RAY = cv::Scalar(255, 1, 0); //blue ray
-const cv::Scalar SNIPER_RAY = cv::Scalar(1, 0, 255);   //red ray
+const cv::Scalar LIGHT_ASSAULT_RAY = cv::Scalar(1, 255, 0); //green ray
+const cv::Scalar ASSAULT_RAY = cv::Scalar(255, 1, 0);       //blue ray
+const cv::Scalar SNIPER_RAY = cv::Scalar(1, 0, 255);        //red ray
 
 const cv::Point aux = cv::Point(-RADIUS / 2, RADIUS / 2); //offset to print text
 
@@ -70,7 +70,6 @@ protected:
     int life;        //current life
     int damageTaken; //demage taken on that turn
     //int radiusOffset;
-    int numberOfRays;
     int damage; //player damage
     int timeStand;
     int timeShot;
@@ -95,6 +94,8 @@ protected:
     VectorXf *input;
 
 public:
+    int numberOfRays;
+
     ANN *ann;
 
     int ANNInputSize;

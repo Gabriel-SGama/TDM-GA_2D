@@ -9,9 +9,9 @@ LightAssault::LightAssault() : Player()
     life = LIGHT_ASSAULT_HEALTH;
 
     //vision + position + life
-    ANNInputSize = numberOfRays * 2 + 2*(NUMBER_OF_LIGHT_ASSAULTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS - 1) + 1;
+    ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1;
     //angle + distance + shot id
-    ANNOutputSize = 1 + 1 + 1;
+    ANNOutputSize = 1 + 1 + numberOfRays;
 
     //ann = new ANN(ANNInputSize, ANNOutputSize);
     ann = new ANN;

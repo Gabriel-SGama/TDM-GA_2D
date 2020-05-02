@@ -75,13 +75,13 @@ cv::Scalar Screen::colorToRay(cv::Scalar color)
 {
 
     if (color == LIGHT_ASSAULT_COLOR)
-        color.val[0] += 1;
-    else if (color == ASSAULT_COLOR)
-        color.val[1] += 1;
+        return LIGHT_ASSAULT_RAY;
     else if (color == SNIPER_COLOR)
-        color.val[0] += 1;
+        return SNIPER_RAY;
+    else if (color == ASSAULT_COLOR)
+        return ASSAULT_RAY;
     else if (color == OBSTACLE_COLOR)
-        color.val[0] += 1;
+        return OBSTACLE_RAY;
 
     return color; //vision ray color
 }

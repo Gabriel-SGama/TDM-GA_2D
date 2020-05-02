@@ -1,6 +1,6 @@
 #pragma once
 
-#define NUMBER_OF_SNIPERS 5
+#define NUMBER_OF_SNIPERS 6
 #define SNIPER_HEALTH 75
 #define SNIPER_DAMAGE 35
 

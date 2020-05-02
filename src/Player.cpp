@@ -87,7 +87,7 @@ int Player::checkPosition()
 void Player::drawPlayer()
 {
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
-    cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
+    //cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
 }
 
 void Player::updateVision()
@@ -132,17 +132,11 @@ void Player::drawVisionLines(double currentAngle, int id)
 
     raysDist[id] = i;
 
-    //only snipers see others snipers
-    if (raysID[id] == SNIPER && playerType != SNIPER)
-    {
-        raysID[id] = LIGHT_ASSAULT;
-        color = LIGHT_ASSAULT_RAY;
-    }
-    else
-        color = screen->idToRay(raysID[id]);
-
     if (raysID[id] != NOTHING)
+    {
+        color = screen->idToRay(raysID[id]);
         cv::line(screen->getMap(), center + offset, finalPt, color);
+    }
 }
 
 int Player::checkMove(cv::Point offset)
@@ -227,8 +221,8 @@ enemyInfo_t Player::killPlayer(int rayNumber)
 
     enemyPoint += center;
 
-    cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0));
-    cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
+    cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0), 2);
+    cv::circle(screen->getMap(), enemyPoint, 4, cv::Scalar(0, 0, 0), cv::FILLED);
 
     return {enemyPoint, raysID[rayNumber]};
 }
@@ -255,19 +249,14 @@ void Player::setComunInput()
     int i;
     //float distance;
 
-    for (i = 0; i < numberOfRays; i++)
+    for (i = 0; i < 2 * numberOfRays; i += 2)
     {
-        (*input)[i * 2] = i;
-        (*input)[i * 2] = raysDist[i];
+        (*input)[i] = raysID[i];
+        (*input)[i + 1] = raysDist[i];
     }
 
-    int j = rand() % (NUMBER_OF_TOTAL_PLAYERS);
-
-    for (; i < 2 * (NUMBER_OF_TOTAL_PLAYERS); i += 2, j++)
+    for (int j = 0; i < 2 * (NUMBER_OF_TOTAL_PLAYERS - 1 + numberOfRays); i += 2, j++)
     {
-        if (j >= NUMBER_OF_TOTAL_PLAYERS)
-            j = 0;
-
         if (j == playerID)
         {
             i -= 2;
@@ -282,7 +271,10 @@ void Player::setComunInput()
         (*input)[i + 1] = center.y - playersCenter[j]->y;
     }
 
-    (*input)[i] = life;
+    (*input)[i] = center.x;
+    (*input)[i + 1] = center.y;
+
+    (*input)[i + 2] = life;
 
     timeShot--;
 }

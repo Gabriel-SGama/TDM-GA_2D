@@ -4,6 +4,11 @@
 
 #define DURATION 400
 
+//rewards
+#define LIGHT_ASSAULT_SHOT_REWARD 3
+#define SNIPER_SHOT_REWARD 3
+#define ASSAULT_SHOT_REWARD 3
+
 class Moderator;
 
 #include "Screen.h"
@@ -75,7 +80,7 @@ public:
 
     //Conflicts:
     void conflictsAllPlayers();
-    void conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS);
+    void conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS, int numberOfrays);
 
     void shotPlayer(Player *shooter, enemyInfo_t enemyInfo);
     int findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, cv::Point enemyPoint);
@@ -103,7 +108,7 @@ public:
     //get best players
     inline LightAssault *getLightAssaults() { return lightAssaults; }
     inline Sniper *getSnipers() { return snipers; }
-    Assault *getAssaults();
+    inline Assault *getAssaults() { return assaults; }
 
     //weights
     void setAllWeights(LightAssault *lightAssaults, Sniper *snipers, Assault *assaults);

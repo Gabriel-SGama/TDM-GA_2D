@@ -8,9 +8,9 @@ Sniper::Sniper() : Player()
     life = SNIPER_HEALTH;
 
     //vision + position + life
-    ANNInputSize = numberOfRays * 2 + 2 * (NUMBER_OF_TOTAL_PLAYERS - 1) + 1;
+    ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1;
     //angle + distance + shot id
-    ANNOutputSize = 1 + 1 + 1;
+    ANNOutputSize = 1 + 1 + numberOfRays;
 
     //ann = new ANN(ANNInputSize, ANNOutputSize);
     ann = new ANN;
