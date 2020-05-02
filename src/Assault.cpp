@@ -1,11 +1,11 @@
-#include "headers/Detective.h"
+#include "headers/Assault.h"
 
-Detective::Detective() : Player()
+Assault::Assault() : Player()
 {
     playerType = ASSAULT;
-    playerColor = DETECTIVE_COLOR;
-    damage = DETECTIVE_DAMAGE;
-    life = DETECTIVE_HEALTH;
+    playerColor = ASSAULT_COLOR;
+    damage = ASSAULT_DAMAGE;
+    life = ASSAULT_HEALTH;
 
     //vision + positions + life
     ANNInputSize = numberOfRays * 2 + 2 * (NUMBER_OF_TOTAL_PLAYERS - 1) + 1;
@@ -20,7 +20,7 @@ Detective::Detective() : Player()
     output = ann->getOutputPtr();
 }
 
-Detective::~Detective()
+Assault::~Assault()
 {
     std::cout << "delete" << std::endl;
 }

@@ -9,15 +9,15 @@ using namespace Eigen;
 #define INICIAL_SCORE -1000000
 
 //total pop needs to be equal to
-//NUMBER_OF_INOCENTS + NUMBER_OF_SNIPERS + NUMBER_OF_DETECTIVES
-//and DETECTIVE_POP_DET_TRAIN > NUMBER_OF_DETECTIVES
+//NUMBER_OF_INOCENTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS
+//and ASSAULT_POP_ASS_TRAIN > NUMBER_OF_ASSAULTS
 const int INOCENTS_POP_DET_TRAIN = NUMBER_OF_INOCENTS - 3;
 const int SNIPER_POP_DET_TRAIN = NUMBER_OF_SNIPERS - 1;
-const int DETECTIVE_POP_DET_TRAIN = NUMBER_OF_DETECTIVES + 4;
+const int ASSAULT_POP_ASS_TRAIN = NUMBER_OF_ASSAULTS + 4;
 
-const int TOUTNAMENT_K_INOCENTS = (NUMBER_OF_INOCENTS * POP_SIZE) / 10;
-const int TOUTNAMENT_K_SNIPERS = (NUMBER_OF_SNIPERS * POP_SIZE) / 10;
-const int TOUTNAMENT_K_DETECTIVES = (DETECTIVE_POP_DET_TRAIN * POP_SIZE) / 10;
+const int TOURNAMENT_K_LIGHT_ASSAULTS = (NUMBER_OF_INOCENTS * POP_SIZE) / 10;
+const int TOURNAMENT_K_SNIPERS = (NUMBER_OF_SNIPERS * POP_SIZE) / 10;
+const int TOURNAMENT_K_ASSAULTS = (ASSAULT_POP_ASS_TRAIN * POP_SIZE) / 10;
 
 //static int turn = 1;
 class Evolution
@@ -25,35 +25,35 @@ class Evolution
 private:
     int TOTAL_NUMBER_OF_INOCENTS;
     int TOTAL_NUMBER_OF_SNIPERS;
-    int TOTAL_NUMBER_OF_DETECTIVES;
+    int TOTAL_NUMER_OF_ASSAULTS;
 
     Moderator *inocentsTraining;
     Moderator *snipersTraining;
-    Moderator *detectivesTraining;
+    Moderator *assaultsTraining;
 
     Player **allInocents;
     Player **allSnipers;
-    Player **allDetectives;
+    Player **allAssaults;
 
     ANN *inocentsChilds;
     ANN *snipersChilds;
-    ANN *detectivesChilds;
+    ANN *assaultsChilds;
 
 public:
     float bestInocentTeamScore;
     float bestSniperTeamScore;
-    float bestDetectiveTeamScore;
+    float bestAssaultTeamScore;
 
     Moderator *bestIndvs;
     Moderator *bestTeams;
 
     Moderator *bestInocents;
     Moderator *bestSnipers;
-    Moderator *bestDetectives;
+    Moderator *bestAssaults;
 
     ANN *bestInocentANN;
     ANN *bestSniperANN;
-    ANN *bestDetectiveANN;
+    ANN *bestAssaultANN;
 
     Evolution();
     ~Evolution();

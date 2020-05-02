@@ -14,6 +14,7 @@ class Screen;
 #include "Player.h"
 
 const int _OBSTACLE_LENGTH = RADIUS * 2;                       //size of obstacles
+
 const cv::Scalar BACKGROUND_COLOR = cv::Scalar(255, 255, 255); //white
 const cv::Scalar OBSTACLE_COLOR = cv::Scalar(19, 69, 139);     //brown
 const cv::Scalar OBSTACLE_RAY = cv::Scalar(20, 69, 139);       //brown ray

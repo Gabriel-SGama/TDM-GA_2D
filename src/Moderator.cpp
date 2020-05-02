@@ -13,37 +13,37 @@ Moderator::~Moderator()
 {
 }
 
-void Moderator::setModerator(int NUMBER_OF_INOCENT_TRAIN, int NUMBER_OF_SNIPER_TRAIN, int NUMBER_OF_DETECTIVE_TRAIN)
+void Moderator::setModerator(int NUMBER_OF_INOCENT_TRAIN, int NUMBER_OF_SNIPER_TRAIN, int NUMBER_OF_ASSAULT_TRAIN)
 {
     inocentScore = 0;
     sniperScore = 0;
-    detectiveScore = 0;
+    assaultScore = 0;
 
     this->NUMBER_OF_INOCENT_TRAIN = NUMBER_OF_INOCENT_TRAIN;
     this->NUMBER_OF_SNIPER_TRAIN = NUMBER_OF_SNIPER_TRAIN;
-    this->NUMBER_OF_DETECTIVE_TRAIN = NUMBER_OF_DETECTIVE_TRAIN;
+    this->NUMBER_OF_ASSAULT_TRAIN = NUMBER_OF_ASSAULT_TRAIN;
 
     //allocs all memory
     inocents = new Inocent[NUMBER_OF_INOCENT_TRAIN];
     snipers = new Sniper[NUMBER_OF_SNIPER_TRAIN];
-    detectives = new Detective[NUMBER_OF_DETECTIVE_TRAIN];
+    assaults = new Assault[NUMBER_OF_ASSAULT_TRAIN];
 
     bestInocent = new dataOfBestPlayers_t;
     bestSniper = new dataOfBestPlayers_t;
-    bestDetective = new dataOfBestPlayers_t;
+    bestAssault = new dataOfBestPlayers_t;
 
     bestInocent->player = inocents;
     bestSniper->player = snipers;
-    bestDetective->player = detectives;
+    bestAssault->player = assaults;
     bestInocent->score = INICIAL_SCORE;
     bestSniper->score = INICIAL_SCORE;
-    bestDetective->score = INICIAL_SCORE;
+    bestAssault->score = INICIAL_SCORE;
 
     playersCenter = new cv::Point *[NUMBER_OF_TOTAL_PLAYERS];
 
     setPlayerCenterPtr(inocents, NUMBER_OF_INOCENT_TRAIN, 0);
     setPlayerCenterPtr(snipers, NUMBER_OF_SNIPER_TRAIN, NUMBER_OF_INOCENT_TRAIN);
-    setPlayerCenterPtr(detectives, NUMBER_OF_DETECTIVE_TRAIN, NUMBER_OF_SNIPER_TRAIN + NUMBER_OF_INOCENT_TRAIN);
+    setPlayerCenterPtr(assaults, NUMBER_OF_ASSAULT_TRAIN, NUMBER_OF_SNIPER_TRAIN + NUMBER_OF_INOCENT_TRAIN);
 }
 
 void Moderator::setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset)
@@ -68,7 +68,7 @@ void Moderator::setAllPlayersValues()
 
     setPlayersValues(playerNumber, inocents, NUMBER_OF_INOCENT_TRAIN);
     setPlayersValues(playerNumber, snipers, NUMBER_OF_SNIPER_TRAIN);
-    setPlayersValues(playerNumber, detectives, NUMBER_OF_DETECTIVE_TRAIN);
+    setPlayersValues(playerNumber, assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
 void Moderator::setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS)
@@ -84,7 +84,7 @@ void Moderator::drawAllPlayers()
 
     drawPlayers(inocents, NUMBER_OF_INOCENT_TRAIN);
     drawPlayers(snipers, NUMBER_OF_SNIPER_TRAIN);
-    drawPlayers(detectives, NUMBER_OF_DETECTIVE_TRAIN);
+    drawPlayers(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
 void Moderator::drawPlayers(Player *players, int NUMBER_OF_PLAYERS)
@@ -100,7 +100,7 @@ void Moderator::updateAllPlayersVision()
 {
     updatePlayersVision(inocents, NUMBER_OF_INOCENT_TRAIN);
     updatePlayersVision(snipers, NUMBER_OF_SNIPER_TRAIN);
-    updatePlayersVision(detectives, NUMBER_OF_DETECTIVE_TRAIN);
+    updatePlayersVision(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
 void Moderator::updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS)
@@ -116,7 +116,7 @@ void Moderator::conflictsAllPlayers()
 {
     conflictsPlayers(inocents, NUMBER_OF_INOCENT_TRAIN);
     conflictsPlayers(snipers, NUMBER_OF_SNIPER_TRAIN);
-    conflictsPlayers(detectives, NUMBER_OF_DETECTIVE_TRAIN);
+    conflictsPlayers(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
 void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS)
@@ -154,7 +154,7 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
             if (shooter->getPlayerType() == LIGHT_ASSAULT)
                 inocentScore -= 3;
             else
-                detectiveScore -= 3;
+                assaultScore -= 3;
         }
     }
 
@@ -172,10 +172,10 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
             if (shooter->getPlayerType() == LIGHT_ASSAULT)
                 inocentScore += 3;
             else
-                detectiveScore += 3;
+                assaultScore += 3;
         }
     }
-    else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, detectives, NUMBER_OF_DETECTIVE_TRAIN, enemyInfo.posiAprox))
+    else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, assaults, NUMBER_OF_ASSAULT_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() == SNIPER)
         {
@@ -188,7 +188,7 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
             if (shooter->getPlayerType() == LIGHT_ASSAULT)
                 inocentScore -= 6;
             else
-                detectiveScore -= 6;
+                assaultScore -= 6;
         }
     }
 }
@@ -225,7 +225,7 @@ void Moderator::checkAllPlayersLife()
 {
     checkPlayersLife(inocents, NUMBER_OF_INOCENT_TRAIN);
     checkPlayersLife(snipers, NUMBER_OF_SNIPER_TRAIN);
-    checkPlayersLife(detectives, NUMBER_OF_DETECTIVE_TRAIN);
+    checkPlayersLife(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
 void Moderator::checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS)
@@ -241,7 +241,7 @@ void Moderator::moveAllPlayers()
 {
     movePlayers(inocents, NUMBER_OF_INOCENT_TRAIN);
     movePlayers(snipers, NUMBER_OF_SNIPER_TRAIN);
-    movePlayers(detectives, NUMBER_OF_DETECTIVE_TRAIN);
+    movePlayers(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
 void Moderator::movePlayers(Player *players, int NUMBER_OF_PLAYERS)
@@ -257,7 +257,7 @@ void Moderator::multiplyAllPlayers()
 {
     multiplyPlayers(inocents, NUMBER_OF_INOCENT_TRAIN);
     multiplyPlayers(snipers, NUMBER_OF_SNIPER_TRAIN);
-    multiplyPlayers(detectives, NUMBER_OF_DETECTIVE_TRAIN);
+    multiplyPlayers(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
 void Moderator::multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS)
@@ -273,7 +273,7 @@ void Moderator::defineAllPlayersInput()
 {
     definePlayersInput(inocents, NUMBER_OF_INOCENT_TRAIN);
     definePlayersInput(snipers, NUMBER_OF_SNIPER_TRAIN);
-    definePlayersInput(detectives, NUMBER_OF_DETECTIVE_TRAIN);
+    definePlayersInput(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
 void Moderator::definePlayersInput(Player *players, int NUMBER_OF_PLAYERS)
@@ -314,15 +314,15 @@ void Moderator::calculateScore()
         }
     }
 
-    for (i = 0; i < NUMBER_OF_DETECTIVE_TRAIN; i++)
+    for (i = 0; i < NUMBER_OF_ASSAULT_TRAIN; i++)
     {
-        indvScore = detectives[i].getScore();
+        indvScore = assaults[i].getScore();
 
-        if (indvScore > bestDetective->score)
+        if (indvScore > bestAssault->score)
         {
-            bestDetective->score = indvScore;
-            bestDetective->player = &detectives[i];
-            bestDetective->index = i;
+            bestAssault->score = indvScore;
+            bestAssault->player = &assaults[i];
+            bestAssault->index = i;
         }
     }
 }
@@ -336,16 +336,16 @@ void Moderator::resetAllPlayers(bool resetScore)
     {
         bestInocent->score = INICIAL_SCORE;
         bestSniper->score = INICIAL_SCORE;
-        bestDetective->score = INICIAL_SCORE;
+        bestAssault->score = INICIAL_SCORE;
     }
 
     inocentScore = 0;
     sniperScore = 0;
-    detectiveScore = 0;
+    assaultScore = 0;
 
     resetPlayers(inocents, NUMBER_OF_INOCENT_TRAIN, INOCENT_HEALTH, resetScore);
     resetPlayers(snipers, NUMBER_OF_SNIPER_TRAIN, SNIPER_HEALTH, resetScore);
-    resetPlayers(detectives, NUMBER_OF_DETECTIVE_TRAIN, DETECTIVE_HEALTH, resetScore);
+    resetPlayers(assaults, NUMBER_OF_ASSAULT_TRAIN, ASSAULT_HEALTH, resetScore);
 }
 
 void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, bool resetScore)
@@ -354,41 +354,41 @@ void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, b
         players[i].reset(life, resetScore);
 }
 
-Detective *Moderator::getDetectives()
+Assault *Moderator::getAssaults()
 {
     int i;
     int j;
 
-    Detective *best;
+    Assault *best;
 
     float bestScore;
 
-    //put the top 'NUMBER_OF_DETECTIVES'(2) in the start
-    //faster for small numbers of detectives
-    for (i = 0; i < NUMBER_OF_DETECTIVES; i++)
+    //put the top 'NUMBER_OF_ASSAULTS'(2) in the start
+    //faster for small numbers of assaults
+    for (i = 0; i < NUMBER_OF_ASSAULTS; i++)
     {
-        best = &detectives[i];
+        best = &assaults[i];
         bestScore = best->getScore();
 
-        for (j = i + 1; j < NUMBER_OF_DETECTIVE_TRAIN; j++)
+        for (j = i + 1; j < NUMBER_OF_ASSAULT_TRAIN; j++)
         {
-            if (detectives[j].getScore() > bestScore)
+            if (assaults[j].getScore() > bestScore)
             {
-                best = &detectives[j];
+                best = &assaults[j];
                 bestScore = best->getScore();
             }
         }
 
         //changes matrix ptr
-        best->ann->setMatrix(detectives[i].ann->setMatrix(best->ann->getMatrixPtr()));
+        best->ann->setMatrix(assaults[i].ann->setMatrix(best->ann->getMatrixPtr()));
         //changes the best
         best->setScore(INICIAL_SCORE);
     }
 
-    return detectives;
+    return assaults;
 }
 
-void Moderator::setAllWeights(Inocent *bestInocents, Sniper *bestSnipers, Detective *bestDetectives)
+void Moderator::setAllWeights(Inocent *bestInocents, Sniper *bestSnipers, Assault *bestAssaults)
 {
     if (bestInocents != nullptr)
         setWeights(bestInocents, inocents, NUMBER_OF_INOCENT_TRAIN);
@@ -396,8 +396,8 @@ void Moderator::setAllWeights(Inocent *bestInocents, Sniper *bestSnipers, Detect
     if (bestSnipers != nullptr)
         setWeights(bestSnipers, snipers, NUMBER_OF_SNIPER_TRAIN);
 
-    if (bestDetectives != nullptr)
-        setWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVE_TRAIN);
+    if (bestAssaults != nullptr)
+        setWeights(bestAssaults, assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
 void Moderator::setWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS)
@@ -406,7 +406,7 @@ void Moderator::setWeights(Player *bestPlayers, Player *players, int NUMBER_OF_P
         players[i].ann->setMatrix(bestPlayers[i].ann->getMatrixPtr());
 }
 
-void Moderator::copyAllWeights(Inocent *bestInocents, Sniper *bestSnipers, Detective *bestDetectives)
+void Moderator::copyAllWeights(Inocent *bestInocents, Sniper *bestSnipers, Assault *bestAssaults)
 {
     if (bestInocents != nullptr)
         copyWeights(bestInocents, inocents, NUMBER_OF_INOCENT_TRAIN);
@@ -414,8 +414,8 @@ void Moderator::copyAllWeights(Inocent *bestInocents, Sniper *bestSnipers, Detec
     if (bestSnipers != nullptr)
         copyWeights(bestSnipers, snipers, NUMBER_OF_SNIPER_TRAIN);
 
-    if (bestDetectives != nullptr)
-        copyWeights(bestDetectives, detectives, NUMBER_OF_DETECTIVE_TRAIN);
+    if (bestAssaults != nullptr)
+        copyWeights(bestAssaults, assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
 void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS)
@@ -451,9 +451,9 @@ void Moderator::setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *traito
     {
         snipers[i].ann->setMatrix(traitorMatrix);
     }
-    for (i = 0; i < NUMBER_OF_DETECTIVE_TRAIN; i++)
+    for (i = 0; i < NUMBER_OF_ASSAULT_TRAIN; i++)
     {
-        detectives[i].ann->setMatrix(detectiveMatrix);
+        assaults[i].ann->setMatrix(detectiveMatrix);
     }
 }
 

@@ -59,7 +59,7 @@ int Screen::colorToId(cv::Scalar color)
     else if (color == INOCENT_COLOR)
         return LIGHT_ASSAULT;
 
-    else if (color == DETECTIVE_COLOR)
+    else if (color == ASSAULT_COLOR)
         return ASSAULT;
 
     else if (color == SNIPER_COLOR)
@@ -76,7 +76,7 @@ cv::Scalar Screen::colorToRay(cv::Scalar color)
 
     if (color == INOCENT_COLOR)
         color.val[0] += 1;
-    else if (color == DETECTIVE_COLOR)
+    else if (color == ASSAULT_COLOR)
         color.val[1] += 1;
     else if (color == SNIPER_COLOR)
         color.val[0] += 1;
@@ -97,7 +97,7 @@ cv::Scalar Screen::idToRay(int rayId)
     else if (rayId == SNIPER)
         return SNIPER_RAY;
     else
-        return DETECTIVE_RAY;
+        return ASSAULT_RAY;
 }
 
 void Screen::resetImage()
