@@ -1,3 +1,3 @@
-# ttt-garrys-mod-GA_2D
+# TDM-GA_2D
 
-Trouble in Terrorist Town 2d version with AI
+Team death match 2d version with AI
