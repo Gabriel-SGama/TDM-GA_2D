@@ -9,13 +9,13 @@ using namespace Eigen;
 #define INICIAL_SCORE -1000000
 
 //total pop needs to be equal to
-//NUMBER_OF_INOCENTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS
+//NUMBER_OF_LIGHT_ASSAULTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS
 //and ASSAULT_POP_ASS_TRAIN > NUMBER_OF_ASSAULTS
-const int INOCENTS_POP_DET_TRAIN = NUMBER_OF_INOCENTS - 3;
+const int LIGHT_ASSAULT_ASS_TRAIN = NUMBER_OF_LIGHT_ASSAULTS - 3;
 const int SNIPER_POP_DET_TRAIN = NUMBER_OF_SNIPERS - 1;
 const int ASSAULT_POP_ASS_TRAIN = NUMBER_OF_ASSAULTS + 4;
 
-const int TOURNAMENT_K_LIGHT_ASSAULTS = (NUMBER_OF_INOCENTS * POP_SIZE) / 10;
+const int TOURNAMENT_K_LIGHT_ASSAULTS = (NUMBER_OF_LIGHT_ASSAULTS * POP_SIZE) / 10;
 const int TOURNAMENT_K_SNIPERS = (NUMBER_OF_SNIPERS * POP_SIZE) / 10;
 const int TOURNAMENT_K_ASSAULTS = (ASSAULT_POP_ASS_TRAIN * POP_SIZE) / 10;
 
@@ -23,35 +23,35 @@ const int TOURNAMENT_K_ASSAULTS = (ASSAULT_POP_ASS_TRAIN * POP_SIZE) / 10;
 class Evolution
 {
 private:
-    int TOTAL_NUMBER_OF_INOCENTS;
+    int TOTAL_NUMBER_OF_LIGHT_ASSAULTS;
     int TOTAL_NUMBER_OF_SNIPERS;
     int TOTAL_NUMER_OF_ASSAULTS;
 
-    Moderator *inocentsTraining;
+    Moderator *lightAssaultTraining;
     Moderator *snipersTraining;
     Moderator *assaultsTraining;
 
-    Player **allInocents;
+    Player **allLightAssaults;
     Player **allSnipers;
     Player **allAssaults;
 
-    ANN *inocentsChilds;
+    ANN *lightAssaultChilds;
     ANN *snipersChilds;
     ANN *assaultsChilds;
 
 public:
-    float bestInocentTeamScore;
+    float bestLightAssaultTeamScore;
     float bestSniperTeamScore;
     float bestAssaultTeamScore;
 
     Moderator *bestIndvs;
     Moderator *bestTeams;
 
-    Moderator *bestInocents;
+    Moderator *bestLightAssaults;
     Moderator *bestSnipers;
     Moderator *bestAssaults;
 
-    ANN *bestInocentANN;
+    ANN *bestLightAssaultANN;
     ANN *bestSniperANN;
     ANN *bestAssaultANN;
 

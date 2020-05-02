@@ -8,70 +8,70 @@ using namespace Eigen;
 
 Evolution::Evolution()
 {
-    bestInocentTeamScore = INICIAL_SCORE;
+    bestLightAssaultTeamScore = INICIAL_SCORE;
     bestSniperTeamScore = INICIAL_SCORE;
     bestAssaultTeamScore = INICIAL_SCORE;
 
     //best individual players
     bestIndvs = new Moderator;
-    bestIndvs->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
+    bestIndvs->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
     bestIndvs->setScreen(new Screen);
     bestIndvs->setAllPlayersValues();
 
-    bestInocentANN = new ANN;
+    bestLightAssaultANN = new ANN;
     bestSniperANN = new ANN;
     bestAssaultANN = new ANN;
 
     //creates the matrix
-    bestInocentANN->setANNParameters(bestIndvs->getInocents()->ANNInputSize, bestIndvs->getInocents()->ANNOutputSize);
+    bestLightAssaultANN->setANNParameters(bestIndvs->getLightAssaults()->ANNInputSize, bestIndvs->getLightAssaults()->ANNOutputSize);
     bestSniperANN->setANNParameters(bestIndvs->getSnipers()->ANNInputSize, bestIndvs->getSnipers()->ANNOutputSize);
     bestAssaultANN->setANNParameters(bestIndvs->getAssaults()->ANNInputSize, bestIndvs->getAssaults()->ANNOutputSize);
 
     //best team players
     bestTeams = new Moderator;
-    bestTeams->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
+    bestTeams->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
     bestTeams->setScreen(new Screen);
     bestTeams->setAllPlayersValues();
 
-    TOTAL_NUMBER_OF_INOCENTS = NUMBER_OF_INOCENTS * POP_SIZE;
+    TOTAL_NUMBER_OF_LIGHT_ASSAULTS = NUMBER_OF_LIGHT_ASSAULTS * POP_SIZE;
     TOTAL_NUMBER_OF_SNIPERS = NUMBER_OF_SNIPERS * POP_SIZE;
     TOTAL_NUMER_OF_ASSAULTS = ASSAULT_POP_ASS_TRAIN * POP_SIZE;
 
     //training moderators
-    inocentsTraining = new Moderator[POP_SIZE];
+    lightAssaultTraining = new Moderator[POP_SIZE];
     snipersTraining = new Moderator[POP_SIZE];
     assaultsTraining = new Moderator[POP_SIZE];
 
     for (int i = 0; i < POP_SIZE; i++)
     {
-        inocentsTraining[i].setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
-        inocentsTraining[i].setScreen(new Screen);
-        inocentsTraining[i].setAllPlayersValues();
+        lightAssaultTraining[i].setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
+        lightAssaultTraining[i].setScreen(new Screen);
+        lightAssaultTraining[i].setAllPlayersValues();
 
-        snipersTraining[i].setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
+        snipersTraining[i].setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
         snipersTraining[i].setScreen(new Screen);
         snipersTraining[i].setAllPlayersValues();
 
-        assaultsTraining[i].setModerator(INOCENTS_POP_DET_TRAIN, SNIPER_POP_DET_TRAIN, ASSAULT_POP_ASS_TRAIN);
+        assaultsTraining[i].setModerator(LIGHT_ASSAULT_ASS_TRAIN, SNIPER_POP_DET_TRAIN, ASSAULT_POP_ASS_TRAIN);
         assaultsTraining[i].setScreen(new Screen);
         assaultsTraining[i].setAllPlayersValues();
 
-        inocentsTraining[i].setAllWeights(nullptr, bestTeams->getSnipers(), bestTeams->getAssaults());
-        snipersTraining[i].setAllWeights(bestTeams->getInocents(), nullptr, bestTeams->getAssaults());
-        assaultsTraining[i].setAllWeights(bestTeams->getInocents(), bestTeams->getSnipers(), nullptr);
+        lightAssaultTraining[i].setAllWeights(nullptr, bestTeams->getSnipers(), bestTeams->getAssaults());
+        snipersTraining[i].setAllWeights(bestTeams->getLightAssaults(), nullptr, bestTeams->getAssaults());
+        assaultsTraining[i].setAllWeights(bestTeams->getLightAssaults(), bestTeams->getSnipers(), nullptr);
     }
 
     //stores relation results
-    inocentsChilds = new ANN[TOTAL_NUMBER_OF_INOCENTS];
+    lightAssaultChilds = new ANN[TOTAL_NUMBER_OF_LIGHT_ASSAULTS];
     snipersChilds = new ANN[TOTAL_NUMBER_OF_SNIPERS];
     assaultsChilds = new ANN[TOTAL_NUMER_OF_ASSAULTS];
 
     //create the matrixs
-    createANN(inocentsChilds, TOTAL_NUMBER_OF_INOCENTS, bestTeams->getInocents()->ANNInputSize, bestTeams->getInocents()->ANNOutputSize);
+    createANN(lightAssaultChilds, TOTAL_NUMBER_OF_LIGHT_ASSAULTS, bestTeams->getLightAssaults()->ANNInputSize, bestTeams->getLightAssaults()->ANNOutputSize);
     createANN(snipersChilds, TOTAL_NUMBER_OF_SNIPERS, bestTeams->getSnipers()->ANNInputSize, bestTeams->getSnipers()->ANNOutputSize);
     createANN(assaultsChilds, TOTAL_NUMER_OF_ASSAULTS, bestTeams->getAssaults()->ANNInputSize, bestTeams->getAssaults()->ANNOutputSize);
 
-    allInocents = new Player *[TOTAL_NUMBER_OF_INOCENTS];
+    allLightAssaults = new Player *[TOTAL_NUMBER_OF_LIGHT_ASSAULTS];
     allSnipers = new Player *[TOTAL_NUMBER_OF_SNIPERS];
     allAssaults = new Player *[TOTAL_NUMER_OF_ASSAULTS];
 
@@ -94,21 +94,21 @@ void Evolution::setPlayersPtr()
     int i;
     int j;
 
-    int numberOfInocents = 0;
-    int numberOfTraitors = 0;
-    int numberOfDetectives = 0;
+    int numberOfLightAssaults = 0;
+    int numberOfSnipers = 0;
+    int numberOfAssaults = 0;
 
     Player *playersPtr;
 
     for (i = 0; i < POP_SIZE; i++)
     {
-        playersPtr = inocentsTraining[i].getInocents();
-        for (j = 0; j < inocentsTraining[i].NUMBER_OF_INOCENT_TRAIN; j++)
+        playersPtr = lightAssaultTraining[i].getLightAssaults();
+        for (j = 0; j < lightAssaultTraining[i].NUMBER_OF_LIGHT_ASSAULT_TRAIN; j++)
         {
-            allInocents[numberOfInocents + j] = &playersPtr[j];
+            allLightAssaults[numberOfLightAssaults + j] = &playersPtr[j];
         }
 
-        numberOfInocents += inocentsTraining[i].NUMBER_OF_INOCENT_TRAIN;
+        numberOfLightAssaults += lightAssaultTraining[i].NUMBER_OF_LIGHT_ASSAULT_TRAIN;
     }
 
     for (i = 0; i < POP_SIZE; i++)
@@ -117,10 +117,10 @@ void Evolution::setPlayersPtr()
 
         for (j = 0; j < snipersTraining[i].NUMBER_OF_SNIPER_TRAIN; j++)
         {
-            allSnipers[numberOfTraitors + j] = &playersPtr[j];
+            allSnipers[numberOfSnipers + j] = &playersPtr[j];
         }
 
-        numberOfTraitors += snipersTraining[i].NUMBER_OF_SNIPER_TRAIN;
+        numberOfSnipers += snipersTraining[i].NUMBER_OF_SNIPER_TRAIN;
     }
 
     for (i = 0; i < POP_SIZE; i++)
@@ -129,10 +129,10 @@ void Evolution::setPlayersPtr()
 
         for (j = 0; j < assaultsTraining[i].NUMBER_OF_ASSAULT_TRAIN; j++)
         {
-            allAssaults[numberOfDetectives + j] = &playersPtr[j];
+            allAssaults[numberOfAssaults + j] = &playersPtr[j];
         }
 
-        numberOfDetectives += assaultsTraining[i].NUMBER_OF_ASSAULT_TRAIN;
+        numberOfAssaults += assaultsTraining[i].NUMBER_OF_ASSAULT_TRAIN;
     }
 }
 
@@ -143,22 +143,22 @@ void Evolution::game()
 #pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
     {
-        inocentsTraining[i].game();
+        lightAssaultTraining[i].game();
         snipersTraining[i].game();
         assaultsTraining[i].game();
     }
     //select best team
     for (i = 0; i < POP_SIZE; i++)
     {
-        inocentsTraining[i].calculateScore();
+        lightAssaultTraining[i].calculateScore();
         snipersTraining[i].calculateScore();
         assaultsTraining[i].calculateScore();
 
         /* code */
-        if (inocentsTraining[i].inocentScore > bestInocentTeamScore)
+        if (lightAssaultTraining[i].lightAssaultScore > bestLightAssaultTeamScore)
         {
-            bestInocentTeamScore = inocentsTraining[i].inocentScore;
-            bestInocents = &inocentsTraining[i];
+            bestLightAssaultTeamScore = lightAssaultTraining[i].lightAssaultScore;
+            bestLightAssaults = &lightAssaultTraining[i];
         }
 
         if (assaultsTraining[i].assaultScore > bestAssaultTeamScore)
@@ -180,21 +180,21 @@ void Evolution::reset()
     if (bestAssaultTeamScore <= INICIAL_SCORE)
         bestAssaults = assaultsTraining;
 
-    bestInocentTeamScore = INICIAL_SCORE;
+    bestLightAssaultTeamScore = INICIAL_SCORE;
     bestSniperTeamScore = INICIAL_SCORE;
     bestAssaultTeamScore = INICIAL_SCORE;
 
     //sets weigths
-    bestTeams->setAllWeights(bestInocents->getInocents(), bestSnipers->getSnipers(), bestAssaults->getAssaults());
+    bestTeams->setAllWeights(bestLightAssaults->getLightAssaults(), bestSnipers->getSnipers(), bestAssaults->getAssaults());
 
 #pragma omp parallel for
     for (int i = 0; i < POP_SIZE; i++)
     {
-        inocentsTraining[i].setAllWeights(nullptr, bestTeams->getSnipers(), bestTeams->getAssaults());
-        snipersTraining[i].setAllWeights(bestTeams->getInocents(), nullptr, bestTeams->getAssaults());
-        assaultsTraining[i].setAllWeights(bestTeams->getInocents(), bestTeams->getSnipers(), nullptr);
+        lightAssaultTraining[i].setAllWeights(nullptr, bestTeams->getSnipers(), bestTeams->getAssaults());
+        snipersTraining[i].setAllWeights(bestTeams->getLightAssaults(), nullptr, bestTeams->getAssaults());
+        assaultsTraining[i].setAllWeights(bestTeams->getLightAssaults(), bestTeams->getSnipers(), nullptr);
 
-        inocentsTraining[i].resetAllPlayers(true);
+        lightAssaultTraining[i].resetAllPlayers(true);
         snipersTraining[i].resetAllPlayers(true);
         assaultsTraining[i].resetAllPlayers(true);
     }
@@ -204,7 +204,7 @@ void Evolution::reset()
 
 void Evolution::tournamentAll()
 {
-    tournament(allInocents, TOTAL_NUMBER_OF_INOCENTS, inocentsChilds, TOURNAMENT_K_LIGHT_ASSAULTS);
+    tournament(allLightAssaults, TOTAL_NUMBER_OF_LIGHT_ASSAULTS, lightAssaultChilds, TOURNAMENT_K_LIGHT_ASSAULTS);
     tournament(allSnipers, TOTAL_NUMBER_OF_SNIPERS, snipersChilds, TOURNAMENT_K_SNIPERS);
     tournament(allAssaults, TOTAL_NUMER_OF_ASSAULTS, assaultsChilds, TOURNAMENT_K_ASSAULTS);
 }
@@ -312,9 +312,9 @@ void Evolution::setBestIndvs()
     //set best individuals players
     for (int i = 0; i < POP_SIZE; i++)
     {
-        if (inocentsTraining[i].bestInocent->score > BIS)
+        if (lightAssaultTraining[i].bestLightAssault->score > BIS)
         {
-            BIS = inocentsTraining[i].bestInocent->score;
+            BIS = lightAssaultTraining[i].bestLightAssault->score;
             BII = i;
         }
 
@@ -331,13 +331,13 @@ void Evolution::setBestIndvs()
         }
     }
 
-    std::cout << "best inocent score: " << BIS << std::endl;
-    std::cout << "best traitor score: " << BTS << std::endl;
-    std::cout << "best detective score: " << BDS << std::endl;
+    std::cout << "best light assault score: " << BIS << std::endl;
+    std::cout << "best sniper score: " << BTS << std::endl;
+    std::cout << "best assault score: " << BDS << std::endl;
 
-    bestInocentANN->copyWheights(inocentsTraining[BII].bestInocent->player->ann->getMatrixPtr());
+    bestLightAssaultANN->copyWheights(lightAssaultTraining[BII].bestLightAssault->player->ann->getMatrixPtr());
     bestSniperANN->copyWheights(snipersTraining[BTI].bestSniper->player->ann->getMatrixPtr());
     bestAssaultANN->copyWheights(assaultsTraining[BDI].bestAssault->player->ann->getMatrixPtr());
 
-    bestIndvs->setAllWeightsOneMatrix(bestInocentANN->getMatrixPtr(), bestSniperANN->getMatrixPtr(), bestAssaultANN->getMatrixPtr());
+    bestIndvs->setAllWeightsOneMatrix(bestLightAssaultANN->getMatrixPtr(), bestSniperANN->getMatrixPtr(), bestAssaultANN->getMatrixPtr());
 }

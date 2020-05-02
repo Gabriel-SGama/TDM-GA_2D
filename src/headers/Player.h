@@ -28,12 +28,12 @@ const int _RADIUS_TOTAL_DISTANCE = RADIUS + RADIUS_OFFSET;
 const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
 //Colors
-const cv::Scalar INOCENT_COLOR = cv::Scalar(0, 255, 0);   //green
+const cv::Scalar LIGHT_ASSAULT_COLOR = cv::Scalar(0, 255, 0);   //green
 const cv::Scalar SNIPER_COLOR = cv::Scalar(0, 0, 255);   //red
 const cv::Scalar ASSAULT_COLOR = cv::Scalar(255, 0, 0); //blue
 
 //Ray colors
-const cv::Scalar INOCENT_RAY = cv::Scalar(1, 255, 0);   //green ray
+const cv::Scalar LIGHT_ASSAULT_RAY = cv::Scalar(1, 255, 0);   //green ray
 const cv::Scalar ASSAULT_RAY = cv::Scalar(255, 1, 0); //blue ray
 const cv::Scalar SNIPER_RAY = cv::Scalar(1, 0, 255);   //red ray
 

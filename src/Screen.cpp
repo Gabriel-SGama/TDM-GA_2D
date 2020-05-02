@@ -56,7 +56,7 @@ int Screen::colorToId(cv::Scalar color)
     if (color == BACKGROUND_COLOR)
         return NOTHING;
 
-    else if (color == INOCENT_COLOR)
+    else if (color == LIGHT_ASSAULT_COLOR)
         return LIGHT_ASSAULT;
 
     else if (color == ASSAULT_COLOR)
@@ -74,7 +74,7 @@ int Screen::colorToId(cv::Scalar color)
 cv::Scalar Screen::colorToRay(cv::Scalar color)
 {
 
-    if (color == INOCENT_COLOR)
+    if (color == LIGHT_ASSAULT_COLOR)
         color.val[0] += 1;
     else if (color == ASSAULT_COLOR)
         color.val[1] += 1;
@@ -93,7 +93,7 @@ cv::Scalar Screen::idToRay(int rayId)
     else if (rayId == OBSTACLE)
         return OBSTACLE_RAY;
     else if (rayId == LIGHT_ASSAULT)
-        return INOCENT_RAY;
+        return LIGHT_ASSAULT_RAY;
     else if (rayId == SNIPER)
         return SNIPER_RAY;
     else

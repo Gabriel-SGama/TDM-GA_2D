@@ -26,36 +26,36 @@ void copyModerator()
     Moderator *copyModerator = new Moderator;
     //Screen *screen = new Screen;
 
-    Inocent *inocents = evolution->bestTeams->getInocents();
+    LightAssault *lightAssaults = evolution->bestTeams->getLightAssaults();
     Sniper *snipers = evolution->bestTeams->getSnipers();
     Assault *assaults = evolution->bestTeams->getAssaults();
 
-    copyModerator->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
+    copyModerator->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
     copyModerator->setScreen(new Screen);
     copyModerator->screen->setScreenParam("best teams");
     copyModerator->setAllPlayersValues();
 
     Moderator *bestIndvsCopy = new Moderator;
 
-    bestIndvsCopy->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
+    bestIndvsCopy->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
     bestIndvsCopy->setScreen(new Screen);
     bestIndvsCopy->screen->setScreenParam("best indvs");
     bestIndvsCopy->setAllPlayersValues();
 
     //mtx.lock();
     // evolution->setBestIndvs();
-    ANN *bestInocentMatrix = evolution->bestInocentANN;
-    ANN *bestTraitorMatrix = evolution->bestSniperANN;
-    ANN *bestDetectiveMatrix = evolution->bestAssaultANN;
+    ANN *bestLightAssaultMatrix = evolution->bestLightAssaultANN;
+    ANN *bestSniperMatrix = evolution->bestSniperANN;
+    ANN *bestAssaultMatrix = evolution->bestAssaultANN;
 
-    bestIndvsCopy->setAllWeightsOneMatrix(bestInocentMatrix->getMatrixPtr(), bestTraitorMatrix->getMatrixPtr(), bestDetectiveMatrix->getMatrixPtr());
+    bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
 
     while (true)
     {
         mtx.lock();
         //evolution->setBestIndvs();
         std::cout << "copying " << std::endl;
-        copyModerator->copyAllWeights(inocents, snipers, assaults);
+        copyModerator->copyAllWeights(lightAssaults, snipers, assaults);
         std::cout << "finish copy " << std::endl;
 
         //std::thread th2(runModerator, bestIndvsCopy);
@@ -68,11 +68,11 @@ void copyModerator()
 
         mtx.lock();
 
-        bestInocentMatrix = evolution->bestInocentANN;
-        bestTraitorMatrix = evolution->bestSniperANN;
-        bestDetectiveMatrix = evolution->bestAssaultANN;
+        bestLightAssaultMatrix = evolution->bestLightAssaultANN;
+        bestSniperMatrix = evolution->bestSniperANN;
+        bestAssaultMatrix = evolution->bestAssaultANN;
 
-        bestIndvsCopy->setAllWeightsOneMatrix(bestInocentMatrix->getMatrixPtr(), bestTraitorMatrix->getMatrixPtr(), bestDetectiveMatrix->getMatrixPtr());
+        bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
         mtx.unlock();
         bestIndvsCopy->gameOfBest();
         bestIndvsCopy->resetAllPlayers(true);
@@ -108,9 +108,9 @@ int main()
         evolution->game();
         evolution->tournamentAll();
 
-        std::cout << "best inocent team score: " << evolution->bestInocentTeamScore << std::endl;
-        std::cout << "best traitor team score: " << evolution->bestSniperTeamScore << std::endl;
-        std::cout << "best detective team score: " << evolution->bestAssaultTeamScore << std::endl;
+        std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
+        std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
+        std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
 
         evolution->setBestIndvs();
         evolution->reset();

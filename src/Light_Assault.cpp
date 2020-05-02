@@ -1,15 +1,15 @@
-#include "headers/Inocent.h"
+#include "headers/Light_Assault.h"
 
-Inocent::Inocent() : Player()
+LightAssault::LightAssault() : Player()
 {
 
     playerType = LIGHT_ASSAULT;
-    playerColor = INOCENT_COLOR;
-    damage = INOCENT_DAMAGE;
-    life = INOCENT_HEALTH;
+    playerColor = LIGHT_ASSAULT_COLOR;
+    damage = LIGHT_ASSAULT_DAMAGE;
+    life = LIGHT_ASSAULT_HEALTH;
 
     //vision + position + life
-    ANNInputSize = numberOfRays * 2 + 2*(NUMBER_OF_INOCENTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS - 1) + 1;
+    ANNInputSize = numberOfRays * 2 + 2*(NUMBER_OF_LIGHT_ASSAULTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS - 1) + 1;
     //angle + distance + shot id
     ANNOutputSize = 1 + 1 + 1;
 
@@ -21,6 +21,6 @@ Inocent::Inocent() : Player()
     output = ann->getOutputPtr();
 }
 
-Inocent::~Inocent()
+LightAssault::~LightAssault()
 {
 }

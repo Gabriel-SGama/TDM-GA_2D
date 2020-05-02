@@ -136,7 +136,7 @@ void Player::drawVisionLines(double currentAngle, int id)
     if (raysID[id] == SNIPER && playerType != SNIPER)
     {
         raysID[id] = LIGHT_ASSAULT;
-        color = INOCENT_RAY;
+        color = LIGHT_ASSAULT_RAY;
     }
     else
         color = screen->idToRay(raysID[id]);
@@ -253,7 +253,7 @@ void Player::setAlive(bool alive)
 void Player::setComunInput()
 {
     int i;
-    float distance;
+    //float distance;
 
     for (i = 0; i < numberOfRays; i++)
     {
@@ -274,12 +274,12 @@ void Player::setComunInput()
             continue;
         }
 
-        distance = cv::norm(center - playersCenter[j][0]) * RADIUS * 2;
+        //distance = cv::norm(center - playersCenter[j][0]) * RADIUS * 2;
 
-        (*input)[i] = playersCenter[j]->x / distance;
-        (*input)[i + 1] = playersCenter[j]->y / distance;
-        //(*input)[i] = center.x - playersCenter[j]->x;
-        //(*input)[i + 1] = center.y - playersCenter[j]->y;
+        //(*input)[i] = playersCenter[j]->x / distance;
+        //(*input)[i + 1] = playersCenter[j]->y / distance;
+        (*input)[i] = center.x - playersCenter[j]->x;
+        (*input)[i + 1] = center.y - playersCenter[j]->y;
     }
 
     (*input)[i] = life;
