@@ -461,9 +461,10 @@ void Moderator::game()
         updateAllPlayersVision();
         conflictsAllPlayers();
         checkAllPlayersLife();
-        moveAllPlayers();
         defineAllPlayersInput();
         multiplyAllPlayers();
+        moveAllPlayers();
+
     }
     calculateScore();
 }
@@ -479,9 +480,9 @@ void Moderator::gameOfBest()
         screen->updateMap();
 
         checkAllPlayersLife();
-        moveAllPlayers();
         defineAllPlayersInput();
         multiplyAllPlayers();
+        moveAllPlayers();
     }
     calculateScore();
 }

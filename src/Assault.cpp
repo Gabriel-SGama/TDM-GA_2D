@@ -12,7 +12,6 @@ Assault::Assault() : Player()
     //angle + distance + shot id
     ANNOutputSize = 1 + 1 + numberOfRays;
 
-    //ann = new ANN(ANNInputSize, ANNOutputSize);
     ann = new ANN;
     ann->setANNParameters(ANNInputSize, ANNOutputSize);
 

@@ -164,7 +164,7 @@ void Player::move()
 {
     turn++;
 
-    cv::Point offset = cv::Point((*output)[INDEX_POSI_X], (*output)[INDEX_POSI_Y]);
+    cv::Point offset = cv::Point(output[0][INDEX_POSI_X], output[0][INDEX_POSI_Y]);
     center += offset;
 
     if (!(turn % MAX_TIME_STAND) && distSumX + distSumY < MIN_DIST_TO_MOVE)
@@ -275,6 +275,11 @@ void Player::setComunInput()
     (*input)[i + 1] = center.y;
 
     (*input)[i + 2] = life;
+
+    // for (int i = 0; i < ANNInputSize; i++)
+    // {
+    //     (*input)[i] = 0;
+    // }
 
     timeShot--;
 }

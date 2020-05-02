@@ -8,9 +8,9 @@ using namespace Eigen;
 #define POP_SIZE 10
 #define INICIAL_SCORE -1000000
 
-const int TOURNAMENT_K_LIGHT_ASSAULTS = 3;
-const int TOURNAMENT_K_SNIPERS = 3;
-const int TOURNAMENT_K_ASSAULTS = 3;
+const int TOURNAMENT_K_LIGHT_ASSAULTS = 5;
+const int TOURNAMENT_K_SNIPERS = 5;
+const int TOURNAMENT_K_ASSAULTS = 5;
 
 //static int turn = 1;
 class Evolution

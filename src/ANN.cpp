@@ -58,6 +58,9 @@ void ANN::multiply()
 {
     intermediunOut[0] = matrixArray[0] * input;
 
+    //std::cout <<"inter: " << std::endl;
+    //std::cout << intermediunOut[0] << std::endl;
+
     for (unsigned int i = 1; i < layers.size(); i++)
     {
         intermediunOut[i] = matrixArray[i] * intermediunOut[i - 1];
@@ -65,18 +68,20 @@ void ANN::multiply()
 
     output = matrixArray[layers.size()] * intermediunOut[layers.size() - 1];
 
+    std::cout <<"output: " << std::endl;
+    std::cout << output << std::endl;
+
     if (output[0] > 4)
         output[0] = 4;
 
-    else if (output[0] < 4)
+    else if (output[0] < -4)
         output[0] = -4;
 
     if (output[1] > 4)
         output[1] = 4;
 
-    else if (output[1] < 4)
+    else if (output[1] < -4)
         output[1] = -4;
-
 }
 
 MatrixXf *ANN::setMatrix(MatrixXf *matrixArray)
