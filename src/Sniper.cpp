@@ -1,11 +1,11 @@
-#include "headers/Traitor.h"
+#include "headers/Sniper.h"
 
-Traitor::Traitor() : Player()
+Sniper::Sniper() : Player()
 {
-    playerType = TRAITOR;
-    playerColor = TRAITOR_COLOR;
-    damage = TRAITOR_DAMAGE;
-    life = TRAITOR_HEALTH;
+    playerType = SNIPER;
+    playerColor = SNIPER_COLOR;
+    damage = SNIPER_DAMAGE;
+    life = SNIPER_HEALTH;
 
     //vision + position + life
     ANNInputSize = numberOfRays * 2 + 2 * (NUMBER_OF_TOTAL_PLAYERS - 1) + 1;
@@ -20,6 +20,6 @@ Traitor::Traitor() : Player()
     output = ann->getOutputPtr();
 }
 
-Traitor::~Traitor()
+Sniper::~Sniper()
 {
 }

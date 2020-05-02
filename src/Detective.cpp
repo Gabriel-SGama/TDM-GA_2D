@@ -2,7 +2,7 @@
 
 Detective::Detective() : Player()
 {
-    playerType = DETECTIVE;
+    playerType = ASSAULT;
     playerColor = DETECTIVE_COLOR;
     damage = DETECTIVE_DAMAGE;
     life = DETECTIVE_HEALTH;

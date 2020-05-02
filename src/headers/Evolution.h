@@ -9,14 +9,14 @@ using namespace Eigen;
 #define INICIAL_SCORE -1000000
 
 //total pop needs to be equal to
-//NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES
+//NUMBER_OF_INOCENTS + NUMBER_OF_SNIPERS + NUMBER_OF_DETECTIVES
 //and DETECTIVE_POP_DET_TRAIN > NUMBER_OF_DETECTIVES
 const int INOCENTS_POP_DET_TRAIN = NUMBER_OF_INOCENTS - 3;
-const int TRAITOR_POP_DET_TRAIN = NUMBER_OF_TRAITORS - 1;
+const int SNIPER_POP_DET_TRAIN = NUMBER_OF_SNIPERS - 1;
 const int DETECTIVE_POP_DET_TRAIN = NUMBER_OF_DETECTIVES + 4;
 
 const int TOUTNAMENT_K_INOCENTS = (NUMBER_OF_INOCENTS * POP_SIZE) / 10;
-const int TOUTNAMENT_K_TRAITORS = (NUMBER_OF_TRAITORS * POP_SIZE) / 10;
+const int TOUTNAMENT_K_SNIPERS = (NUMBER_OF_SNIPERS * POP_SIZE) / 10;
 const int TOUTNAMENT_K_DETECTIVES = (DETECTIVE_POP_DET_TRAIN * POP_SIZE) / 10;
 
 //static int turn = 1;
@@ -24,35 +24,35 @@ class Evolution
 {
 private:
     int TOTAL_NUMBER_OF_INOCENTS;
-    int TOTAL_NUMBER_OF_TRAITORS;
+    int TOTAL_NUMBER_OF_SNIPERS;
     int TOTAL_NUMBER_OF_DETECTIVES;
 
     Moderator *inocentsTraining;
-    Moderator *traitorsTraining;
+    Moderator *snipersTraining;
     Moderator *detectivesTraining;
 
     Player **allInocents;
-    Player **allTraitors;
+    Player **allSnipers;
     Player **allDetectives;
 
     ANN *inocentsChilds;
-    ANN *traitorsChilds;
+    ANN *snipersChilds;
     ANN *detectivesChilds;
 
 public:
     float bestInocentTeamScore;
-    float bestTraitorTeamScore;
+    float bestSniperTeamScore;
     float bestDetectiveTeamScore;
 
     Moderator *bestIndvs;
     Moderator *bestTeams;
 
     Moderator *bestInocents;
-    Moderator *bestTraitors;
+    Moderator *bestSnipers;
     Moderator *bestDetectives;
 
     ANN *bestInocentANN;
-    ANN *bestTraitorANN;
+    ANN *bestSniperANN;
     ANN *bestDetectiveANN;
 
     Evolution();

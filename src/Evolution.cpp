@@ -9,70 +9,70 @@ using namespace Eigen;
 Evolution::Evolution()
 {
     bestInocentTeamScore = INICIAL_SCORE;
-    bestTraitorTeamScore = INICIAL_SCORE;
+    bestSniperTeamScore = INICIAL_SCORE;
     bestDetectiveTeamScore = INICIAL_SCORE;
 
     //best individual players
     bestIndvs = new Moderator;
-    bestIndvs->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_TRAITORS, NUMBER_OF_DETECTIVES);
+    bestIndvs->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_DETECTIVES);
     bestIndvs->setScreen(new Screen);
     bestIndvs->setAllPlayersValues();
 
     bestInocentANN = new ANN;
-    bestTraitorANN = new ANN;
+    bestSniperANN = new ANN;
     bestDetectiveANN = new ANN;
 
     //creates the matrix
     bestInocentANN->setANNParameters(bestIndvs->getInocents()->ANNInputSize, bestIndvs->getInocents()->ANNOutputSize);
-    bestTraitorANN->setANNParameters(bestIndvs->getTraitors()->ANNInputSize, bestIndvs->getTraitors()->ANNOutputSize);
+    bestSniperANN->setANNParameters(bestIndvs->getSnipers()->ANNInputSize, bestIndvs->getSnipers()->ANNOutputSize);
     bestDetectiveANN->setANNParameters(bestIndvs->getDetectives()->ANNInputSize, bestIndvs->getDetectives()->ANNOutputSize);
 
     //best team players
     bestTeams = new Moderator;
-    bestTeams->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_TRAITORS, NUMBER_OF_DETECTIVES);
+    bestTeams->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_DETECTIVES);
     bestTeams->setScreen(new Screen);
     bestTeams->setAllPlayersValues();
 
     TOTAL_NUMBER_OF_INOCENTS = NUMBER_OF_INOCENTS * POP_SIZE;
-    TOTAL_NUMBER_OF_TRAITORS = NUMBER_OF_TRAITORS * POP_SIZE;
+    TOTAL_NUMBER_OF_SNIPERS = NUMBER_OF_SNIPERS * POP_SIZE;
     TOTAL_NUMBER_OF_DETECTIVES = DETECTIVE_POP_DET_TRAIN * POP_SIZE;
 
     //training moderators
     inocentsTraining = new Moderator[POP_SIZE];
-    traitorsTraining = new Moderator[POP_SIZE];
+    snipersTraining = new Moderator[POP_SIZE];
     detectivesTraining = new Moderator[POP_SIZE];
 
     for (int i = 0; i < POP_SIZE; i++)
     {
-        inocentsTraining[i].setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_TRAITORS, NUMBER_OF_DETECTIVES);
+        inocentsTraining[i].setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_DETECTIVES);
         inocentsTraining[i].setScreen(new Screen);
         inocentsTraining[i].setAllPlayersValues();
 
-        traitorsTraining[i].setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_TRAITORS, NUMBER_OF_DETECTIVES);
-        traitorsTraining[i].setScreen(new Screen);
-        traitorsTraining[i].setAllPlayersValues();
+        snipersTraining[i].setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_DETECTIVES);
+        snipersTraining[i].setScreen(new Screen);
+        snipersTraining[i].setAllPlayersValues();
 
-        detectivesTraining[i].setModerator(INOCENTS_POP_DET_TRAIN, TRAITOR_POP_DET_TRAIN, DETECTIVE_POP_DET_TRAIN);
+        detectivesTraining[i].setModerator(INOCENTS_POP_DET_TRAIN, SNIPER_POP_DET_TRAIN, DETECTIVE_POP_DET_TRAIN);
         detectivesTraining[i].setScreen(new Screen);
         detectivesTraining[i].setAllPlayersValues();
 
-        inocentsTraining[i].setAllWeights(nullptr, bestTeams->getTraitors(), bestTeams->getDetectives());
-        traitorsTraining[i].setAllWeights(bestTeams->getInocents(), nullptr, bestTeams->getDetectives());
-        detectivesTraining[i].setAllWeights(bestTeams->getInocents(), bestTeams->getTraitors(), nullptr);
+        inocentsTraining[i].setAllWeights(nullptr, bestTeams->getSnipers(), bestTeams->getDetectives());
+        snipersTraining[i].setAllWeights(bestTeams->getInocents(), nullptr, bestTeams->getDetectives());
+        detectivesTraining[i].setAllWeights(bestTeams->getInocents(), bestTeams->getSnipers(), nullptr);
     }
 
     //stores relation results
     inocentsChilds = new ANN[TOTAL_NUMBER_OF_INOCENTS];
-    traitorsChilds = new ANN[TOTAL_NUMBER_OF_TRAITORS];
+    snipersChilds = new ANN[TOTAL_NUMBER_OF_SNIPERS];
     detectivesChilds = new ANN[TOTAL_NUMBER_OF_DETECTIVES];
 
     //create the matrixs
     createANN(inocentsChilds, TOTAL_NUMBER_OF_INOCENTS, bestTeams->getInocents()->ANNInputSize, bestTeams->getInocents()->ANNOutputSize);
-    createANN(traitorsChilds, TOTAL_NUMBER_OF_TRAITORS, bestTeams->getTraitors()->ANNInputSize, bestTeams->getTraitors()->ANNOutputSize);
+    createANN(snipersChilds, TOTAL_NUMBER_OF_SNIPERS, bestTeams->getSnipers()->ANNInputSize, bestTeams->getSnipers()->ANNOutputSize);
     createANN(detectivesChilds, TOTAL_NUMBER_OF_DETECTIVES, bestTeams->getDetectives()->ANNInputSize, bestTeams->getDetectives()->ANNOutputSize);
 
     allInocents = new Player *[TOTAL_NUMBER_OF_INOCENTS];
-    allTraitors = new Player *[TOTAL_NUMBER_OF_TRAITORS];
+    allSnipers = new Player *[TOTAL_NUMBER_OF_SNIPERS];
     allDetectives = new Player *[TOTAL_NUMBER_OF_DETECTIVES];
 
     //sets players ptr
@@ -113,14 +113,14 @@ void Evolution::setPlayersPtr()
 
     for (i = 0; i < POP_SIZE; i++)
     {
-        playersPtr = traitorsTraining[i].getTraitors();
+        playersPtr = snipersTraining[i].getSnipers();
 
-        for (j = 0; j < traitorsTraining[i].NUMBER_OF_TRAITOR_TRAIN; j++)
+        for (j = 0; j < snipersTraining[i].NUMBER_OF_SNIPER_TRAIN; j++)
         {
-            allTraitors[numberOfTraitors + j] = &playersPtr[j];
+            allSnipers[numberOfTraitors + j] = &playersPtr[j];
         }
 
-        numberOfTraitors += traitorsTraining[i].NUMBER_OF_TRAITOR_TRAIN;
+        numberOfTraitors += snipersTraining[i].NUMBER_OF_SNIPER_TRAIN;
     }
 
     for (i = 0; i < POP_SIZE; i++)
@@ -144,14 +144,14 @@ void Evolution::game()
     for (i = 0; i < POP_SIZE; i++)
     {
         inocentsTraining[i].game();
-        traitorsTraining[i].game();
+        snipersTraining[i].game();
         detectivesTraining[i].game();
     }
     //select best team
     for (i = 0; i < POP_SIZE; i++)
     {
         inocentsTraining[i].calculateScore();
-        traitorsTraining[i].calculateScore();
+        snipersTraining[i].calculateScore();
         detectivesTraining[i].calculateScore();
 
         /* code */
@@ -167,10 +167,10 @@ void Evolution::game()
             bestDetectives = &detectivesTraining[i];
         }
 
-        if (traitorsTraining[i].traitorScore > bestTraitorTeamScore)
+        if (snipersTraining[i].sniperScore > bestSniperTeamScore)
         {
-            bestTraitorTeamScore = traitorsTraining[i].traitorScore;
-            bestTraitors = &traitorsTraining[i];
+            bestSniperTeamScore = snipersTraining[i].sniperScore;
+            bestSnipers = &snipersTraining[i];
         }
     }
 }
@@ -181,21 +181,21 @@ void Evolution::reset()
         bestDetectives = detectivesTraining;
 
     bestInocentTeamScore = INICIAL_SCORE;
-    bestTraitorTeamScore = INICIAL_SCORE;
+    bestSniperTeamScore = INICIAL_SCORE;
     bestDetectiveTeamScore = INICIAL_SCORE;
 
     //sets weigths
-    bestTeams->setAllWeights(bestInocents->getInocents(), bestTraitors->getTraitors(), bestDetectives->getDetectives());
+    bestTeams->setAllWeights(bestInocents->getInocents(), bestSnipers->getSnipers(), bestDetectives->getDetectives());
 
 #pragma omp parallel for
     for (int i = 0; i < POP_SIZE; i++)
     {
-        inocentsTraining[i].setAllWeights(nullptr, bestTeams->getTraitors(), bestTeams->getDetectives());
-        traitorsTraining[i].setAllWeights(bestTeams->getInocents(), nullptr, bestTeams->getDetectives());
-        detectivesTraining[i].setAllWeights(bestTeams->getInocents(), bestTeams->getTraitors(), nullptr);
+        inocentsTraining[i].setAllWeights(nullptr, bestTeams->getSnipers(), bestTeams->getDetectives());
+        snipersTraining[i].setAllWeights(bestTeams->getInocents(), nullptr, bestTeams->getDetectives());
+        detectivesTraining[i].setAllWeights(bestTeams->getInocents(), bestTeams->getSnipers(), nullptr);
 
         inocentsTraining[i].resetAllPlayers(true);
-        traitorsTraining[i].resetAllPlayers(true);
+        snipersTraining[i].resetAllPlayers(true);
         detectivesTraining[i].resetAllPlayers(true);
     }
 
@@ -205,7 +205,7 @@ void Evolution::reset()
 void Evolution::tournamentAll()
 {
     tournament(allInocents, TOTAL_NUMBER_OF_INOCENTS, inocentsChilds, TOUTNAMENT_K_INOCENTS);
-    tournament(allTraitors, TOTAL_NUMBER_OF_TRAITORS, traitorsChilds, TOUTNAMENT_K_TRAITORS);
+    tournament(allSnipers, TOTAL_NUMBER_OF_SNIPERS, snipersChilds, TOUTNAMENT_K_SNIPERS);
     tournament(allDetectives, TOTAL_NUMBER_OF_DETECTIVES, detectivesChilds, TOUTNAMENT_K_DETECTIVES);
 }
 
@@ -324,9 +324,9 @@ void Evolution::setBestIndvs()
             BDI = i;
         }
 
-        if (traitorsTraining[i].bestTraitor->score > BTS)
+        if (snipersTraining[i].bestSniper->score > BTS)
         {
-            BTS = traitorsTraining[i].bestTraitor->score;
+            BTS = snipersTraining[i].bestSniper->score;
             BTI = i;
         }
     }
@@ -336,8 +336,8 @@ void Evolution::setBestIndvs()
     std::cout << "best detective score: " << BDS << std::endl;
 
     bestInocentANN->copyWheights(inocentsTraining[BII].bestInocent->player->ann->getMatrixPtr());
-    bestTraitorANN->copyWheights(traitorsTraining[BTI].bestTraitor->player->ann->getMatrixPtr());
+    bestSniperANN->copyWheights(snipersTraining[BTI].bestSniper->player->ann->getMatrixPtr());
     bestDetectiveANN->copyWheights(detectivesTraining[BDI].bestDetective->player->ann->getMatrixPtr());
 
-    bestIndvs->setAllWeightsOneMatrix(bestInocentANN->getMatrixPtr(), bestTraitorANN->getMatrixPtr(), bestDetectiveANN->getMatrixPtr());
+    bestIndvs->setAllWeightsOneMatrix(bestInocentANN->getMatrixPtr(), bestSniperANN->getMatrixPtr(), bestDetectiveANN->getMatrixPtr());
 }

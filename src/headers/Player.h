@@ -9,9 +9,9 @@ class Player;
 
 //Player ID:
 #define NOTHING 0
-#define INOCENT 10
-#define DETECTIVE 20
-#define TRAITOR 30
+#define LIGHT_ASSAULT 10
+#define ASSAULT 20
+#define SNIPER 30
 #define OBSTACLE 40
 
 //Vision and player paramters
@@ -30,12 +30,12 @@ const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 //Colors
 const cv::Scalar INOCENT_COLOR = cv::Scalar(0, 255, 0);   //green
 const cv::Scalar DETECTIVE_COLOR = cv::Scalar(255, 0, 0); //blue
-const cv::Scalar TRAITOR_COLOR = cv::Scalar(0, 0, 255);   //red
+const cv::Scalar SNIPER_COLOR = cv::Scalar(0, 0, 255);   //red
 
 //Ray colors
 const cv::Scalar INOCENT_RAY = cv::Scalar(1, 255, 0);   //green ray
 const cv::Scalar DETECTIVE_RAY = cv::Scalar(255, 1, 0); //blue ray
-const cv::Scalar TRAITOR_RAY = cv::Scalar(1, 0, 255);   //red ray
+const cv::Scalar SNIPER_RAY = cv::Scalar(1, 0, 255);   //red ray
 
 const cv::Point aux = cv::Point(-RADIUS / 2, RADIUS / 2); //offset to print text
 

@@ -57,13 +57,13 @@ int Screen::colorToId(cv::Scalar color)
         return NOTHING;
 
     else if (color == INOCENT_COLOR)
-        return INOCENT;
+        return LIGHT_ASSAULT;
 
     else if (color == DETECTIVE_COLOR)
-        return DETECTIVE;
+        return ASSAULT;
 
-    else if (color == TRAITOR_COLOR)
-        return TRAITOR;
+    else if (color == SNIPER_COLOR)
+        return SNIPER;
 
     else if (color == OBSTACLE_COLOR)
         return OBSTACLE;
@@ -78,7 +78,7 @@ cv::Scalar Screen::colorToRay(cv::Scalar color)
         color.val[0] += 1;
     else if (color == DETECTIVE_COLOR)
         color.val[1] += 1;
-    else if (color == TRAITOR_COLOR)
+    else if (color == SNIPER_COLOR)
         color.val[0] += 1;
     else if (color == OBSTACLE_COLOR)
         color.val[0] += 1;
@@ -92,10 +92,10 @@ cv::Scalar Screen::idToRay(int rayId)
         return BACKGROUND_COLOR;
     else if (rayId == OBSTACLE)
         return OBSTACLE_RAY;
-    else if (rayId == INOCENT)
+    else if (rayId == LIGHT_ASSAULT)
         return INOCENT_RAY;
-    else if (rayId == TRAITOR)
-        return TRAITOR_RAY;
+    else if (rayId == SNIPER)
+        return SNIPER_RAY;
     else
         return DETECTIVE_RAY;
 }

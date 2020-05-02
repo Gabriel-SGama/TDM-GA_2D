@@ -132,10 +132,10 @@ void Player::drawVisionLines(double currentAngle, int id)
 
     raysDist[id] = i;
 
-    //only traitors see others traitors
-    if (raysID[id] == TRAITOR && playerType != TRAITOR)
+    //only snipers see others snipers
+    if (raysID[id] == SNIPER && playerType != SNIPER)
     {
-        raysID[id] = INOCENT;
+        raysID[id] = LIGHT_ASSAULT;
         color = INOCENT_RAY;
     }
     else

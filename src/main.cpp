@@ -27,17 +27,17 @@ void copyModerator()
     //Screen *screen = new Screen;
 
     Inocent *inocents = evolution->bestTeams->getInocents();
-    Traitor *traitors = evolution->bestTeams->getTraitors();
+    Sniper *snipers = evolution->bestTeams->getSnipers();
     Detective *detectives = evolution->bestTeams->getDetectives();
 
-    copyModerator->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_TRAITORS, NUMBER_OF_DETECTIVES);
+    copyModerator->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_DETECTIVES);
     copyModerator->setScreen(new Screen);
     copyModerator->screen->setScreenParam("best teams");
     copyModerator->setAllPlayersValues();
 
     Moderator *bestIndvsCopy = new Moderator;
 
-    bestIndvsCopy->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_TRAITORS, NUMBER_OF_DETECTIVES);
+    bestIndvsCopy->setModerator(NUMBER_OF_INOCENTS, NUMBER_OF_SNIPERS, NUMBER_OF_DETECTIVES);
     bestIndvsCopy->setScreen(new Screen);
     bestIndvsCopy->screen->setScreenParam("best indvs");
     bestIndvsCopy->setAllPlayersValues();
@@ -45,7 +45,7 @@ void copyModerator()
     //mtx.lock();
     // evolution->setBestIndvs();
     ANN *bestInocentMatrix = evolution->bestInocentANN;
-    ANN *bestTraitorMatrix = evolution->bestTraitorANN;
+    ANN *bestTraitorMatrix = evolution->bestSniperANN;
     ANN *bestDetectiveMatrix = evolution->bestDetectiveANN;
 
     bestIndvsCopy->setAllWeightsOneMatrix(bestInocentMatrix->getMatrixPtr(), bestTraitorMatrix->getMatrixPtr(), bestDetectiveMatrix->getMatrixPtr());
@@ -55,7 +55,7 @@ void copyModerator()
         mtx.lock();
         //evolution->setBestIndvs();
         std::cout << "copying " << std::endl;
-        copyModerator->copyAllWeights(inocents, traitors, detectives);
+        copyModerator->copyAllWeights(inocents, snipers, detectives);
         std::cout << "finish copy " << std::endl;
 
         //std::thread th2(runModerator, bestIndvsCopy);
@@ -69,7 +69,7 @@ void copyModerator()
         mtx.lock();
 
         bestInocentMatrix = evolution->bestInocentANN;
-        bestTraitorMatrix = evolution->bestTraitorANN;
+        bestTraitorMatrix = evolution->bestSniperANN;
         bestDetectiveMatrix = evolution->bestDetectiveANN;
 
         bestIndvsCopy->setAllWeightsOneMatrix(bestInocentMatrix->getMatrixPtr(), bestTraitorMatrix->getMatrixPtr(), bestDetectiveMatrix->getMatrixPtr());
@@ -109,7 +109,7 @@ int main()
         evolution->tournamentAll();
 
         std::cout << "best inocent team score: " << evolution->bestInocentTeamScore << std::endl;
-        std::cout << "best traitor team score: " << evolution->bestTraitorTeamScore << std::endl;
+        std::cout << "best traitor team score: " << evolution->bestSniperTeamScore << std::endl;
         std::cout << "best detective team score: " << evolution->bestDetectiveTeamScore << std::endl;
 
         evolution->setBestIndvs();

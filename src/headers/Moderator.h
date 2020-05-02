@@ -9,10 +9,10 @@ class Moderator;
 #include "Screen.h"
 #include "Player.h"
 #include "Inocent.h"
-#include "Traitor.h"
+#include "Sniper.h"
 #include "Detective.h"
 
-const int NUMBER_OF_TOTAL_PLAYERS = NUMBER_OF_INOCENTS + NUMBER_OF_TRAITORS + NUMBER_OF_DETECTIVES;
+const int NUMBER_OF_TOTAL_PLAYERS = NUMBER_OF_INOCENTS + NUMBER_OF_SNIPERS + NUMBER_OF_DETECTIVES;
 
 using namespace Eigen;
 
@@ -33,20 +33,20 @@ class Moderator
 private:
     //players:
     Inocent *inocents;
-    Traitor *traitors;
+    Sniper *snipers;
     Detective *detectives;
 
 public:
     int NUMBER_OF_INOCENT_TRAIN;
-    int NUMBER_OF_TRAITOR_TRAIN;
+    int NUMBER_OF_SNIPER_TRAIN;
     int NUMBER_OF_DETECTIVE_TRAIN;
 
     dataOfBestPlayers_t *bestInocent;
+    dataOfBestPlayers_t *bestSniper;
     dataOfBestPlayers_t *bestDetective;
-    dataOfBestPlayers_t *bestTraitor;
 
     float inocentScore;
-    float traitorScore;
+    float sniperScore;
     float detectiveScore;
 
     cv::Point **playersCenter;
@@ -57,7 +57,7 @@ public:
     Screen *screen; //commun screen obj
 
     //initial values:
-    void setModerator(int NUMBER_OF_INOCENT_TRAIN, int NUMBER_OF_TRAITOR_TRAIN, int NUMBER_OF_DETECTIVE_TRAIN);
+    void setModerator(int NUMBER_OF_INOCENT_TRAIN, int NUMBER_OF_SNIPER_TRAIN, int NUMBER_OF_DETECTIVE_TRAIN);
     void setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset);
     inline cv::Point **getPlayersCenterPtr() { return playersCenter; }
 
@@ -102,17 +102,17 @@ public:
 
     //get best players
     inline Inocent *getInocents() { return inocents; }
-    inline Traitor *getTraitors() { return traitors; }
+    inline Sniper *getSnipers() { return snipers; }
     Detective *getDetectives();
 
     //weights
-    void setAllWeights(Inocent *inocents, Traitor *traitors, Detective *detectives);
+    void setAllWeights(Inocent *inocents, Sniper *snipers, Detective *detectives);
     void setWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
 
-    void copyAllWeights(Inocent *inocents, Traitor *traitors, Detective *detectives);
+    void copyAllWeights(Inocent *inocents, Sniper *snipers, Detective *detectives);
     void copyWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
 
-    void setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *traitorMatrix, MatrixXf *detectiveMatrix);
+    void setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *sniperMatrix, MatrixXf *detectiveMatrix);
 
     void game();
     void gameOfBest();
