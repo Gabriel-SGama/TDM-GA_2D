@@ -6,8 +6,8 @@
 #define RAND_LIMIT 0.5
 
 //output indexs
-#define INDEX_POSI_X 0
-#define INDEX_POSI_Y 1
+#define INDEX_DIRECTION 0
+#define INDEX_SPEED 1
 #define INDEX_SHOT 2
 
 using namespace Eigen;

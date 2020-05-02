@@ -99,11 +99,43 @@ int main()
     evolution = new Evolution;
 
     std::thread th(copyModerator);
+    /*
+    Screen *screen = new Screen;
+
+    screen->setScreenParam("test");
+    screen->createObstacle();
+    
+    LightAssault *lightAssault = new LightAssault;
+    Sniper *sniper = new Sniper;
+    Assault *assault = new Assault;
+
+    lightAssault->setPlayerValues(screen, 0, 100, nullptr);
+    sniper->setPlayerValues(screen, 1, 100, nullptr);
+    assault->setPlayerValues(screen, 2, 100, nullptr);
+    //*/
 
     while (1)
     {
         std::cout << "gen: " << gen << std::endl;
+        /*
+        screen->resetImage();
+        screen->createObstacle();
 
+        lightAssault->drawPlayer();
+        sniper->drawPlayer();
+        assault->drawPlayer();
+        
+        lightAssault->updateVision();
+        sniper->updateVision();
+        assault->updateVision();
+        
+        screen->updateMap();
+        
+        lightAssault->move();
+        sniper->move();
+        assault->move();
+        */
+        ///*
         mtx.lock();
         evolution->game();
         evolution->tournamentAll();
@@ -115,6 +147,7 @@ int main()
         evolution->setBestIndvs();
         evolution->reset();
         mtx.unlock();
+        //*/
 
         cv::waitKey(1); //time to copy
 

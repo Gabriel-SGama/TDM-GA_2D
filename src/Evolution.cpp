@@ -288,7 +288,7 @@ void Evolution::mutation(MatrixXf *matrixArray)
     //simple mutation
     for (unsigned int i = 0; i < layers.size() + 1; i++)
     {
-        for (quant = 0; quant < 30; quant++)
+        for (quant = 0; quant < 20; quant++)
         {
             line = rand() % matrixArray[i].rows();
             colun = rand() % matrixArray[i].cols();

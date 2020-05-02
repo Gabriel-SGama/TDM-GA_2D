@@ -15,7 +15,6 @@ class Player;
 #define OBSTACLE 5
 
 //Vision and player paramters
-#define VISION_DIST 125
 #define RADIUS 10
 #define RADIUS_OFFSET 3
 
@@ -68,9 +67,9 @@ protected:
     int playerType;  //type of player
     int playerID;    //number of player
     int life;        //current life
-    int damageTaken; //demage taken on that turn
     //int radiusOffset;
     int damage; //player damage
+    int visionDist;
     int timeStand;
     int timeShot;
     int distSumX;
@@ -82,6 +81,11 @@ protected:
     int *raysDist;
 
     float score; //player score
+
+    float visionAngle;
+    float direction;
+    float speedLimit;
+    float angularSpeedLimit;
 
     double separationAngle; //offset to next ray
     double angleCorrection; //corrects rays positions

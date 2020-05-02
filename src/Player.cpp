@@ -10,19 +10,6 @@ Player::Player()
     score = 0;
     alive = true;
 
-    separationAngle = _RADIUS_TOTAL_DISTANCE * 2.0 / VISION_DIST;
-    numberOfRays = round(2 * M_PI / separationAngle);
-
-    numberOfRays = 15;
-    separationAngle = 2.0 * M_PI / numberOfRays;
-
-    angleCorrection = M_PI * 2 / numberOfRays - separationAngle;
-
-    separationAngle += angleCorrection;
-
-    raysID = new int[numberOfRays];
-    raysDist = new int[numberOfRays];
-
     distSumX = 0;
     distSumY = 0;
     timeStand = MAX_TIME_STAND;
@@ -72,8 +59,8 @@ int Player::checkPosition()
 
     for (float i = 0; i < M_PI * 2; i += 0.1)
     {
-        pt.x = cos(i) * (_RADIUS_TOTAL_DISTANCE + 1);
-        pt.y = sin(i) * (_RADIUS_TOTAL_DISTANCE + 1);
+        pt.x = cos(i) * _RADIUS_TOTAL_DISTANCE;
+        pt.y = sin(i) * _RADIUS_TOTAL_DISTANCE;
 
         pt += center;
 
@@ -94,9 +81,10 @@ void Player::updateVision()
 {
     double currentAngle;
 
+    currentAngle = direction - visionAngle / 2;
     for (int i = 0; i < numberOfRays; i++)
     {
-        currentAngle = separationAngle * i;
+        currentAngle += separationAngle;
         drawVisionLines(currentAngle, i);
     }
 }
@@ -112,7 +100,7 @@ void Player::drawVisionLines(double currentAngle, int id)
 
     int i;
 
-    for (i = 0; i < VISION_DIST; i++)
+    for (i = 0; i < visionDist; i++)
     {
         offset.x = _RADIUS_TOTAL_DISTANCE * cos(currentAngle);
         offset.y = _RADIUS_TOTAL_DISTANCE * sin(currentAngle);
@@ -143,7 +131,7 @@ int Player::checkMove(cv::Point offset)
 {
     cv::Point pt;
 
-    float angle = atan2(offset.y, offset.x);
+    float angle = direction;
 
     //checks movement in an angle of 90 degres to each side
     for (float i = angle - M_PI_2; i < M_PI_2 + angle; i += 0.1)
@@ -163,41 +151,42 @@ int Player::checkMove(cv::Point offset)
 void Player::move()
 {
     turn++;
+    ///*
+    //limits speed
+    if (output[0][INDEX_DIRECTION] > angularSpeedLimit)
+        output[0][INDEX_DIRECTION] = angularSpeedLimit;
 
-    cv::Point offset = cv::Point(output[0][INDEX_POSI_X], output[0][INDEX_POSI_Y]);
+    else if (output[0][INDEX_DIRECTION] < -angularSpeedLimit)
+        output[0][INDEX_DIRECTION] = -angularSpeedLimit;
+
+    if (output[0][INDEX_SPEED] > speedLimit)
+        output[0][INDEX_SPEED] = speedLimit;
+
+    else if (output[0][INDEX_SPEED] < -speedLimit)
+        output[0][INDEX_SPEED] = -speedLimit;
+
+    direction += output[0][INDEX_DIRECTION];
+    //*/
+
+    //direction += angularSpeedLimit;
+
+    if (direction > 2 * M_PI)
+        direction -= 2 * M_PI;
+    else if (direction < -2 * M_PI)
+        direction += 2 * M_PI;
+
+    cv::Point offset = cv::Point(output[0][INDEX_SPEED] * cos(direction), output[0][INDEX_SPEED] * sin(direction));
+    //cv::Point offset = cv::Point(speedLimit * cos(direction), speedLimit * sin(direction));
+
     center += offset;
 
-    if (!(turn % MAX_TIME_STAND) && distSumX + distSumY < MIN_DIST_TO_MOVE)
-    {
-        score -= 2;
-
-        distSumX = 0;
-        distSumY = 0;
-    }
-
     if (!checkMove(offset) || offset == cv::Point(0, 0))
-    {
         center -= offset;
-        timeStand--;
-
-        if (timeStand <= 0)
-        {
-            timeStand = MAX_TIME_STAND / 2;
-            score -= 2;
-        }
-        //std::cout << "posisao invalida" << std::endl;
-    }
-    else
-    {
-        timeStand = MAX_TIME_STAND;
-        distSumX += offset.x;
-        distSumY += offset.y;
-    }
 }
 
 enemyInfo_t Player::killPlayer(int rayNumber)
 {
-    if (rayNumber < 0 || rayNumber > numberOfRays || timeShot > 0 || raysDist[rayNumber] > VISION_DIST / 1.2)
+    if (rayNumber < 0 || rayNumber > numberOfRays || timeShot > 0)
     {
         if (timeShot <= 0)
             timeShot = SHOT_INTERVAL;
