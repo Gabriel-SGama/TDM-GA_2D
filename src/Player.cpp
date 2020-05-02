@@ -131,10 +131,8 @@ int Player::checkMove(cv::Point offset)
 {
     cv::Point pt;
 
-    float angle = direction;
-
     //checks movement in an angle of 90 degres to each side
-    for (float i = angle - M_PI_2; i < M_PI_2 + angle; i += 0.1)
+    for (float i = direction - M_PI_2; i < M_PI_2 + direction; i += 0.1)
     {
         pt.x = cos(i) * _RADIUS_TOTAL_DISTANCE;
         pt.y = sin(i) * _RADIUS_TOTAL_DISTANCE;
