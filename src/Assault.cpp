@@ -9,6 +9,7 @@ Assault::Assault() : Player()
     life = ASSAULT_HEALTH;
     visionDist = ASSAULT_VISION_DIST;
 
+    shotInterval = ASSAULT_SHOT_INTERVAL;
     speedLimit = ASSAULT_SPEED_LIMIT;
     angularSpeedLimit = ASSAULT_ANGULAR_SPEED_LIMIT;
 
@@ -26,8 +27,8 @@ Assault::Assault() : Player()
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
 
-    //vision + position + life
-    ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1;
+    //vision + position + life  + direction
+    ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1 + 1;
     //angle + distance + shot id
     ANNOutputSize = 1 + 1 + numberOfRays;
 

@@ -9,6 +9,8 @@ Sniper::Sniper() : Player()
     life = SNIPER_HEALTH;
     visionDist = SNIPER_VISION_DIST;
 
+    shotInterval = SNIPER_SHOT_INTERVAL;
+
     speedLimit = SNIPER_SPEED_LIMIT;
     angularSpeedLimit = SNIPER_ANGULAR_SPEED_LIMIT;
 
@@ -28,7 +30,7 @@ Sniper::Sniper() : Player()
 
 
     //vision + position + life
-    ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1;
+    ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1 + 1;
     //angle + distance + shot id
     ANNOutputSize = 1 + 1 + numberOfRays;
 

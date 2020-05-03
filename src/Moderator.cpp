@@ -162,7 +162,7 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
         if (shooter->getPlayerType() != LIGHT_ASSAULT)
             shooter->updateScore(LIGHT_ASSAULT_SHOT_REWARD);
         else
-            shooter->updateScore(-2 * LIGHT_ASSAULT_SHOT_REWARD);
+            shooter->updateScore(-4 * LIGHT_ASSAULT_SHOT_REWARD);
     }
 
     else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, NUMBER_OF_SNIPER_TRAIN, enemyInfo.posiAprox))
@@ -170,14 +170,14 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
         if (shooter->getPlayerType() != SNIPER)
             shooter->updateScore(SNIPER_SHOT_REWARD);
         else
-            shooter->updateScore(-2 * SNIPER_SHOT_REWARD);
+            shooter->updateScore(-4 * SNIPER_SHOT_REWARD);
     }
     else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, assaults, NUMBER_OF_ASSAULT_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() != ASSAULT)
             shooter->updateScore(ASSAULT_SHOT_REWARD);
         else
-            shooter->updateScore(-2 * ASSAULT_SHOT_REWARD);
+            shooter->updateScore(-4 * ASSAULT_SHOT_REWARD);
     }
 }
 
@@ -423,10 +423,10 @@ void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_
 
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        newMatrixArray = new MatrixXf[layers.size() + 1];
+        newMatrixArray = new MatrixXf[layerSize + 1];
         delete[] players[i].ann->getMatrixPtr();
         matrixArray = bestPlayers[i].ann->getMatrixPtr();
-        for (j = 0; j < layers.size() + 1; j++)
+        for (j = 0; j < layerSize + 1; j++)
         {
             newMatrixArray[j] = matrixArray[j];
         }

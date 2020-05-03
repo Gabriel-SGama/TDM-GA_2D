@@ -29,7 +29,6 @@ CC_FLAGS= -I /usr/local/include/eigen3 \
 CC_FLAGS_DEBUG = -g \
 		   		 -c \
 				 -lpthread \
-				 -fopenmp \
 		  		 -Wall
 
 # Command used at clean target

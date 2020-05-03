@@ -12,33 +12,28 @@ ANN::~ANN()
 
 void ANN::setANNParameters(int inputSize, int outputSize)
 {
-    unsigned int i;
+    int i;
 
     input.resize(inputSize);
     output.resize(outputSize);
 
     output[INDEX_SHOT] = -1;
 
-    for (int i = 0; i < inputSize; i++)
-    {
-        input[i] = 1;
-    }
-
     //input.Random(inputSize);
 
     //output.Random(outputSize);
     aux.push_back(inputSize);
 
-    for (i = 0; i < layers.size(); i++)
+    for (i = 0; i < layerSize; i++)
     {
         aux.push_back(layers[i]);
     }
 
     aux.push_back(outputSize);
 
-    intermediunOut = new VectorXf[layers.size()];
+    intermediunOut = new VectorXf[layerSize];
     matrixArray = new MatrixXf[aux.size() - 1];
-    //intermediunOut.resize(layers.size());
+    //intermediunOut.resize(layerSize);
     //matrixArray.resize(aux.size() - 1);
 
     for (i = 0; i < aux.size() - 1; i++)
@@ -48,7 +43,7 @@ void ANN::setANNParameters(int inputSize, int outputSize)
         matrixArray[i] = matrixArray[i] + MatrixXf::Constant(aux[i + 1], aux[i], -RAND_LIMIT);
     }
 
-    for (i = 0; i < layers.size(); i++)
+    for (i = 0; i < layerSize; i++)
     {
         intermediunOut[i] = VectorXf(layers[i]);
     }
@@ -61,17 +56,20 @@ void ANN::multiply()
     //std::cout <<"inter: " << std::endl;
     //std::cout << intermediunOut[0] << std::endl;
 
-    for (unsigned int i = 1; i < layers.size(); i++)
+    for (int i = 1; i < layerSize; i++)
     {
         intermediunOut[i] = matrixArray[i] * intermediunOut[i - 1];
         for (int j = 0; j < intermediunOut[i].size(); j++)
         {
             intermediunOut[i][j] = tanh(intermediunOut[i][j]);
         }
-        
     }
 
-    output = matrixArray[layers.size()] * intermediunOut[layers.size() - 1];
+    if (layerSize > 0)
+        output = matrixArray[layerSize] * intermediunOut[layerSize - 1];
+
+    else
+        output = intermediunOut[0];
 
     //std::cout <<"output: " << std::endl;
     //std::cout << output << std::endl;
@@ -88,12 +86,12 @@ MatrixXf *ANN::setMatrix(MatrixXf *matrixArray)
 
 void ANN::copyWheights(MatrixXf *matrixArray)
 {
-    for (unsigned int i = 0; i < layers.size() + 1; i++)
+    for (int i = 0; i < layerSize + 1; i++)
         this->matrixArray[i] = matrixArray[i];
 }
 
 void ANN::simpleBreeding(MatrixXf *matrixArray)
 {
-    for (unsigned int i = 0; i < layers.size() + 1; i++)
+    for (int i = 0; i < layerSize + 1; i++)
         this->matrixArray[i] = (matrixArray[i] + this->matrixArray[i]) / 2;
 }

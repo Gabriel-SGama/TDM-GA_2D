@@ -18,11 +18,6 @@ class Player;
 #define RADIUS 10
 #define RADIUS_OFFSET 3
 
-//shot
-#define SHOT_INTERVAL 0
-
-#define MIN_DIST_TO_MOVE 40
-
 const int _RADIUS_TOTAL_DISTANCE = RADIUS + RADIUS_OFFSET;
 const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
@@ -71,11 +66,15 @@ protected:
     //int radiusOffset;
     int damage; //player damage
     int visionDist;
-    int timeStand;
+    
+    int shotInterval;
     int timeShot;
-    int distSumX;
-    int distSumY;
-    int turn;
+
+    int timeStand;
+    int standInterval;
+
+    int timeSpin;
+    int spinInterval;
 
     //ray info
     int *raysID;

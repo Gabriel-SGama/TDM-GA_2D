@@ -9,6 +9,8 @@ LightAssault::LightAssault() : Player()
     life = LIGHT_ASSAULT_HEALTH;
     visionDist = LIGHT_ASSAULT_VISION_DIST;
 
+    shotInterval = LIGHT_ASSAULT_SHOT_INTERVAL;
+
     speedLimit = LIGHT_ASSAULT_SPEED_LIMIT;
     angularSpeedLimit = LIGHT_ASSAULT_ANGULAR_SPEED_LIMIT;
 
@@ -28,7 +30,7 @@ LightAssault::LightAssault() : Player()
 
 
     //vision + position + life
-    ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1;
+    ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1 + 1;
     //angle + distance + shot id
     ANNOutputSize = 1 + 1 + numberOfRays;
 

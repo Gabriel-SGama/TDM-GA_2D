@@ -212,9 +212,15 @@ void Evolution::tournamentAll()
 void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs, int TOURNAMENT_K)
 {
     int i;
+    int bestIndex = 0;
+    int secondBestIndex = 0;
+    int worstIndex = 0;
+
     unsigned int j;
 
-    float score = INICIAL_SCORE;
+    float bestScore = INICIAL_SCORE;
+    float secondBestScore = INICIAL_SCORE;
+    float worstScore = -INICIAL_SCORE;
 
     Player *father1;
     Player *father2;
@@ -226,9 +232,33 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
     MatrixXf *matrixArrayBest1;
     MatrixXf *matrixArrayBest2;
 
+    //get the top 2 and the worst
+    for (i = 0; i < NUMBER_OF_PLAYERS; i++)
+    {
+        if (players[i]->getScore() > bestScore)
+        {
+            bestScore = players[i]->getScore();
+            bestIndex = i;
+        }
+        else if (players[i]->getScore() > secondBestScore)
+        {
+            secondBestScore = players[i]->getScore();
+            secondBestIndex = i;
+        }
+
+        if (players[i]->getScore() < worstScore)
+        {
+            worstScore = players[i]->getScore();
+            worstIndex = i;
+        }
+    }
+
 #pragma omp parallel for
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
+        if (i == bestIndex || i == secondBestIndex)
+            continue;
+
         matrixArray = childs[i].getMatrixPtr();
 
         father1 = players[rand() % NUMBER_OF_PLAYERS];
@@ -241,9 +271,6 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
         }
         best1 = father1;
 
-        if (best1->getScore() > score)
-            score = best1->getScore();
-
         father1 = players[rand() % NUMBER_OF_PLAYERS];
 
         for (j = 0; j < TOURNAMENT_K; j++)
@@ -253,9 +280,6 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
                 father1 = father2;
         }
         best2 = father1;
-
-        if (best2->getScore() > score)
-            score = best2->getScore();
 
         matrixArrayBest1 = best1->ann->getMatrixPtr();
         matrixArrayBest2 = best2->ann->getMatrixPtr();
@@ -271,8 +295,20 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
 #pragma omp parallel for
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        if (players[i]->getScore() >= score)
+        if (i == bestIndex || i == secondBestIndex)
             continue;
+        
+        if (i == worstIndex)
+        {
+            matrixArray = childs[worstIndex].getMatrixPtr();
+            matrixArrayBest1 = players[bestIndex]->ann->getMatrixPtr();
+            matrixArrayBest2 = players[secondBestIndex]->ann->getMatrixPtr();
+
+            for (j = 0; j < layers.size() + 1; j++)
+            {
+                matrixArray[j] = (matrixArrayBest1[j] + matrixArrayBest2[j]) / 2;
+            }
+        }
 
         //changes ptr
         childs[i].setMatrix(players[i]->ann->setMatrix(childs[i].getMatrixPtr()));

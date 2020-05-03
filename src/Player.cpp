@@ -6,14 +6,12 @@
 
 Player::Player()
 {
-    turn = 1;
     score = 0;
     alive = true;
 
-    distSumX = 0;
-    distSumY = 0;
-    timeStand = MAX_TIME_STAND;
-    timeShot = SHOT_INTERVAL;
+    standInterval = 20;
+    timeStand = standInterval;
+    timeShot = shotInterval;
 }
 
 Player::~Player()
@@ -74,9 +72,9 @@ int Player::checkPosition()
 void Player::drawPlayer()
 {
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
-    //cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 5), sin(direction) * (RADIUS + 5)) + center, playerRay, 5);
+    cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, playerRay, 3);
     //cv::rectangle(screen->getMap(), center + cv::Point(sin(direction),cos(direction)), center + cv::Point(sin(direction) + 20,cos(direction) + 20), playerRay, cv::FILLED);
-    
+
     //cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
 }
 
@@ -149,7 +147,6 @@ int Player::checkMove(cv::Point offset)
 
 void Player::move()
 {
-    turn++;
     ///*
     //limits speed
     if (output[0][INDEX_DIRECTION] > angularSpeedLimit)
@@ -182,7 +179,20 @@ void Player::move()
     center += offset;
 
     if (!checkMove(offset) || offset == cv::Point(0, 0))
+    {
         center -= offset;
+        timeStand--;
+
+        if (timeStand <= 0)
+        {
+            score -= 4;
+            timeStand = standInterval / 2;
+        }
+    }
+    else
+    {
+        timeStand = standInterval;
+    }
 }
 
 enemyInfo_t Player::killPlayer(int rayNumber)
@@ -190,12 +200,12 @@ enemyInfo_t Player::killPlayer(int rayNumber)
     if (rayNumber < 0 || rayNumber > numberOfRays || timeShot > 0)
     {
         if (timeShot <= 0)
-            timeShot = SHOT_INTERVAL;
+            timeShot = shotInterval;
 
         return {cv::Point(-1, -1), NOTHING};
     }
 
-    timeShot = SHOT_INTERVAL;
+    timeShot = shotInterval;
 
     //score += 1.1;
 
@@ -263,13 +273,9 @@ void Player::setComunInput()
 
     (*input)[i] = center.x;
     (*input)[i + 1] = center.y;
+    (*input)[i + 2] = direction;
 
-    (*input)[i + 2] = life;
-
-    // for (int i = 0; i < ANNInputSize; i++)
-    // {
-    //     (*input)[i] = 0;
-    // }
+    (*input)[i + 3] = life;
 
     timeShot--;
 }
@@ -279,13 +285,11 @@ void Player::reset(int life, bool resetScore)
     if (resetScore)
         score = 0;
 
-    turn = 1;
     alive = true;
 
     this->life = life;
 
-    timeStand = MAX_TIME_STAND;
-    timeShot = SHOT_INTERVAL;
+    timeShot = shotInterval;
 
     setPosition();
     drawPlayer();
