@@ -5,7 +5,7 @@
 
 using namespace Eigen;
 
-#define POP_SIZE 10
+#define POP_SIZE 15
 #define INICIAL_SCORE -1000000
 
 const int TOURNAMENT_K_LIGHT_ASSAULTS = 5;

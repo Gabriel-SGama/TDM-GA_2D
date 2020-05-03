@@ -267,7 +267,7 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
 
         mutation(matrixArray);
     }
-    
+
 #pragma omp parallel for
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
     {

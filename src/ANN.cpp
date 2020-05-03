@@ -64,6 +64,11 @@ void ANN::multiply()
     for (unsigned int i = 1; i < layers.size(); i++)
     {
         intermediunOut[i] = matrixArray[i] * intermediunOut[i - 1];
+        for (int j = 0; j < intermediunOut[i].size(); j++)
+        {
+            intermediunOut[i][j] = tanh(intermediunOut[i][j]);
+        }
+        
     }
 
     output = matrixArray[layers.size()] * intermediunOut[layers.size() - 1];

@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#define NUMBER_OF_SNIPERS 6
+#define NUMBER_OF_SNIPERS 4
 #define SNIPER_HEALTH 50
 #define SNIPER_DAMAGE 25
 #define SNIPER_NUMBER_OF_RAYS 10

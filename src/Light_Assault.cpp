@@ -4,6 +4,7 @@ LightAssault::LightAssault() : Player()
 {
     playerType = LIGHT_ASSAULT;
     playerColor = LIGHT_ASSAULT_COLOR;
+    playerRay = LIGHT_ASSAULT_RAY;
     damage = LIGHT_ASSAULT_DAMAGE;
     life = LIGHT_ASSAULT_HEALTH;
     visionDist = LIGHT_ASSAULT_VISION_DIST;

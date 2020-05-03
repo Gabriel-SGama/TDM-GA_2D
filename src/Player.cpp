@@ -74,6 +74,9 @@ int Player::checkPosition()
 void Player::drawPlayer()
 {
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
+    //cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 5), sin(direction) * (RADIUS + 5)) + center, playerRay, 5);
+    //cv::rectangle(screen->getMap(), center + cv::Point(sin(direction),cos(direction)), center + cv::Point(sin(direction) + 20,cos(direction) + 20), playerRay, cv::FILLED);
+    
     //cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
 }
 
@@ -113,9 +116,7 @@ void Player::drawVisionLines(double currentAngle, int id)
         raysID[id] = screen->colorToId(screen->getColor(finalPt));
 
         if (raysID[id] != NOTHING)
-        {
             break;
-        }
     }
 
     raysDist[id] = i;
@@ -160,8 +161,8 @@ void Player::move()
     if (output[0][INDEX_SPEED] > speedLimit)
         output[0][INDEX_SPEED] = speedLimit;
 
-    else if (output[0][INDEX_SPEED] < -speedLimit)
-        output[0][INDEX_SPEED] = -speedLimit;
+    else if (output[0][INDEX_SPEED] < 0)
+        output[0][INDEX_SPEED] = 0;
 
     direction += output[0][INDEX_DIRECTION];
     //*/
@@ -173,7 +174,9 @@ void Player::move()
     else if (direction < -2 * M_PI)
         direction += 2 * M_PI;
 
-    cv::Point offset = cv::Point(output[0][INDEX_SPEED] * cos(direction), output[0][INDEX_SPEED] * sin(direction));
+    int speed = speedLimit * output[0][INDEX_SPEED];
+
+    cv::Point offset = cv::Point(speed * cos(direction), speed * sin(direction));
     //cv::Point offset = cv::Point(speedLimit * cos(direction), speedLimit * sin(direction));
 
     center += offset;
@@ -200,7 +203,7 @@ enemyInfo_t Player::killPlayer(int rayNumber)
 
     cv::Point enemyPoint;
 
-    currentAngle = separationAngle * rayNumber;
+    currentAngle = separationAngle * rayNumber + direction - visionAngle / 2;
 
     //enemy location
     enemyPoint.x = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * cos(currentAngle);
@@ -208,8 +211,8 @@ enemyInfo_t Player::killPlayer(int rayNumber)
 
     enemyPoint += center;
 
-    cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0), 2);
-    cv::circle(screen->getMap(), enemyPoint, 4, cv::Scalar(0, 0, 0), cv::FILLED);
+    cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0), 1);
+    cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
 
     return {enemyPoint, raysID[rayNumber]};
 }

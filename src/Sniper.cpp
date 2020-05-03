@@ -4,6 +4,7 @@ Sniper::Sniper() : Player()
 {
     playerType = SNIPER;
     playerColor = SNIPER_COLOR;
+    playerRay = SNIPER_RAY;
     damage = SNIPER_DAMAGE;
     life = SNIPER_HEALTH;
     visionDist = SNIPER_VISION_DIST;

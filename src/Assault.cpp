@@ -4,6 +4,7 @@ Assault::Assault() : Player()
 {
     playerType = ASSAULT;
     playerColor = ASSAULT_COLOR;
+    playerRay = ASSAULT_RAY;
     damage = ASSAULT_DAMAGE;
     life = ASSAULT_HEALTH;
     visionDist = ASSAULT_VISION_DIST;

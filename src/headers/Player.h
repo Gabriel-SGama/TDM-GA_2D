@@ -59,6 +59,7 @@ protected:
     cv::Point movePt; //position
 
     cv::Scalar playerColor; //color
+    cv::Scalar playerRay; //color
 
     std::string playerIDStr; //id->str
 
