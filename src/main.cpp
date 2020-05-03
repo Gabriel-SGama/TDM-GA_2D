@@ -43,12 +43,12 @@ void copyModerator()
     bestIndvsCopy->setAllPlayersValues();
 
     //mtx.lock();
-    // evolution->setBestIndvs();
-    ANN *bestLightAssaultMatrix = evolution->bestLightAssaultANN;
-    ANN *bestSniperMatrix = evolution->bestSniperANN;
-    ANN *bestAssaultMatrix = evolution->bestAssaultANN;
+    //evolution->setBestIndvs();
+    ANN *bestLightAssaultMatrix; //= evolution->bestLightAssaultANN;
+    ANN *bestSniperMatrix; //= evolution->bestSniperANN;
+    ANN *bestAssaultMatrix; //= evolution->bestAssaultANN;
 
-    bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
+    //bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
 
     while (true)
     {
@@ -67,7 +67,6 @@ void copyModerator()
         copyModerator->resetAllPlayers(true);
 
         mtx.lock();
-
         bestLightAssaultMatrix = evolution->bestLightAssaultANN;
         bestSniperMatrix = evolution->bestSniperANN;
         bestAssaultMatrix = evolution->bestAssaultANN;

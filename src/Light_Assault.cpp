@@ -14,7 +14,7 @@ LightAssault::LightAssault() : Player()
     speedLimit = LIGHT_ASSAULT_SPEED_LIMIT;
     angularSpeedLimit = LIGHT_ASSAULT_ANGULAR_SPEED_LIMIT;
 
-    direction = (rand() %(int) (M_PI * 200)) / 100.0;
+    direction = (rand() % (int)(M_PI * 200)) / 100.0;
     //std::cout << direction << std::endl;
     visionAngle = LIGHT_ASSAULT_VISION_ANGLE;
 
@@ -27,7 +27,6 @@ LightAssault::LightAssault() : Player()
 
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
-
 
     //vision + position + life
     ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1 + 1;

@@ -125,7 +125,7 @@ void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS, int num
 
     int maxIndex = 0;
     int k;
-    int max = -1;
+    float max = -1;
 
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
@@ -142,7 +142,9 @@ void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS, int num
             }
 
             if (max > 0)
-                enemyInfo = players[i].killPlayer((int)players[i].output[0][maxIndex - INDEX_SHOT]);
+            {
+                enemyInfo = players[i].killPlayer(maxIndex - INDEX_SHOT);
+            }
             else
                 continue;
 
@@ -162,7 +164,7 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
         if (shooter->getPlayerType() != LIGHT_ASSAULT)
             shooter->updateScore(LIGHT_ASSAULT_SHOT_REWARD);
         else
-            shooter->updateScore(-4 * LIGHT_ASSAULT_SHOT_REWARD);
+            shooter->updateScore(-2 * LIGHT_ASSAULT_SHOT_REWARD);
     }
 
     else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, NUMBER_OF_SNIPER_TRAIN, enemyInfo.posiAprox))
@@ -170,14 +172,14 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
         if (shooter->getPlayerType() != SNIPER)
             shooter->updateScore(SNIPER_SHOT_REWARD);
         else
-            shooter->updateScore(-4 * SNIPER_SHOT_REWARD);
+            shooter->updateScore(-2 * SNIPER_SHOT_REWARD);
     }
     else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, assaults, NUMBER_OF_ASSAULT_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() != ASSAULT)
             shooter->updateScore(ASSAULT_SHOT_REWARD);
         else
-            shooter->updateScore(-4 * ASSAULT_SHOT_REWARD);
+            shooter->updateScore(-2 * ASSAULT_SHOT_REWARD);
     }
 }
 

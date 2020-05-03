@@ -237,8 +237,12 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
     {
         if (players[i]->getScore() > bestScore)
         {
+            secondBestScore = bestScore;
+            secondBestIndex = i;
+            
             bestScore = players[i]->getScore();
             bestIndex = i;
+            
         }
         else if (players[i]->getScore() > secondBestScore)
         {
@@ -284,7 +288,7 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
         matrixArrayBest1 = best1->ann->getMatrixPtr();
         matrixArrayBest2 = best2->ann->getMatrixPtr();
 
-        for (j = 0; j < layers.size() + 1; j++)
+        for (j = 0; j < layerSize + 1; j++)
         {
             matrixArray[j] = (matrixArrayBest1[j] + matrixArrayBest2[j]) / 2;
         }
@@ -304,7 +308,7 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
             matrixArrayBest1 = players[bestIndex]->ann->getMatrixPtr();
             matrixArrayBest2 = players[secondBestIndex]->ann->getMatrixPtr();
 
-            for (j = 0; j < layers.size() + 1; j++)
+            for (j = 0; j < layerSize + 1; j++)
             {
                 matrixArray[j] = (matrixArrayBest1[j] + matrixArrayBest2[j]) / 2;
             }
@@ -322,14 +326,14 @@ void Evolution::mutation(MatrixXf *matrixArray)
     int colun;
 
     //simple mutation
-    for (unsigned int i = 0; i < layers.size() + 1; i++)
+    for (unsigned int i = 0; i < layerSize + 1; i++)
     {
         for (quant = 0; quant < 20; quant++)
         {
             line = rand() % matrixArray[i].rows();
             colun = rand() % matrixArray[i].cols();
 
-            matrixArray[i](line, colun) += (rand() % (2 * 750) - 750) / 10000.0;
+            matrixArray[i](line, colun) += (rand() % (2 * 75) - 75) / 10000.0;
         }
     }
 }

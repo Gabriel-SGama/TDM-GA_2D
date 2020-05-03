@@ -51,25 +51,35 @@ void ANN::setANNParameters(int inputSize, int outputSize)
 
 void ANN::multiply()
 {
+    int i;
+    int j;
+
     intermediunOut[0] = matrixArray[0] * input;
 
     //std::cout <<"inter: " << std::endl;
     //std::cout << intermediunOut[0] << std::endl;
 
-    for (int i = 1; i < layerSize; i++)
+    for (j = 0; j < intermediunOut[0].size(); j++)
+    {
+        intermediunOut[0][j] = tanh(intermediunOut[0][j]);
+    }
+
+    for (i = 1; i < layerSize; i++)
     {
         intermediunOut[i] = matrixArray[i] * intermediunOut[i - 1];
-        for (int j = 0; j < intermediunOut[i].size(); j++)
+        
+        for (j = 0; j < intermediunOut[i].size(); j++)
         {
             intermediunOut[i][j] = tanh(intermediunOut[i][j]);
         }
     }
 
-    if (layerSize > 0)
-        output = matrixArray[layerSize] * intermediunOut[layerSize - 1];
+    output = matrixArray[layerSize] * intermediunOut[layerSize - 1];
 
-    else
-        output = intermediunOut[0];
+    for (j = 0; j < output.size(); j++)
+    {
+        output[j] = tanh(output[j]);
+    }
 
     //std::cout <<"output: " << std::endl;
     //std::cout << output << std::endl;

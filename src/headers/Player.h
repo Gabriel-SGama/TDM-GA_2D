@@ -86,6 +86,7 @@ protected:
     float direction;
     float speedLimit;
     float angularSpeedLimit;
+    float lastAngularSpeed;
 
     double separationAngle; //offset to next ray
     double angleCorrection; //corrects rays positions

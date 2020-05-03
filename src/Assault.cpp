@@ -9,6 +9,7 @@ Assault::Assault() : Player()
     life = ASSAULT_HEALTH;
     visionDist = ASSAULT_VISION_DIST;
 
+    
     shotInterval = ASSAULT_SHOT_INTERVAL;
     speedLimit = ASSAULT_SPEED_LIMIT;
     angularSpeedLimit = ASSAULT_ANGULAR_SPEED_LIMIT;

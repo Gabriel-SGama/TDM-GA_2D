@@ -12,6 +12,10 @@ Player::Player()
     standInterval = 20;
     timeStand = standInterval;
     timeShot = shotInterval;
+
+    spinInterval = 20;
+    timeSpin = spinInterval;
+    lastAngularSpeed = 0;
 }
 
 Player::~Player()
@@ -173,7 +177,17 @@ void Player::move()
 
     int speed = speedLimit * output[0][INDEX_SPEED];
 
-    cv::Point offset = cv::Point(speed * cos(direction), speed * sin(direction));
+    if (std::fabs(output[0][INDEX_DIRECTION] - lastAngularSpeed) < 0.01)
+    {
+        timeSpin--;
+        if (timeSpin <= 0)
+        {
+            score -= 4;
+            timeSpin = spinInterval;
+        }
+    }
+
+    cv::Point offset = cv::Point((int)speed * cos(direction), (int)speed * sin(direction));
     //cv::Point offset = cv::Point(speedLimit * cos(direction), speedLimit * sin(direction));
 
     center += offset;
@@ -193,6 +207,8 @@ void Player::move()
     {
         timeStand = standInterval;
     }
+
+    lastAngularSpeed = output[0][INDEX_DIRECTION];
 }
 
 enemyInfo_t Player::killPlayer(int rayNumber)
@@ -290,6 +306,8 @@ void Player::reset(int life, bool resetScore)
     this->life = life;
 
     timeShot = shotInterval;
+    timeSpin = spinInterval;
+    timeStand = standInterval;
 
     setPosition();
     drawPlayer();
