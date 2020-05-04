@@ -461,10 +461,13 @@ void Moderator::game()
     {
         drawAllPlayers();
         updateAllPlayersVision();
-        conflictsAllPlayers();
-        checkAllPlayersLife();
+
         defineAllPlayersInput();
         multiplyAllPlayers();
+
+        conflictsAllPlayers();
+        checkAllPlayersLife();
+
         moveAllPlayers();
     }
     calculateScore();
@@ -476,13 +479,16 @@ void Moderator::gameOfBest()
     {
         drawAllPlayers();
         updateAllPlayersVision();
+
+        defineAllPlayersInput();
+        multiplyAllPlayers();
+
         conflictsAllPlayers();
 
         screen->updateMap();
 
         checkAllPlayersLife();
-        defineAllPlayersInput();
-        multiplyAllPlayers();
+
         moveAllPlayers();
     }
     calculateScore();

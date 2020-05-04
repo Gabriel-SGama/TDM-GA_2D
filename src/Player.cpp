@@ -89,8 +89,8 @@ void Player::updateVision()
     currentAngle = direction - visionAngle / 2;
     for (int i = 0; i < numberOfRays; i++)
     {
-        currentAngle += separationAngle;
         drawVisionLines(currentAngle, i);
+        currentAngle += separationAngle;
     }
 }
 
