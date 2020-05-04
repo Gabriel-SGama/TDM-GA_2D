@@ -108,7 +108,7 @@ void Screen::resetImage()
 void Screen::updateMap()
 {
     cv::imshow(windowName, map);
-    cv::waitKey(0);
+    cv::waitKey(30);
 }
 
 cv::Mat Screen::getMap()
