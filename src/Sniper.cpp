@@ -29,7 +29,7 @@ Sniper::Sniper() : Player()
     raysDist = new int[numberOfRays];
 
 
-    //vision + position + life
+    //vision + position + life + direction
     ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1 + 1;
     //angle + distance + shot id
     ANNOutputSize = 1 + 1 + numberOfRays;
