@@ -44,9 +44,13 @@ void copyModerator()
 
     //mtx.lock();
     //evolution->setBestIndvs();
-    ANN *bestLightAssaultMatrix; //= evolution->bestLightAssaultANN;
-    ANN *bestSniperMatrix; //= evolution->bestSniperANN;
-    ANN *bestAssaultMatrix; //= evolution->bestAssaultANN;
+    ANN *bestLightAssaultMatrix = new ANN; //= evolution->bestLightAssaultANN;
+    ANN *bestSniperMatrix = new ANN;       //= evolution->bestSniperANN;
+    ANN *bestAssaultMatrix = new ANN;      //= evolution->bestAssaultANN;
+
+    bestLightAssaultMatrix->setANNParameters(lightAssaults->ANNInputSize, lightAssaults->ANNOutputSize);
+    bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
+    bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
 
     //bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
 
@@ -67,9 +71,10 @@ void copyModerator()
         copyModerator->resetAllPlayers(true);
 
         mtx.lock();
-        bestLightAssaultMatrix = evolution->bestLightAssaultANN;
-        bestSniperMatrix = evolution->bestSniperANN;
-        bestAssaultMatrix = evolution->bestAssaultANN;
+
+        bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
+        bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
+        bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
 
         bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
         mtx.unlock();
@@ -144,6 +149,13 @@ int main()
         std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
 
         evolution->setBestIndvs();
+
+        if (!(gen % 10))
+        {
+            evolution->genocideAll();
+            std::cout << "genocide" << std::endl;
+        }
+
         evolution->reset();
         mtx.unlock();
         //*/

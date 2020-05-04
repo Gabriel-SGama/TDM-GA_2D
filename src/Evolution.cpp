@@ -239,10 +239,9 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
         {
             secondBestScore = bestScore;
             secondBestIndex = i;
-            
+
             bestScore = players[i]->getScore();
             bestIndex = i;
-            
         }
         else if (players[i]->getScore() > secondBestScore)
         {
@@ -301,7 +300,7 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
     {
         if (i == bestIndex || i == secondBestIndex)
             continue;
-        
+
         if (i == worstIndex)
         {
             matrixArray = childs[worstIndex].getMatrixPtr();
@@ -335,6 +334,58 @@ void Evolution::mutation(MatrixXf *matrixArray)
 
             matrixArray[i](line, colun) += (rand() % (2 * 75) - 75) / 10000.0;
         }
+    }
+}
+
+void quickSort(Player **players, int low, int high)
+{
+    int i = low;
+    int j = high;
+    float pivot = players[(i + j) / 2]->getScore();
+    float temp;
+
+    while (i <= j)
+    {
+        while (players[i]->getScore() < pivot)
+            i++;
+
+        while (players[j]->getScore() > pivot)
+            j--;
+
+        if (i <= j)
+        {
+            //swap
+            players[j]->ann->setMatrix(players[i]->ann->setMatrix(players[j]->ann->getMatrixPtr()));
+
+            temp = players[j]->getScore();
+            players[j]->setScore(players[i]->getScore());
+            players[i]->setScore(temp);
+
+            i++;
+            j--;
+        }
+    }
+
+    if (j > low)
+        quickSort(players, low, j);
+    if (i < high)
+        quickSort(players, i, high);
+}
+
+void Evolution::genocideAll(){
+    
+    genocide(allLightAssaults, NUMBER_OF_LIGHT_ASSAULTS);  
+    genocide(allSnipers, NUMBER_OF_SNIPERS);  
+    genocide(allAssaults, NUMBER_OF_ASSAULTS);  
+}
+
+void Evolution::genocide(Player **players, int NUMBER_OF_PLAYERS)
+{
+    quickSort(players, 0, NUMBER_OF_PLAYERS - 1);
+
+    for (int i = 0; i < 10; i++)
+    {
+        players[i]->ann->reset();
     }
 }
 

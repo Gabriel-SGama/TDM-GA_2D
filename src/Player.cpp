@@ -177,7 +177,7 @@ void Player::move()
 
     int speed = speedLimit * output[0][INDEX_SPEED];
 
-    if (std::fabs(output[0][INDEX_DIRECTION] - lastAngularSpeed) < 0.01)
+    if ((output[0][INDEX_DIRECTION] > 0 && lastAngularSpeed > 0) || (output[0][INDEX_DIRECTION] < 0 && lastAngularSpeed < 0))
     {
         timeSpin--;
         if (timeSpin <= 0)
@@ -186,9 +186,12 @@ void Player::move()
             timeSpin = spinInterval;
         }
     }
+    else
+    {
+        timeSpin = spinInterval;
+    }
 
     cv::Point offset = cv::Point((int)speed * cos(direction), (int)speed * sin(direction));
-    //cv::Point offset = cv::Point(speedLimit * cos(direction), speedLimit * sin(direction));
 
     center += offset;
 
@@ -263,7 +266,6 @@ void Player::setAlive(bool alive)
 void Player::setComunInput()
 {
     int i;
-    //float distance;
 
     for (i = 0; i < 2 * numberOfRays; i += 2)
     {
@@ -279,10 +281,7 @@ void Player::setComunInput()
             continue;
         }
 
-        //distance = cv::norm(center - playersCenter[j][0]) * RADIUS * 2;
 
-        //(*input)[i] = playersCenter[j]->x / distance;
-        //(*input)[i + 1] = playersCenter[j]->y / distance;
         (*input)[i] = center.x - playersCenter[j]->x;
         (*input)[i + 1] = center.y - playersCenter[j]->y;
     }

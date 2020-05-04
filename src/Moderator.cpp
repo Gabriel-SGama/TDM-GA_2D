@@ -162,24 +162,24 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
     if (enemyInfo.playerType == LIGHT_ASSAULT && findPlayer(shooter, lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() != LIGHT_ASSAULT)
-            shooter->updateScore(LIGHT_ASSAULT_SHOT_REWARD);
+            shooter->updateScore(1 * LIGHT_ASSAULT_SHOT_REWARD);
         else
-            shooter->updateScore(-2 * LIGHT_ASSAULT_SHOT_REWARD);
+            shooter->updateScore(1 * -2 * LIGHT_ASSAULT_SHOT_REWARD);
     }
 
     else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, NUMBER_OF_SNIPER_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() != SNIPER)
-            shooter->updateScore(SNIPER_SHOT_REWARD);
+            shooter->updateScore(1 * SNIPER_SHOT_REWARD);
         else
-            shooter->updateScore(-2 * SNIPER_SHOT_REWARD);
+            shooter->updateScore(1 * -2 * SNIPER_SHOT_REWARD);
     }
     else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, assaults, NUMBER_OF_ASSAULT_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() != ASSAULT)
-            shooter->updateScore(ASSAULT_SHOT_REWARD);
+            shooter->updateScore(1 * ASSAULT_SHOT_REWARD);
         else
-            shooter->updateScore(-2 * ASSAULT_SHOT_REWARD);
+            shooter->updateScore(1 * -2 * ASSAULT_SHOT_REWARD);
     }
 }
 

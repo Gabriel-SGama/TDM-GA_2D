@@ -32,6 +32,7 @@ public:
     ~ANN();
 
     void setANNParameters(int inputSize, int outputSize);
+    void reset();
     void multiply();
 
     inline VectorXf *getOutputPtr() { return &output; }

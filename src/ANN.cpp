@@ -19,9 +19,6 @@ void ANN::setANNParameters(int inputSize, int outputSize)
 
     output[INDEX_SHOT] = -1;
 
-    //input.Random(inputSize);
-
-    //output.Random(outputSize);
     aux.push_back(inputSize);
 
     for (i = 0; i < layerSize; i++)
@@ -33,8 +30,6 @@ void ANN::setANNParameters(int inputSize, int outputSize)
 
     intermediunOut = new VectorXf[layerSize];
     matrixArray = new MatrixXf[aux.size() - 1];
-    //intermediunOut.resize(layerSize);
-    //matrixArray.resize(aux.size() - 1);
 
     for (i = 0; i < aux.size() - 1; i++)
     {
@@ -46,6 +41,17 @@ void ANN::setANNParameters(int inputSize, int outputSize)
     for (i = 0; i < layerSize; i++)
     {
         intermediunOut[i] = VectorXf(layers[i]);
+    }
+}
+
+void ANN::reset()
+{
+
+    for (int i = 0; i < aux.size() - 1; i++)
+    {
+        matrixArray[i] = MatrixXf::Random(aux[i + 1], aux[i]);
+        matrixArray[i] = (matrixArray[i] + MatrixXf::Constant(aux[i + 1], aux[i], 1.)) * RAND_LIMIT;
+        matrixArray[i] = matrixArray[i] + MatrixXf::Constant(aux[i + 1], aux[i], -RAND_LIMIT);
     }
 }
 
@@ -67,7 +73,7 @@ void ANN::multiply()
     for (i = 1; i < layerSize; i++)
     {
         intermediunOut[i] = matrixArray[i] * intermediunOut[i - 1];
-        
+
         for (j = 0; j < intermediunOut[i].size(); j++)
         {
             intermediunOut[i][j] = tanh(intermediunOut[i][j]);

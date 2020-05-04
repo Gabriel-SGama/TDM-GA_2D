@@ -2,12 +2,12 @@
 
 #include <eigen3/Eigen/Dense>
 
-#define DURATION 400
+#define DURATION 300
 
 //rewards
-#define LIGHT_ASSAULT_SHOT_REWARD 3
-#define SNIPER_SHOT_REWARD 3
-#define ASSAULT_SHOT_REWARD 3
+#define LIGHT_ASSAULT_SHOT_REWARD 1
+#define SNIPER_SHOT_REWARD 1
+#define ASSAULT_SHOT_REWARD 1
 
 class Moderator;
 
