@@ -266,14 +266,15 @@ void Player::setAlive(bool alive)
 void Player::setComunInput()
 {
     int i;
+    int j;
 
-    for (i = 0; i < 2 * numberOfRays; i += 2)
+    for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++)
     {
-        (*input)[i] = raysID[i];
-        (*input)[i + 1] = raysDist[i];
+        (*input)[i] = raysID[j];
+        (*input)[i + 1] = raysDist[j];
     }
 
-    for (int j = 0; i < 2 * (NUMBER_OF_TOTAL_PLAYERS - 1 + numberOfRays); i += 2, j++)
+    for (j = 0; i < 2 * (NUMBER_OF_TOTAL_PLAYERS - 1 + numberOfRays); i += 2, j++)
     {
         if (j == playerID)
         {
@@ -281,9 +282,10 @@ void Player::setComunInput()
             continue;
         }
 
-
         (*input)[i] = center.x - playersCenter[j]->x;
         (*input)[i + 1] = center.y - playersCenter[j]->y;
+        //(*input)[i] = 0;
+        //(*input)[i + 1] = 0;
     }
 
     (*input)[i] = center.x;

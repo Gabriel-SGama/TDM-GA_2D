@@ -134,11 +134,12 @@ int main()
         assault->updateVision();
         
         screen->updateMap();
-        
+        lightAssault->setComunInput();
+        lightAssault->ann->multiply();
         lightAssault->move();
-        sniper->move();
-        assault->move();
-        */
+        //sniper->move();
+        //assault->move();
+        //*/
         ///*
         mtx.lock();
         evolution->game();

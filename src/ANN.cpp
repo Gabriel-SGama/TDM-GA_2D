@@ -60,6 +60,9 @@ void ANN::multiply()
     int i;
     int j;
 
+    //std::cout << "input: " << std::endl;
+    //std::cout << input << std::endl;
+
     intermediunOut[0] = matrixArray[0] * input;
 
     //std::cout <<"inter: " << std::endl;
