@@ -257,7 +257,7 @@ void Player::setAlive(bool alive)
 
     if (!alive)
     {
-        updateScore(-3);
+        updateScore(-50);
         center.x = 0;
         center.y = 0;
     }

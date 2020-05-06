@@ -10,14 +10,7 @@
 // g++ *.cpp -o main `pkg-config --cflags --libs opencv4`
 
 std::mutex mtx;
-Moderator *bestModerator;
 Evolution *evolution;
-
-void runModerator(Moderator *copyModerator)
-{
-    copyModerator->gameOfBest();
-    copyModerator->resetAllPlayers(true);
-}
 
 void copyModerator()
 {
@@ -42,11 +35,9 @@ void copyModerator()
     bestIndvsCopy->screen->setScreenParam("best indvs");
     bestIndvsCopy->setAllPlayersValues();
 
-    //mtx.lock();
-    //evolution->setBestIndvs();
-    ANN *bestLightAssaultMatrix = new ANN; //= evolution->bestLightAssaultANN;
-    ANN *bestSniperMatrix = new ANN;       //= evolution->bestSniperANN;
-    ANN *bestAssaultMatrix = new ANN;      //= evolution->bestAssaultANN;
+    ANN *bestLightAssaultMatrix = new ANN;
+    ANN *bestSniperMatrix = new ANN;
+    ANN *bestAssaultMatrix = new ANN;
 
     bestLightAssaultMatrix->setANNParameters(lightAssaults->ANNInputSize, lightAssaults->ANNOutputSize);
     bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
@@ -62,10 +53,7 @@ void copyModerator()
         copyModerator->copyAllWeights(lightAssaults, snipers, assaults);
         std::cout << "finish copy " << std::endl;
 
-        //std::thread th2(runModerator, bestIndvsCopy);
         mtx.unlock();
-
-        //std::thread th1(runModerator, copyModerator);
 
         copyModerator->gameOfBest();
         copyModerator->resetAllPlayers(true);

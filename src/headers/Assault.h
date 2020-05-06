@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#define NUMBER_OF_ASSAULTS 4
+#define NUMBER_OF_ASSAULTS 5
 #define ASSAULT_HEALTH 50
 #define ASSAULT_DAMAGE 25
 #define ASSAULT_NUMBER_OF_RAYS 12
