@@ -96,14 +96,18 @@ int main()
 
     screen->setScreenParam("test");
     screen->createObstacle();
-    
-    LightAssault *lightAssault = new LightAssault;
+
+    LightAssault *lightAssault1 = new LightAssault;
+    LightAssault *lightAssault2 = new LightAssault;
     Sniper *sniper = new Sniper;
     Assault *assault = new Assault;
 
-    lightAssault->setPlayerValues(screen, 0, 100, nullptr);
+    lightAssault1->setPlayerValues(screen, 0, 100, nullptr);
+    lightAssault2->setPlayerValues(screen, 0, 100, nullptr);
     sniper->setPlayerValues(screen, 1, 100, nullptr);
     assault->setPlayerValues(screen, 2, 100, nullptr);
+    
+    Eigen::MatrixXf *matrixArray = lightAssault1->ann->getMatrixPtr();    
     //*/
 
     while (1)
@@ -113,20 +117,38 @@ int main()
         screen->resetImage();
         screen->createObstacle();
 
-        lightAssault->drawPlayer();
+        lightAssault1->drawPlayer();
+        lightAssault2->drawPlayer();
         sniper->drawPlayer();
         assault->drawPlayer();
-        
-        lightAssault->updateVision();
+
+        lightAssault1->updateVision();
+        lightAssault2->updateVision();
         sniper->updateVision();
         assault->updateVision();
-        
+
         screen->updateMap();
-        lightAssault->setComunInput();
-        lightAssault->ann->multiply();
-        lightAssault->move();
+        lightAssault1->setComunInput();
+        //lightAssault2->setComunInput();
+        lightAssault1->ann->multiply();
+        //lightAssault2->ann->multiply();
+        lightAssault1->move();
+        //lightAssault2->move();
         //sniper->move();
         //assault->move();
+
+        if (gen == 5)
+        {
+            std::cout << "changing" << std::endl;
+            lightAssault1->ann->copyWheights(lightAssault2->ann->getMatrixPtr());
+        }
+
+        if (!(gen % 10))
+        {
+            matrixArray = lightAssault1->ann->getMatrixPtr();
+        }
+        std::cout << "matrix array:" << matrixArray[0] << std::endl;
+
         //*/
         ///*
         mtx.lock();

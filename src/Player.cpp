@@ -182,7 +182,7 @@ void Player::move()
         timeSpin--;
         if (timeSpin <= 0)
         {
-            score -= 0; //4;
+            score -= 0;
             timeSpin = spinInterval;
         }
     }
@@ -202,7 +202,7 @@ void Player::move()
 
         if (timeStand <= 0)
         {
-            score -= 0; //4;
+            score -= 0;
             timeStand = standInterval;
         }
     }
@@ -260,7 +260,7 @@ void Player::setAlive(bool alive, int turn)
 
     if (!alive)
     {
-        updateScore(-punishes * 4 - 3);
+        updateScore(-punishes * 1 - 3);
         center.x = 0;
         center.y = 0;
     }
@@ -268,15 +268,16 @@ void Player::setAlive(bool alive, int turn)
 
 void Player::setComunInput()
 {
-    int i;
+    int i = 0;
     int j;
-
+    ///*
     for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++)
     {
         (*input)[i] = raysID[j];
-        (*input)[i + 1] = raysDist[j];
+        (*input)[i + 1] = raysDist[j] / 10.0;
     }
-
+    //*/
+    ///*
     i = 2 * numberOfRays;
     for (j = 0; i < 2 * (NUMBER_OF_TOTAL_PLAYERS - 1 + numberOfRays); i += 2, j++)
     {
@@ -286,16 +287,15 @@ void Player::setComunInput()
             continue;
         }
 
-        (*input)[i] = playersCenter[j]->x;
-        (*input)[i + 1] = playersCenter[j]->y;
-
+        (*input)[i] = playersCenter[j]->x / 50.0;
+        (*input)[i + 1] = playersCenter[j]->y / 50.0;
     }
     i--;
-    (*input)[i] = center.x;
-    (*input)[i + 1] = center.y;
+    //*/
+    (*input)[i] = center.x / 50.0;
+    (*input)[i + 1] = center.y / 50.0;
     (*input)[i + 2] = direction;
-
-    (*input)[i + 3] = life;
+    (*input)[i + 3] = life / 10.0;
 
     timeShot--;
 }

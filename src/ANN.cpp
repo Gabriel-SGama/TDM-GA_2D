@@ -17,7 +17,7 @@ void ANN::setANNParameters(int inputSize, int outputSize)
     input.resize(inputSize);
     output.resize(outputSize);
 
-    output[INDEX_SHOT] = -1;
+    //output[INDEX_SHOT] = -1;
 
     aux.push_back(inputSize);
 
@@ -92,6 +92,8 @@ void ANN::multiply()
     {
         output = matrixArray[0] * input;
     }
+
+    //std::cout << "matrix: " << matrixArray[0] << std::endl;
 
     for (j = 0; j < output.size(); j++)
     {

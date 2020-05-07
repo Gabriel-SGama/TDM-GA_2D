@@ -216,7 +216,7 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
     int secondBestIndex = 0;
     int worstIndex = 0;
 
-    unsigned int j;
+    int j;
 
     float bestScore = INICIAL_SCORE;
     float secondBestScore = INICIAL_SCORE;

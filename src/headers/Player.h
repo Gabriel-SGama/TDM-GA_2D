@@ -8,11 +8,11 @@
 class Player;
 
 //Player ID:
-#define NOTHING 10
-#define LIGHT_ASSAULT 20
-#define ASSAULT 30
-#define SNIPER 40
-#define OBSTACLE 50
+#define NOTHING 0
+#define LIGHT_ASSAULT 5
+#define ASSAULT 10
+#define SNIPER 15
+#define OBSTACLE 20
 
 //Vision and player paramters
 #define RADIUS 10
