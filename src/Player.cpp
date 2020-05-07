@@ -273,11 +273,18 @@ void Player::setComunInput()
     ///*
     for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++)
     {
-        (*input)[i] = raysID[j];
+        if (raysID[j] == playerType)
+        {
+            (*input)[i] = -raysID[j];
+        }
+        else
+        {
+            (*input)[i] = raysID[j];
+        }
         (*input)[i + 1] = raysDist[j] / 10.0;
     }
     //*/
-    ///*
+    /*
     i = 2 * numberOfRays;
     for (j = 0; i < 2 * (NUMBER_OF_TOTAL_PLAYERS - 1 + numberOfRays); i += 2, j++)
     {
@@ -292,6 +299,8 @@ void Player::setComunInput()
     }
     i--;
     //*/
+    i = 2 * numberOfRays;
+
     (*input)[i] = center.x / 50.0;
     (*input)[i + 1] = center.y / 50.0;
     (*input)[i + 2] = direction;
