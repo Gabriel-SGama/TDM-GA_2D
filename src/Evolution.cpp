@@ -325,9 +325,9 @@ void Evolution::mutation(MatrixXf *matrixArray)
     int colun;
 
     //simple mutation
-    for (unsigned int i = 0; i < layerSize + 1; i++)
+    for (int i = 0; i < layerSize + 1; i++)
     {
-        for (quant = 0; quant < 20; quant++)
+        for (quant = 0; quant < 7; quant++)
         {
             line = rand() % matrixArray[i].rows();
             colun = rand() % matrixArray[i].cols();
@@ -372,18 +372,19 @@ void quickSort(Player **players, int low, int high)
         quickSort(players, i, high);
 }
 
-void Evolution::genocideAll(){
-    
-    genocide(allLightAssaults, NUMBER_OF_LIGHT_ASSAULTS);  
-    genocide(allSnipers, NUMBER_OF_SNIPERS);  
-    genocide(allAssaults, NUMBER_OF_ASSAULTS);  
+void Evolution::genocideAll()
+{
+
+    genocide(allLightAssaults, NUMBER_OF_LIGHT_ASSAULTS);
+    genocide(allSnipers, NUMBER_OF_SNIPERS);
+    genocide(allAssaults, NUMBER_OF_ASSAULTS);
 }
 
 void Evolution::genocide(Player **players, int NUMBER_OF_PLAYERS)
 {
     quickSort(players, 0, NUMBER_OF_PLAYERS - 1);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < NUMBER_OF_PLAYERS / 6; i++)
     {
         players[i]->ann->reset();
     }

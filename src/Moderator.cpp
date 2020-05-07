@@ -15,6 +15,7 @@ Moderator::~Moderator()
 
 void Moderator::setModerator(int NUMBER_OF_LIGHT_ASSAULT_TRAIN, int NUMBER_OF_SNIPER_TRAIN, int NUMBER_OF_ASSAULT_TRAIN)
 {
+    turn = 0;
     lightAssaultScore = 0;
     sniperScore = 0;
     assaultScore = 0;
@@ -141,7 +142,7 @@ void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS, int num
                 }
             }
 
-            if (max > 0)
+            if (max > 0.0001)
             {
                 enemyInfo = players[i].killPlayer(maxIndex - INDEX_SHOT);
             }
@@ -228,8 +229,10 @@ void Moderator::checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS)
 {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
-        if (players[i].getLife() <= 0)
-            players[i].setAlive(false);
+        if (players[i].getLife() <= 0 && players[i].isAlive())
+        {
+            players[i].setAlive(false, turn);
+        }
     }
 }
 
@@ -288,7 +291,9 @@ void Moderator::calculateScore()
 
     for (i = 0; i < NUMBER_OF_LIGHT_ASSAULT_TRAIN; i++)
     {
+        //lightAssaults[i].updateScore(lightAssaults[i].getCenter().x - LENGTH);
         indvScore = lightAssaults[i].getScore();
+
 
         if (indvScore > bestLightAssault->score)
         {
@@ -300,7 +305,9 @@ void Moderator::calculateScore()
 
     for (i = 0; i < NUMBER_OF_SNIPER_TRAIN; i++)
     {
+        //snipers[i].updateScore(snipers[i].getCenter().x - LENGTH);
         indvScore = snipers[i].getScore();
+
 
         if (indvScore > bestSniper->score)
         {
@@ -312,7 +319,9 @@ void Moderator::calculateScore()
 
     for (i = 0; i < NUMBER_OF_ASSAULT_TRAIN; i++)
     {
+        //assaults[i].updateScore(assaults[i].getCenter().x - LENGTH);
         indvScore = assaults[i].getScore();
+
 
         if (indvScore > bestAssault->score)
         {
@@ -457,7 +466,7 @@ void Moderator::setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *traito
 
 void Moderator::game()
 {
-    for (int i = 0; i < DURATION; i++)
+    for (turn = 0; turn < DURATION; turn++)
     {
         drawAllPlayers();
         updateAllPlayersVision();

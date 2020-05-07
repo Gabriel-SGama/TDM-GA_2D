@@ -3,7 +3,7 @@
 #include <vector>
 #include <eigen3/Eigen/Dense>
 
-#define RAND_LIMIT 0.5
+#define RAND_LIMIT 1
 
 //output indexs
 #define INDEX_DIRECTION 0
@@ -13,7 +13,7 @@
 using namespace Eigen;
 
 const std::vector<int> layers({80});
-const int layerSize = 1;
+const int layerSize = 0;
 //const std::vector<int> layers({3, 2});
 
 class ANN

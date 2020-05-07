@@ -41,6 +41,7 @@ private:
     Sniper *snipers;
     Assault *assaults;
 
+    int turn;
 public:
     int NUMBER_OF_LIGHT_ASSAULT_TRAIN;
     int NUMBER_OF_SNIPER_TRAIN;

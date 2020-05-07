@@ -139,7 +139,7 @@ int main()
 
         evolution->setBestIndvs();
 
-        if (!(gen % 10))
+        if (!(gen % 20))
         {
             evolution->genocideAll();
             std::cout << "genocide" << std::endl;

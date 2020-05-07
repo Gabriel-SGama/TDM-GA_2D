@@ -8,11 +8,11 @@
 class Player;
 
 //Player ID:
-#define NOTHING 1
-#define LIGHT_ASSAULT 2
-#define ASSAULT 3
-#define SNIPER 4
-#define OBSTACLE 5
+#define NOTHING 10
+#define LIGHT_ASSAULT 20
+#define ASSAULT 30
+#define SNIPER 40
+#define OBSTACLE 50
 
 //Vision and player paramters
 #define RADIUS 10
@@ -54,19 +54,19 @@ protected:
     cv::Point movePt; //position
 
     cv::Scalar playerColor; //color
-    cv::Scalar playerRay; //color
+    cv::Scalar playerRay;   //color
 
     std::string playerIDStr; //id->str
 
     bool alive; //player status
 
-    int playerType;  //type of player
-    int playerID;    //number of player
-    int life;        //current life
+    int playerType; //type of player
+    int playerID;   //number of player
+    int life;       //current life
     //int radiusOffset;
     int damage; //player damage
     int visionDist;
-    
+
     int shotInterval;
     int timeShot;
 
@@ -125,7 +125,7 @@ public:
     inline void updateScore(float change) { score += change; }
     inline void setScore(float newScore) { score = newScore; }
 
-    void setAlive(bool alive);
+    void setAlive(bool alive, int punish);
 
     //initial values
     void setPlayerValues(Screen *screen, int playerID, int life, cv::Point **playersCenter); //inicial values

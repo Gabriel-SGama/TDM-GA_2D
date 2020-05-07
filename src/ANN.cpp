@@ -28,10 +28,10 @@ void ANN::setANNParameters(int inputSize, int outputSize)
 
     aux.push_back(outputSize);
 
-    intermediunOut = new VectorXf[layerSize];
-    matrixArray = new MatrixXf[aux.size() - 1];
+    intermediunOut = new VectorXf[layerSize + 1]; //if layer size == 0, no error
+    matrixArray = new MatrixXf[layerSize + 1];
 
-    for (i = 0; i < aux.size() - 1; i++)
+    for (i = 0; i < layerSize + 1; i++)
     {
         matrixArray[i] = MatrixXf::Random(aux[i + 1], aux[i]);
         matrixArray[i] = (matrixArray[i] + MatrixXf::Constant(aux[i + 1], aux[i], 1.)) * RAND_LIMIT;
@@ -47,7 +47,7 @@ void ANN::setANNParameters(int inputSize, int outputSize)
 void ANN::reset()
 {
 
-    for (int i = 0; i < aux.size() - 1; i++)
+    for (int i = 0; i < layerSize + 1; i++)
     {
         matrixArray[i] = MatrixXf::Random(aux[i + 1], aux[i]);
         matrixArray[i] = (matrixArray[i] + MatrixXf::Constant(aux[i + 1], aux[i], 1.)) * RAND_LIMIT;
@@ -63,27 +63,35 @@ void ANN::multiply()
     //std::cout << "input: " << std::endl;
     //std::cout << input << std::endl;
 
-    intermediunOut[0] = matrixArray[0] * input;
-
-    //std::cout <<"inter: " << std::endl;
-    //std::cout << intermediunOut[0] << std::endl;
-
-    for (j = 0; j < intermediunOut[0].size(); j++)
+    if (layerSize > 0)
     {
-        intermediunOut[0][j] = tanh(intermediunOut[0][j]);
-    }
 
-    for (i = 1; i < layerSize; i++)
-    {
-        intermediunOut[i] = matrixArray[i] * intermediunOut[i - 1];
+        intermediunOut[0] = matrixArray[0] * input;
 
-        for (j = 0; j < intermediunOut[i].size(); j++)
+        //std::cout <<"inter: " << std::endl;
+        //std::cout << intermediunOut[0] << std::endl;
+
+        for (j = 0; j < intermediunOut[0].size(); j++)
         {
-            intermediunOut[i][j] = tanh(intermediunOut[i][j]);
+            intermediunOut[0][j] = tanh(intermediunOut[0][j]);
         }
-    }
 
-    output = matrixArray[layerSize] * intermediunOut[layerSize - 1];
+        for (i = 1; i < layerSize; i++)
+        {
+            intermediunOut[i] = matrixArray[i] * intermediunOut[i - 1];
+
+            for (j = 0; j < intermediunOut[i].size(); j++)
+            {
+                intermediunOut[i][j] = tanh(intermediunOut[i][j]);
+            }
+        }
+
+        output = matrixArray[layerSize] * intermediunOut[layerSize - 1];
+    }
+    else
+    {
+        output = matrixArray[0] * input;
+    }
 
     for (j = 0; j < output.size(); j++)
     {
