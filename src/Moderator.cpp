@@ -165,7 +165,7 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
         if (shooter->getPlayerType() != LIGHT_ASSAULT)
             shooter->updateScore(1 * LIGHT_ASSAULT_SHOT_REWARD);
         else
-            shooter->updateScore(1 * -2 * LIGHT_ASSAULT_SHOT_REWARD);
+            shooter->updateScore(1 * -2.5 * LIGHT_ASSAULT_SHOT_REWARD);
     }
 
     else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, NUMBER_OF_SNIPER_TRAIN, enemyInfo.posiAprox))
@@ -173,14 +173,14 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo)
         if (shooter->getPlayerType() != SNIPER)
             shooter->updateScore(1 * SNIPER_SHOT_REWARD);
         else
-            shooter->updateScore(1 * -2 * SNIPER_SHOT_REWARD);
+            shooter->updateScore(1 * -2.5 * SNIPER_SHOT_REWARD);
     }
     else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, assaults, NUMBER_OF_ASSAULT_TRAIN, enemyInfo.posiAprox))
     {
         if (shooter->getPlayerType() != ASSAULT)
             shooter->updateScore(1 * ASSAULT_SHOT_REWARD);
         else
-            shooter->updateScore(1 * -2 * ASSAULT_SHOT_REWARD);
+            shooter->updateScore(1 * -2.5 * ASSAULT_SHOT_REWARD);
     }
 }
 
@@ -196,7 +196,7 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
 
         distance = cv::norm(players[i].getCenter() - enemyPoint);
 
-        if (distance <= RADIUS)
+        if (distance <= RADIUS + 1)
         {
             players[i].takeDamage(shooter->getDamage());
             //friend fire doesnt count to score
@@ -294,7 +294,6 @@ void Moderator::calculateScore()
         //lightAssaults[i].updateScore(lightAssaults[i].getCenter().x - LENGTH);
         indvScore = lightAssaults[i].getScore();
 
-
         if (indvScore > bestLightAssault->score)
         {
             bestLightAssault->score = indvScore;
@@ -308,7 +307,6 @@ void Moderator::calculateScore()
         //snipers[i].updateScore(snipers[i].getCenter().x - LENGTH);
         indvScore = snipers[i].getScore();
 
-
         if (indvScore > bestSniper->score)
         {
             bestSniper->score = indvScore;
@@ -321,7 +319,6 @@ void Moderator::calculateScore()
     {
         //assaults[i].updateScore(assaults[i].getCenter().x - LENGTH);
         indvScore = assaults[i].getScore();
-
 
         if (indvScore > bestAssault->score)
         {
@@ -427,7 +424,7 @@ void Moderator::copyAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnip
 
 void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS)
 {
-    unsigned int j;
+    int j;
 
     MatrixXf *newMatrixArray;
     MatrixXf *matrixArray;

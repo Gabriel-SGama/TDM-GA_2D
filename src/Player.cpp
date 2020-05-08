@@ -273,14 +273,7 @@ void Player::setComunInput()
     ///*
     for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++)
     {
-        if (raysID[j] == playerType)
-        {
-            (*input)[i] = -raysID[j];
-        }
-        else
-        {
-            (*input)[i] = raysID[j];
-        }
+        (*input)[i] = raysID[j];
         (*input)[i + 1] = raysDist[j] / 10.0;
     }
     //*/

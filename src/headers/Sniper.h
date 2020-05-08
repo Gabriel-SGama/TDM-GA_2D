@@ -2,9 +2,9 @@
 
 #include <cmath>
 
-#define NUMBER_OF_SNIPERS 5
-#define SNIPER_HEALTH 50
-#define SNIPER_DAMAGE 25
+#define NUMBER_OF_SNIPERS 4
+#define SNIPER_HEALTH 75
+#define SNIPER_DAMAGE 50
 #define SNIPER_NUMBER_OF_RAYS 5
 #define SNIPER_SPEED_LIMIT 5.0
 #define SNIPER_VISION_DIST 250
