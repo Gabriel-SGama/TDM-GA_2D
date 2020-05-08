@@ -28,7 +28,7 @@ LightAssault::LightAssault() : Player()
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
 
-    //vision + position + life
+    //vision + position + life + direction
     //ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1 + 1;
     ANNInputSize = numberOfRays * 2 + 2 + 1 + 1;
     //angle + distance + shot id

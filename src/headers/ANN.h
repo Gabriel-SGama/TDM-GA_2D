@@ -12,8 +12,8 @@
 
 using namespace Eigen;
 
-const std::vector<int> layers({60});
-const int layerSize = layers.size();
+const std::vector<int> layers;
+const int layerSize = 0;
 //const std::vector<int> layers({3, 2});
 
 class ANN

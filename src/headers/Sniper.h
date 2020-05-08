@@ -12,7 +12,7 @@
 
 
 const float SNIPER_ANGULAR_SPEED_LIMIT = M_PI / 40;
-const float SNIPER_VISION_ANGLE = M_PI / 6;
+const float SNIPER_VISION_ANGLE = M_PI / 4.5;
 
 class Sniper;
 

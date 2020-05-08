@@ -273,7 +273,14 @@ void Player::setComunInput()
     ///*
     for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++)
     {
-        (*input)[i] = raysID[j];
+        if (raysID[j] == playerType)
+            (*input)[i] = ALLY;
+        else if (raysID[j] == NOTHING || raysID[j] == OBSTACLE)
+            (*input)[i] = raysID[j];
+        else
+            (*input)[i] = ENEMY;
+
+        //(*input)[i] = raysID[j];
         (*input)[i + 1] = raysDist[j] / 10.0;
     }
     //*/
