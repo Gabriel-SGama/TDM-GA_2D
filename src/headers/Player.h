@@ -12,7 +12,7 @@ class Player;
 #define LIGHT_ASSAULT 10
 #define ASSAULT 15
 #define SNIPER 20
-#define OBSTACLE 5
+#define OBSTACLE 50
 
 #define ALLY 20
 #define ENEMY -20
