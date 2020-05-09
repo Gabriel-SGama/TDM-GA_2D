@@ -31,10 +31,10 @@ Sniper::Sniper() : Player()
 
     //vision + position + life + direction
     //ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1 + 1;
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1;
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + MEMORY_SIZE;
 
     //angle + distance + shot id
-    ANNOutputSize = 1 + 1 + numberOfRays;
+    ANNOutputSize = 1 + 1 + numberOfRays + MEMORY_SIZE;
 
     //ann = new ANN(ANNInputSize, ANNOutputSize);
     ann = new ANN;

@@ -306,6 +306,13 @@ void Player::setComunInput()
     (*input)[i + 2] = direction;
     (*input)[i + 3] = life / 10.0;
 
+    i += 3;
+
+    for (j = 0; j < MEMORY_SIZE; i++, j++)
+    {
+        (*input)[i] = (*output)[j + INDEX_SHOT + 1];
+    }
+
     timeShot--;
 }
 

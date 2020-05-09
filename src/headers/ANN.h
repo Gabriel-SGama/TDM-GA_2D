@@ -9,11 +9,12 @@
 #define INDEX_DIRECTION 0
 #define INDEX_SPEED 1
 #define INDEX_SHOT 2
+#define MEMORY_SIZE 5
 
 using namespace Eigen;
 
-const std::vector<int> layers;
-const int layerSize = 0;
+const std::vector<int> layers({30});
+const int layerSize = 1;
 //const std::vector<int> layers({3, 2});
 
 class ANN
