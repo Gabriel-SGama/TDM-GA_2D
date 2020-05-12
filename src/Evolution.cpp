@@ -140,7 +140,7 @@ void Evolution::game()
 {
     int i;
 
-#pragma omp parallel for num_threads(4)
+#pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
     {
         lightAssaultTraining[i].game();
@@ -187,7 +187,7 @@ void Evolution::reset()
     //sets weigths
     bestTeams->setAllWeights(bestLightAssaults->getLightAssaults(), bestSnipers->getSnipers(), bestAssaults->getAssaults());
 
-#pragma omp parallel for num_threads(4)
+#pragma omp parallel for
     for (int i = 0; i < POP_SIZE; i++)
     {
         lightAssaultTraining[i].setAllWeights(nullptr, bestTeams->getSnipers(), bestTeams->getAssaults());

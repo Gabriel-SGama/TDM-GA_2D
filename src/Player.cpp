@@ -134,8 +134,21 @@ int Player::checkMove(cv::Point offset)
 {
     cv::Point pt;
 
-    //checks movement in an angle of 90 degres to each side
-    for (float i = direction - M_PI_2; i < M_PI_2 + direction; i += 0.1)
+    float angle = atan2(offset.y, offset.x);
+
+    ///*
+    float aux = 0;
+
+    /*
+    if (output[0][INDEX_FRONT_SPEED] < 0)
+    {
+        aux = M_PI;
+        //std::cout << "change" << std::endl;
+    }
+    //*/
+    
+    //for (float i = direction - M_PI_2 + aux; i < M_PI_2 + direction + aux; i += 0.1)
+    for (float i = angle - M_PI_2; i < M_PI_2 + angle; i += 0.1)
     {
         pt.x = cos(i) * _RADIUS_TOTAL_DISTANCE;
         pt.y = sin(i) * _RADIUS_TOTAL_DISTANCE;
@@ -144,6 +157,8 @@ int Player::checkMove(cv::Point offset)
 
         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
             return 0;
+
+        //cv::circle(screen->getMap(), pt, 1, cv::Scalar(0, 1, 255), cv::FILLED);
     }
 
     return 1;
@@ -152,18 +167,13 @@ int Player::checkMove(cv::Point offset)
 void Player::move()
 {
     ///*
-    //limits speed
+    //limits frontSpeed
+
     if (output[0][INDEX_DIRECTION] > angularSpeedLimit)
         output[0][INDEX_DIRECTION] = angularSpeedLimit;
 
     else if (output[0][INDEX_DIRECTION] < -angularSpeedLimit)
         output[0][INDEX_DIRECTION] = -angularSpeedLimit;
-
-    if (output[0][INDEX_SPEED] > speedLimit)
-        output[0][INDEX_SPEED] = speedLimit;
-
-    else if (output[0][INDEX_SPEED] < 0)
-        output[0][INDEX_SPEED] = 0;
 
     direction += output[0][INDEX_DIRECTION];
     //*/
@@ -175,7 +185,8 @@ void Player::move()
     else if (direction < -2 * M_PI)
         direction += 2 * M_PI;
 
-    int speed = speedLimit * output[0][INDEX_SPEED];
+    int frontSpeed = speedLimit * output[0][INDEX_FRONT_SPEED];
+    int sideSpeed = speedLimit * output[0][INDEX_SIDE_SPEED];
 
     if ((output[0][INDEX_DIRECTION] > 0 && lastAngularSpeed > 0) || (output[0][INDEX_DIRECTION] < 0 && lastAngularSpeed < 0))
     {
@@ -191,7 +202,9 @@ void Player::move()
         timeSpin = spinInterval;
     }
 
-    cv::Point offset = cv::Point((int)speed * cos(direction), (int)speed * sin(direction));
+    //frontSpeed = -10;
+    cv::Point offset = cv::Point((int)(frontSpeed * cos(direction) + sideSpeed * cos(direction + M_PI_2)), (int)(frontSpeed * sin(direction) + sideSpeed * sin(direction + M_PI_2)));
+    //cv::Point offset = cv::Point(-1, -1);
 
     center += offset;
 

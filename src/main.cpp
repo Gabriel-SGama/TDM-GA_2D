@@ -112,7 +112,7 @@ int main()
 
     while (1)
     {
-        std::cout << "gen: " << gen << std::endl;
+        //std::cout << "gen: " << gen << std::endl;
         /*
         screen->resetImage();
         screen->createObstacle();
@@ -127,16 +127,19 @@ int main()
         sniper->updateVision();
         assault->updateVision();
 
-        screen->updateMap();
+        //screen->updateMap();
         lightAssault1->setComunInput();
         //lightAssault2->setComunInput();
         lightAssault1->ann->multiply();
         //lightAssault2->ann->multiply();
         lightAssault1->move();
+        screen->updateMap();
+
         //lightAssault2->move();
         //sniper->move();
         //assault->move();
-
+        //*/
+        /*
         if (gen == 5)
         {
             std::cout << "changing" << std::endl;

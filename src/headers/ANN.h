@@ -7,13 +7,14 @@
 
 //output indexs
 #define INDEX_DIRECTION 0
-#define INDEX_SPEED 1
-#define INDEX_SHOT 2
-#define MEMORY_SIZE 5
+#define INDEX_FRONT_SPEED 1
+#define INDEX_SIDE_SPEED 2
+#define INDEX_SHOT 3
+#define MEMORY_SIZE 10
 
 using namespace Eigen;
 
-const std::vector<int> layers({30});
+const std::vector<int> layers({45});
 const int layerSize = 1;
 //const std::vector<int> layers({3, 2});
 
