@@ -1,5 +1,4 @@
 #pragma once
-
 #include <eigen3/Eigen/Dense>
 
 #define DURATION 300
@@ -20,7 +19,6 @@ class Moderator;
 const int NUMBER_OF_TOTAL_PLAYERS = NUMBER_OF_LIGHT_ASSAULTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS;
 
 using namespace Eigen;
-
 typedef struct dataOfBestPlayers_t
 {
     int index;

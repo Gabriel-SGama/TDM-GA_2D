@@ -36,7 +36,7 @@ public:
     Screen();
     ~Screen();
 
-    void setScreenParam(std::string name);
+    void setScreenParam(std::string name, int xPos, int yPos);
 
     int colorToId(cv::Scalar color); //transforms color to id
 

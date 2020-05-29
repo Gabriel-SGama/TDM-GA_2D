@@ -7,15 +7,11 @@
 #include "headers/ANN.h"
 #include "headers/Evolution.h"
 
-// g++ *.cpp -o main `pkg-config --cflags --libs opencv4`
-
 std::mutex mtx;
 Evolution *evolution;
 
 void copyModerator()
 {
-    //cv::waitKey(1000);
-
     Moderator *copyModerator = new Moderator;
     //Screen *screen = new Screen;
 
@@ -25,14 +21,14 @@ void copyModerator()
 
     copyModerator->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
     copyModerator->setScreen(new Screen);
-    copyModerator->screen->setScreenParam("best teams");
+    copyModerator->screen->setScreenParam("best teams", 0, 0);
     copyModerator->setAllPlayersValues();
 
     Moderator *bestIndvsCopy = new Moderator;
 
     bestIndvsCopy->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
     bestIndvsCopy->setScreen(new Screen);
-    bestIndvsCopy->screen->setScreenParam("best indvs");
+    bestIndvsCopy->screen->setScreenParam("best indvs", LENGTH + 67, 0);
     bestIndvsCopy->setAllPlayersValues();
 
     ANN *bestLightAssaultMatrix = new ANN;
@@ -43,15 +39,13 @@ void copyModerator()
     bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
     bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
 
-    //bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
-
     while (true)
     {
         mtx.lock();
-        //evolution->setBestIndvs();
-        std::cout << "copying " << std::endl;
+        // evolution->setBestIndvs();
+        // std::cout << "copying " << std::endl;
         copyModerator->copyAllWeights(lightAssaults, snipers, assaults);
-        std::cout << "finish copy " << std::endl;
+        // std::cout << "finish copy " << std::endl;
 
         mtx.unlock();
 
@@ -59,7 +53,6 @@ void copyModerator()
         copyModerator->resetAllPlayers(true);
 
         mtx.lock();
-
         bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
         bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
         bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
@@ -68,9 +61,6 @@ void copyModerator()
         mtx.unlock();
         bestIndvsCopy->gameOfBest();
         bestIndvsCopy->resetAllPlayers(true);
-
-        //th1.join();
-        //th2.join();
     }
 }
 
@@ -112,7 +102,6 @@ int main()
 
     while (1)
     {
-        //std::cout << "gen: " << gen << std::endl;
         /*
         screen->resetImage();
         screen->createObstacle();
@@ -157,7 +146,7 @@ int main()
         mtx.lock();
         evolution->game();
         evolution->tournamentAll();
-
+        std::cout << "-------------GEN " << gen << " -------------" << std::endl;
         std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
         std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
         std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
@@ -167,7 +156,7 @@ int main()
         if (!(gen % 20))
         {
             evolution->genocideAll();
-            std::cout << "genocide" << std::endl;
+            std::cout << "-------------genocide-------------" << std::endl;
         }
 
         evolution->reset();
@@ -175,7 +164,6 @@ int main()
         //*/
 
         cv::waitKey(1); //time to copy
-
         gen++;
     }
 

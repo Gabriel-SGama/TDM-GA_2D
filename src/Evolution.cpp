@@ -61,12 +61,12 @@ Evolution::Evolution()
         assaultsTraining[i].setAllWeights(bestTeams->getLightAssaults(), bestTeams->getSnipers(), nullptr);
     }
 
-    //stores relation results
+    //stores tournament results
     lightAssaultChilds = new ANN[TOTAL_NUMBER_OF_LIGHT_ASSAULTS];
     snipersChilds = new ANN[TOTAL_NUMBER_OF_SNIPERS];
     assaultsChilds = new ANN[TOTAL_NUMER_OF_ASSAULTS];
 
-    //create the matrixs
+    //create the matrixs for the childs
     createANN(lightAssaultChilds, TOTAL_NUMBER_OF_LIGHT_ASSAULTS, bestTeams->getLightAssaults()->ANNInputSize, bestTeams->getLightAssaults()->ANNOutputSize);
     createANN(snipersChilds, TOTAL_NUMBER_OF_SNIPERS, bestTeams->getSnipers()->ANNInputSize, bestTeams->getSnipers()->ANNOutputSize);
     createANN(assaultsChilds, TOTAL_NUMER_OF_ASSAULTS, bestTeams->getAssaults()->ANNInputSize, bestTeams->getAssaults()->ANNOutputSize);
@@ -131,7 +131,6 @@ void Evolution::setPlayersPtr()
         {
             allAssaults[numberOfAssaults + j] = &playersPtr[j];
         }
-
         numberOfAssaults += assaultsTraining[i].NUMBER_OF_ASSAULT_TRAIN;
     }
 }
@@ -141,12 +140,14 @@ void Evolution::game()
     int i;
 
 #pragma omp parallel for
+    //game
     for (i = 0; i < POP_SIZE; i++)
     {
         lightAssaultTraining[i].game();
         snipersTraining[i].game();
         assaultsTraining[i].game();
     }
+
     //select best team
     for (i = 0; i < POP_SIZE; i++)
     {
@@ -154,7 +155,6 @@ void Evolution::game()
         snipersTraining[i].calculateScore();
         assaultsTraining[i].calculateScore();
 
-        /* code */
         if (lightAssaultTraining[i].lightAssaultScore > bestLightAssaultTeamScore)
         {
             bestLightAssaultTeamScore = lightAssaultTraining[i].lightAssaultScore;
@@ -374,7 +374,6 @@ void quickSort(Player **players, int low, int high)
 
 void Evolution::genocideAll()
 {
-
     genocide(allLightAssaults, NUMBER_OF_LIGHT_ASSAULTS);
     genocide(allSnipers, NUMBER_OF_SNIPERS);
     genocide(allAssaults, NUMBER_OF_ASSAULTS);

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <cmath>
 
 #define NUMBER_OF_ASSAULTS 4
@@ -20,7 +19,7 @@ class Assault;
 class Assault : public Player
 {
 private:
-    /* data */
+
 public:
     Assault();
     ~Assault();

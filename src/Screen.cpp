@@ -12,10 +12,11 @@ Screen::Screen()
     matToMatrix();
 }
 
-void Screen::setScreenParam(std::string name)
+void Screen::setScreenParam(std::string name, int xPos, int yPos)
 {
     windowName = name;
     cv::namedWindow(windowName);
+    cv::moveWindow(windowName, xPos, yPos);
 }
 
 uchar **Screen::getMatrix()

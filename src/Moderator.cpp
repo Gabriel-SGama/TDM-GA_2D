@@ -50,9 +50,7 @@ void Moderator::setModerator(int NUMBER_OF_LIGHT_ASSAULT_TRAIN, int NUMBER_OF_SN
 void Moderator::setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset)
 {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
-    {
         playersCenter[i + offset] = players[i].getCenterPtr();
-    }
 }
 
 void Moderator::setScreen(Screen *screen)
@@ -199,9 +197,10 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
         if (distance <= RADIUS + 1)
         {
             players[i].takeDamage(shooter->getDamage());
-            //friend fire doesnt count to score
+    
             if (players[i].getLife() <= 0)
             {
+                //friend fire doesnt count to score
                 if (shooter->getPlayerType() == players[i].getPlayerType())
                     players[i].updateScore(3);
                 else if (shooter->getPlayerType() == LIGHT_ASSAULT)
@@ -211,10 +210,10 @@ int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYER
                 else
                     assaultScore += 1;
             }
-
             return 1;
         }
     }
+
     return 0;
 }
 
@@ -230,9 +229,7 @@ void Moderator::checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS)
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         if (players[i].getLife() <= 0 && players[i].isAlive())
-        {
             players[i].setAlive(false, turn);
-        }
     }
 }
 
@@ -291,7 +288,6 @@ void Moderator::calculateScore()
 
     for (i = 0; i < NUMBER_OF_LIGHT_ASSAULT_TRAIN; i++)
     {
-        //lightAssaults[i].updateScore(lightAssaults[i].getCenter().x - LENGTH);
         indvScore = lightAssaults[i].getScore();
 
         if (indvScore > bestLightAssault->score)
@@ -304,7 +300,6 @@ void Moderator::calculateScore()
 
     for (i = 0; i < NUMBER_OF_SNIPER_TRAIN; i++)
     {
-        //snipers[i].updateScore(snipers[i].getCenter().x - LENGTH);
         indvScore = snipers[i].getScore();
 
         if (indvScore > bestSniper->score)
@@ -317,7 +312,6 @@ void Moderator::calculateScore()
 
     for (i = 0; i < NUMBER_OF_ASSAULT_TRAIN; i++)
     {
-        //assaults[i].updateScore(assaults[i].getCenter().x - LENGTH);
         indvScore = assaults[i].getScore();
 
         if (indvScore > bestAssault->score)
@@ -355,42 +349,6 @@ void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, b
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
         players[i].reset(life, resetScore);
 }
-
-/*
-Assault *Moderator::getAssaults()
-{
-    int i;
-    int j;
-
-    Assault *best;
-
-    float bestScore;
-
-    //put the top 'NUMBER_OF_ASSAULTS'(2) in the start
-    //faster for small numbers of assaults
-    for (i = 0; i < NUMBER_OF_ASSAULTS; i++)
-    {
-        best = &assaults[i];
-        bestScore = best->getScore();
-
-        for (j = i + 1; j < NUMBER_OF_ASSAULT_TRAIN; j++)
-        {
-            if (assaults[j].getScore() > bestScore)
-            {
-                best = &assaults[j];
-                bestScore = best->getScore();
-            }
-        }
-
-        //changes matrix ptr
-        best->ann->setMatrix(assaults[i].ann->setMatrix(best->ann->getMatrixPtr()));
-        //changes the best
-        best->setScore(INICIAL_SCORE);
-    }
-
-    return assaults;
-}
-*/
 
 void Moderator::setAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnipers, Assault *bestAssaults)
 {
@@ -434,10 +392,10 @@ void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_
         newMatrixArray = new MatrixXf[layerSize + 1];
         delete[] players[i].ann->getMatrixPtr();
         matrixArray = bestPlayers[i].ann->getMatrixPtr();
+        
         for (j = 0; j < layerSize + 1; j++)
-        {
             newMatrixArray[j] = matrixArray[j];
-        }
+
         players[i].ann->setMatrix(newMatrixArray);
     }
 }
@@ -447,18 +405,13 @@ void Moderator::setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *traito
     int i;
 
     for (i = 0; i < NUMBER_OF_LIGHT_ASSAULT_TRAIN; i++)
-    {
         lightAssaults[i].ann->setMatrix(inocentMatrix);
-    }
 
     for (i = 0; i < NUMBER_OF_SNIPER_TRAIN; i++)
-    {
         snipers[i].ann->setMatrix(traitorMatrix);
-    }
+
     for (i = 0; i < NUMBER_OF_ASSAULT_TRAIN; i++)
-    {
         assaults[i].ann->setMatrix(detectiveMatrix);
-    }
 }
 
 void Moderator::game()
@@ -490,9 +443,7 @@ void Moderator::gameOfBest()
         multiplyAllPlayers();
 
         conflictsAllPlayers();
-
         screen->updateMap();
-
         checkAllPlayersLife();
 
         moveAllPlayers();

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <cmath>
 
 #define NUMBER_OF_LIGHT_ASSAULTS 4

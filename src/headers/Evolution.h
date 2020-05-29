@@ -8,11 +8,11 @@ using namespace Eigen;
 #define POP_SIZE 15
 #define INICIAL_SCORE -1000000
 
-const int TOURNAMENT_K_LIGHT_ASSAULTS = 6;
-const int TOURNAMENT_K_SNIPERS = 6;
-const int TOURNAMENT_K_ASSAULTS = 6;
+//number of players for tournament
+const int TOURNAMENT_K_LIGHT_ASSAULTS = 5;
+const int TOURNAMENT_K_SNIPERS = 5;
+const int TOURNAMENT_K_ASSAULTS = 5;
 
-//static int turn = 1;
 class Evolution
 {
 private:
@@ -63,7 +63,6 @@ public:
     void tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs, int TOURNAMENT_K);
 
     void mutation(MatrixXf *matrixArray);
-    //void crossover();
 
     void genocideAll();
     void genocide(Player **players, int NUMBER_OF_PLAYERS);

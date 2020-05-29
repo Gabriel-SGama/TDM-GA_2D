@@ -28,14 +28,12 @@ Assault::Assault() : Player()
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
 
-    //vision + position + life  + direction
-    //ANNInputSize = numberOfRays * 2 + 2 * NUMBER_OF_TOTAL_PLAYERS + 1 + 1;
+    //vision + position + life  + direction + memory
     ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + MEMORY_SIZE;
     
     //angle + front speed + side speed + Shot rays + memory
     ANNOutputSize = 1 + 1 + 1 + numberOfRays + MEMORY_SIZE;
 
-    //ann = new ANN(ANNInputSize, ANNOutputSize);
     ann = new ANN;
     ann->setANNParameters(ANNInputSize, ANNOutputSize);
 
@@ -45,5 +43,4 @@ Assault::Assault() : Player()
 
 Assault::~Assault()
 {
-    std::cout << "delete" << std::endl;
 }

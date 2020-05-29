@@ -42,8 +42,6 @@ void Player::setPlayerValues(Screen *screen, int playerID, int life, cv::Point *
 
 void Player::setPosition()
 {
-    //int safeDist = 2 * RADIUS + RADIUS_OFFSET;
-
     center.x = LENGTH / 2;
     center.y = HEIGHT / 2;
 
@@ -77,8 +75,6 @@ void Player::drawPlayer()
 {
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
     cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, playerRay, 3);
-    //cv::rectangle(screen->getMap(), center + cv::Point(sin(direction),cos(direction)), center + cv::Point(sin(direction) + 20,cos(direction) + 20), playerRay, cv::FILLED);
-
     //cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
 }
 
@@ -136,18 +132,6 @@ int Player::checkMove(cv::Point offset)
 
     float angle = atan2(offset.y, offset.x);
 
-    ///*
-    float aux = 0;
-
-    /*
-    if (output[0][INDEX_FRONT_SPEED] < 0)
-    {
-        aux = M_PI;
-        //std::cout << "change" << std::endl;
-    }
-    //*/
-    
-    //for (float i = direction - M_PI_2 + aux; i < M_PI_2 + direction + aux; i += 0.1)
     for (float i = angle - M_PI_2; i < M_PI_2 + angle; i += 0.1)
     {
         pt.x = cos(i) * _RADIUS_TOTAL_DISTANCE;
@@ -166,9 +150,7 @@ int Player::checkMove(cv::Point offset)
 
 void Player::move()
 {
-    ///*
     //limits frontSpeed
-
     if (output[0][INDEX_DIRECTION] > angularSpeedLimit)
         output[0][INDEX_DIRECTION] = angularSpeedLimit;
 
@@ -176,7 +158,6 @@ void Player::move()
         output[0][INDEX_DIRECTION] = -angularSpeedLimit;
 
     direction += output[0][INDEX_DIRECTION];
-    //*/
 
     //direction += angularSpeedLimit;
 
@@ -188,43 +169,10 @@ void Player::move()
     int frontSpeed = speedLimit * output[0][INDEX_FRONT_SPEED];
     int sideSpeed = speedLimit * output[0][INDEX_SIDE_SPEED];
 
-    if ((output[0][INDEX_DIRECTION] > 0 && lastAngularSpeed > 0) || (output[0][INDEX_DIRECTION] < 0 && lastAngularSpeed < 0))
-    {
-        timeSpin--;
-        if (timeSpin <= 0)
-        {
-            score -= 0;
-            timeSpin = spinInterval;
-        }
-    }
-    else
-    {
-        timeSpin = spinInterval;
-    }
-
-    //frontSpeed = -10;
     cv::Point offset = cv::Point((int)(frontSpeed * cos(direction) + sideSpeed * cos(direction + M_PI_2)), (int)(frontSpeed * sin(direction) + sideSpeed * sin(direction + M_PI_2)));
-    //cv::Point offset = cv::Point(-1, -1);
 
-    center += offset;
-
-    if (!checkMove(offset) || offset == cv::Point(0, 0))
-    {
-        center -= offset;
-        timeStand--;
-
-        if (timeStand <= 0)
-        {
-            score -= 0;
-            timeStand = standInterval;
-        }
-    }
-    else
-    {
-        timeStand = standInterval;
-    }
-
-    lastAngularSpeed = output[0][INDEX_DIRECTION];
+    if (checkMove(offset))
+        center += offset;
 }
 
 enemyInfo_t Player::killPlayer(int rayNumber)
@@ -239,10 +187,7 @@ enemyInfo_t Player::killPlayer(int rayNumber)
 
     timeShot = shotInterval;
 
-    //score += 1.1;
-
     double currentAngle;
-
     cv::Point enemyPoint;
 
     currentAngle = separationAngle * rayNumber + direction - visionAngle / 2;
@@ -293,7 +238,6 @@ void Player::setComunInput()
         else
             (*input)[i] = ENEMY;
 
-        //(*input)[i] = raysID[j];
         (*input)[i + 1] = raysDist[j] / 10.0;
     }
     //*/
