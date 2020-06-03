@@ -6,8 +6,7 @@
 
 using namespace Eigen;
 
-Evolution::Evolution()
-{
+Evolution::Evolution() {
     bestLightAssaultTeamScore = INICIAL_SCORE;
     bestSniperTeamScore = INICIAL_SCORE;
     bestAssaultTeamScore = INICIAL_SCORE;
@@ -42,8 +41,7 @@ Evolution::Evolution()
     snipersTraining = new Moderator[POP_SIZE];
     assaultsTraining = new Moderator[POP_SIZE];
 
-    for (int i = 0; i < POP_SIZE; i++)
-    {
+    for (int i = 0; i < POP_SIZE; i++) {
         lightAssaultTraining[i].setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
         lightAssaultTraining[i].setScreen(new Screen);
         lightAssaultTraining[i].setAllPlayersValues();
@@ -79,18 +77,15 @@ Evolution::Evolution()
     setPlayersPtr();
 }
 
-Evolution::~Evolution()
-{
+Evolution::~Evolution() {
 }
 
-void Evolution::createANN(ANN *childs, int NUMBER_OF_PLAYERS, int inputSize, int outputSize)
-{
+void Evolution::createANN(ANN *childs, int NUMBER_OF_PLAYERS, int inputSize, int outputSize) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
         childs[i].setANNParameters(inputSize, outputSize);
 }
 
-void Evolution::setPlayersPtr()
-{
+void Evolution::setPlayersPtr() {
     int i;
     int j;
 
@@ -100,83 +95,70 @@ void Evolution::setPlayersPtr()
 
     Player *playersPtr;
 
-    for (i = 0; i < POP_SIZE; i++)
-    {
+    for (i = 0; i < POP_SIZE; i++) {
         playersPtr = lightAssaultTraining[i].getLightAssaults();
-        for (j = 0; j < lightAssaultTraining[i].NUMBER_OF_LIGHT_ASSAULT_TRAIN; j++)
-        {
+        for (j = 0; j < lightAssaultTraining[i].NUMBER_OF_LIGHT_ASSAULT_TRAIN; j++) {
             allLightAssaults[numberOfLightAssaults + j] = &playersPtr[j];
         }
 
         numberOfLightAssaults += lightAssaultTraining[i].NUMBER_OF_LIGHT_ASSAULT_TRAIN;
     }
 
-    for (i = 0; i < POP_SIZE; i++)
-    {
+    for (i = 0; i < POP_SIZE; i++) {
         playersPtr = snipersTraining[i].getSnipers();
 
-        for (j = 0; j < snipersTraining[i].NUMBER_OF_SNIPER_TRAIN; j++)
-        {
+        for (j = 0; j < snipersTraining[i].NUMBER_OF_SNIPER_TRAIN; j++) {
             allSnipers[numberOfSnipers + j] = &playersPtr[j];
         }
 
         numberOfSnipers += snipersTraining[i].NUMBER_OF_SNIPER_TRAIN;
     }
 
-    for (i = 0; i < POP_SIZE; i++)
-    {
+    for (i = 0; i < POP_SIZE; i++) {
         playersPtr = assaultsTraining[i].getAssaults();
 
-        for (j = 0; j < assaultsTraining[i].NUMBER_OF_ASSAULT_TRAIN; j++)
-        {
+        for (j = 0; j < assaultsTraining[i].NUMBER_OF_ASSAULT_TRAIN; j++) {
             allAssaults[numberOfAssaults + j] = &playersPtr[j];
         }
         numberOfAssaults += assaultsTraining[i].NUMBER_OF_ASSAULT_TRAIN;
     }
 }
 
-void Evolution::game()
-{
+void Evolution::game() {
     int i;
 
 #pragma omp parallel for
     //game
-    for (i = 0; i < POP_SIZE; i++)
-    {
+    for (i = 0; i < POP_SIZE; i++) {
         lightAssaultTraining[i].game();
         snipersTraining[i].game();
         assaultsTraining[i].game();
     }
 
     //select best team
-    for (i = 0; i < POP_SIZE; i++)
-    {
+    for (i = 0; i < POP_SIZE; i++) {
         lightAssaultTraining[i].calculateScore();
         snipersTraining[i].calculateScore();
         assaultsTraining[i].calculateScore();
 
-        if (lightAssaultTraining[i].lightAssaultScore > bestLightAssaultTeamScore)
-        {
+        if (lightAssaultTraining[i].lightAssaultScore > bestLightAssaultTeamScore) {
             bestLightAssaultTeamScore = lightAssaultTraining[i].lightAssaultScore;
             bestLightAssaults = &lightAssaultTraining[i];
         }
 
-        if (assaultsTraining[i].assaultScore > bestAssaultTeamScore)
-        {
+        if (assaultsTraining[i].assaultScore > bestAssaultTeamScore) {
             bestAssaultTeamScore = assaultsTraining[i].assaultScore;
             bestAssaults = &assaultsTraining[i];
         }
 
-        if (snipersTraining[i].sniperScore > bestSniperTeamScore)
-        {
+        if (snipersTraining[i].sniperScore > bestSniperTeamScore) {
             bestSniperTeamScore = snipersTraining[i].sniperScore;
             bestSnipers = &snipersTraining[i];
         }
     }
 }
 
-void Evolution::reset()
-{
+void Evolution::reset() {
     if (bestAssaultTeamScore <= INICIAL_SCORE)
         bestAssaults = assaultsTraining;
 
@@ -188,8 +170,7 @@ void Evolution::reset()
     bestTeams->setAllWeights(bestLightAssaults->getLightAssaults(), bestSnipers->getSnipers(), bestAssaults->getAssaults());
 
 #pragma omp parallel for
-    for (int i = 0; i < POP_SIZE; i++)
-    {
+    for (int i = 0; i < POP_SIZE; i++) {
         lightAssaultTraining[i].setAllWeights(nullptr, bestTeams->getSnipers(), bestTeams->getAssaults());
         snipersTraining[i].setAllWeights(bestTeams->getLightAssaults(), nullptr, bestTeams->getAssaults());
         assaultsTraining[i].setAllWeights(bestTeams->getLightAssaults(), bestTeams->getSnipers(), nullptr);
@@ -202,15 +183,13 @@ void Evolution::reset()
     bestTeams->resetAllPlayers(true);
 }
 
-void Evolution::tournamentAll()
-{
+void Evolution::tournamentAll() {
     tournament(allLightAssaults, TOTAL_NUMBER_OF_LIGHT_ASSAULTS, lightAssaultChilds, TOURNAMENT_K_LIGHT_ASSAULTS);
     tournament(allSnipers, TOTAL_NUMBER_OF_SNIPERS, snipersChilds, TOURNAMENT_K_SNIPERS);
     tournament(allAssaults, TOTAL_NUMER_OF_ASSAULTS, assaultsChilds, TOURNAMENT_K_ASSAULTS);
 }
 
-void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs, int TOURNAMENT_K)
-{
+void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs, int TOURNAMENT_K) {
     int i;
     int bestIndex = 0;
     int secondBestIndex = 0;
@@ -233,32 +212,26 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
     MatrixXf *matrixArrayBest2;
 
     //get the top 2 and the worst
-    for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-    {
-        if (players[i]->getScore() > bestScore)
-        {
+    for (i = 0; i < NUMBER_OF_PLAYERS; i++) {
+        if (players[i]->getScore() > bestScore) {
             secondBestScore = bestScore;
             secondBestIndex = i;
 
             bestScore = players[i]->getScore();
             bestIndex = i;
-        }
-        else if (players[i]->getScore() > secondBestScore)
-        {
+        } else if (players[i]->getScore() > secondBestScore) {
             secondBestScore = players[i]->getScore();
             secondBestIndex = i;
         }
 
-        if (players[i]->getScore() < worstScore)
-        {
+        if (players[i]->getScore() < worstScore) {
             worstScore = players[i]->getScore();
             worstIndex = i;
         }
     }
 
 #pragma omp parallel for
-    for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-    {
+    for (i = 0; i < NUMBER_OF_PLAYERS; i++) {
         if (i == bestIndex || i == secondBestIndex)
             continue;
 
@@ -266,8 +239,7 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
 
         father1 = players[rand() % NUMBER_OF_PLAYERS];
 
-        for (j = 0; j < TOURNAMENT_K; j++)
-        {
+        for (j = 0; j < TOURNAMENT_K; j++) {
             father2 = players[rand() % NUMBER_OF_PLAYERS];
             if (father2->getScore() > father1->getScore())
                 father1 = father2;
@@ -276,8 +248,7 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
 
         father1 = players[rand() % NUMBER_OF_PLAYERS];
 
-        for (j = 0; j < TOURNAMENT_K; j++)
-        {
+        for (j = 0; j < TOURNAMENT_K; j++) {
             father2 = players[rand() % NUMBER_OF_PLAYERS];
             if (father2->getScore() > father1->getScore())
                 father1 = father2;
@@ -287,8 +258,7 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
         matrixArrayBest1 = best1->ann->getMatrixPtr();
         matrixArrayBest2 = best2->ann->getMatrixPtr();
 
-        for (j = 0; j < layerSize + 1; j++)
-        {
+        for (j = 0; j < layerSize + 1; j++) {
             matrixArray[j] = (matrixArrayBest1[j] + matrixArrayBest2[j]) / 2;
         }
 
@@ -296,19 +266,16 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
     }
 
 #pragma omp parallel for
-    for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-    {
+    for (i = 0; i < NUMBER_OF_PLAYERS; i++) {
         if (i == bestIndex || i == secondBestIndex)
             continue;
 
-        if (i == worstIndex)
-        {
+        if (i == worstIndex) {
             matrixArray = childs[worstIndex].getMatrixPtr();
             matrixArrayBest1 = players[bestIndex]->ann->getMatrixPtr();
             matrixArrayBest2 = players[secondBestIndex]->ann->getMatrixPtr();
 
-            for (j = 0; j < layerSize + 1; j++)
-            {
+            for (j = 0; j < layerSize + 1; j++) {
                 matrixArray[j] = (matrixArrayBest1[j] + matrixArrayBest2[j]) / 2;
             }
         }
@@ -318,17 +285,14 @@ void Evolution::tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs,
     }
 }
 
-void Evolution::mutation(MatrixXf *matrixArray)
-{
+void Evolution::mutation(MatrixXf *matrixArray) {
     int quant;
     int line;
     int colun;
 
     //simple mutation
-    for (int i = 0; i < layerSize + 1; i++)
-    {
-        for (quant = 0; quant < 7; quant++)
-        {
+    for (int i = 0; i < layerSize + 1; i++) {
+        for (quant = 0; quant < 7; quant++) {
             line = rand() % matrixArray[i].rows();
             colun = rand() % matrixArray[i].cols();
 
@@ -337,23 +301,20 @@ void Evolution::mutation(MatrixXf *matrixArray)
     }
 }
 
-void quickSort(Player **players, int low, int high)
-{
+void quickSort(Player **players, int low, int high) {
     int i = low;
     int j = high;
     float pivot = players[(i + j) / 2]->getScore();
     float temp;
 
-    while (i <= j)
-    {
+    while (i <= j) {
         while (players[i]->getScore() < pivot)
             i++;
 
         while (players[j]->getScore() > pivot)
             j--;
 
-        if (i <= j)
-        {
+        if (i <= j) {
             //swap
             players[j]->ann->setMatrix(players[i]->ann->setMatrix(players[j]->ann->getMatrixPtr()));
 
@@ -372,25 +333,21 @@ void quickSort(Player **players, int low, int high)
         quickSort(players, i, high);
 }
 
-void Evolution::genocideAll()
-{
+void Evolution::genocideAll() {
     genocide(allLightAssaults, NUMBER_OF_LIGHT_ASSAULTS);
     genocide(allSnipers, NUMBER_OF_SNIPERS);
     genocide(allAssaults, NUMBER_OF_ASSAULTS);
 }
 
-void Evolution::genocide(Player **players, int NUMBER_OF_PLAYERS)
-{
+void Evolution::genocide(Player **players, int NUMBER_OF_PLAYERS) {
     quickSort(players, 0, NUMBER_OF_PLAYERS - 1);
 
-    for (int i = 0; i < NUMBER_OF_PLAYERS / 6; i++)
-    {
+    for (int i = 0; i < NUMBER_OF_PLAYERS / 6; i++) {
         players[i]->ann->reset();
     }
 }
 
-topScore_t Evolution::setBestIndvs()
-{
+topScore_t Evolution::setBestIndvs() {
     float BLAS = INICIAL_SCORE;
     int BLAI = 0;
 
@@ -401,22 +358,18 @@ topScore_t Evolution::setBestIndvs()
     int BAI = 0;
 
     //set best individuals players
-    for (int i = 0; i < POP_SIZE; i++)
-    {
-        if (lightAssaultTraining[i].bestLightAssault->score > BLAS)
-        {
+    for (int i = 0; i < POP_SIZE; i++) {
+        if (lightAssaultTraining[i].bestLightAssault->score > BLAS) {
             BLAS = lightAssaultTraining[i].bestLightAssault->score;
             BLAI = i;
         }
 
-        if (assaultsTraining[i].bestAssault->score > BAS)
-        {
+        if (assaultsTraining[i].bestAssault->score > BAS) {
             BAS = assaultsTraining[i].bestAssault->score;
             BAI = i;
         }
 
-        if (snipersTraining[i].bestSniper->score > BSS)
-        {
+        if (snipersTraining[i].bestSniper->score > BSS) {
             BSS = snipersTraining[i].bestSniper->score;
             BSI = i;
         }
