@@ -16,18 +16,17 @@ using namespace Eigen;
 const std::vector<int> layers({45});
 const int layerSize = 1;
 
-class ANN
-{
-private:
-    std::vector<int> aux; //size of each layer
+class ANN {
+   private:
+    std::vector<int> aux;  //size of each layer
 
-    VectorXf input;  //ann input
-    VectorXf output; //ann output
+    VectorXf input;   //ann input
+    VectorXf output;  //ann output
 
     VectorXf *intermediunOut;
     MatrixXf *matrixArray;
 
-public:
+   public:
     ANN();
     ~ANN();
 
@@ -38,7 +37,7 @@ public:
     inline VectorXf *getOutputPtr() { return &output; }
     inline VectorXf *getInputPtr() { return &input; }
     inline MatrixXf *getMatrixPtr() { return matrixArray; }
-    
+
     MatrixXf *setMatrix(MatrixXf *matrixArray);
 
     void copyWheights(MatrixXf *matrixArray);

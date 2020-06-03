@@ -1,7 +1,7 @@
 #include "headers/Light_Assault.h"
 
-LightAssault::LightAssault() : Player()
-{
+LightAssault::LightAssault()
+    : Player() {
     playerType = LIGHT_ASSAULT;
     playerColor = LIGHT_ASSAULT_COLOR;
     playerRay = LIGHT_ASSAULT_RAY;
@@ -39,6 +39,5 @@ LightAssault::LightAssault() : Player()
     output = ann->getOutputPtr();
 }
 
-LightAssault::~LightAssault()
-{
+LightAssault::~LightAssault() {
 }

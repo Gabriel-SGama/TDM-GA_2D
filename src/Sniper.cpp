@@ -1,7 +1,7 @@
 #include "headers/Sniper.h"
 
-Sniper::Sniper() : Player()
-{
+Sniper::Sniper()
+    : Player() {
     playerType = SNIPER;
     playerColor = SNIPER_COLOR;
     playerRay = SNIPER_RAY;
@@ -14,7 +14,7 @@ Sniper::Sniper() : Player()
     speedLimit = SNIPER_SPEED_LIMIT;
     angularSpeedLimit = SNIPER_ANGULAR_SPEED_LIMIT;
 
-    direction = (rand() %(int) (M_PI * 200)) / 100.0;
+    direction = (rand() % (int)(M_PI * 200)) / 100.0;
     //std::cout << direction << std::endl;
     visionAngle = SNIPER_VISION_ANGLE;
 
@@ -27,7 +27,6 @@ Sniper::Sniper() : Player()
 
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
-
 
     //vision + position + life + direction + memory
     ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + MEMORY_SIZE;
@@ -43,6 +42,5 @@ Sniper::Sniper() : Player()
     output = ann->getOutputPtr();
 }
 
-Sniper::~Sniper()
-{
+Sniper::~Sniper() {
 }

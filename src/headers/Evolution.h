@@ -13,9 +13,15 @@ const int TOURNAMENT_K_LIGHT_ASSAULTS = 5;
 const int TOURNAMENT_K_SNIPERS = 5;
 const int TOURNAMENT_K_ASSAULTS = 5;
 
-class Evolution
-{
-private:
+typedef struct topScore_t {
+    float BLAS;
+    float BSS;
+    float BAS;
+
+} topSocre_t;
+
+class Evolution {
+   private:
     int TOTAL_NUMBER_OF_LIGHT_ASSAULTS;
     int TOTAL_NUMBER_OF_SNIPERS;
     int TOTAL_NUMER_OF_ASSAULTS;
@@ -32,7 +38,7 @@ private:
     ANN *snipersChilds;
     ANN *assaultsChilds;
 
-public:
+   public:
     float bestLightAssaultTeamScore;
     float bestSniperTeamScore;
     float bestAssaultTeamScore;
@@ -67,7 +73,7 @@ public:
     void genocideAll();
     void genocide(Player **players, int NUMBER_OF_PLAYERS);
 
-    void setBestIndvs();
+    topScore_t setBestIndvs();
 
     void reset();
 };

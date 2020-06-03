@@ -10,8 +10,7 @@
 std::mutex mtx;
 Evolution *evolution;
 
-void copyModerator()
-{
+void copyModerator() {
     Moderator *copyModerator = new Moderator;
     //Screen *screen = new Screen;
 
@@ -39,8 +38,7 @@ void copyModerator()
     bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
     bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
 
-    while (true)
-    {
+    while (true) {
         mtx.lock();
         // evolution->setBestIndvs();
         // std::cout << "copying " << std::endl;
@@ -64,8 +62,7 @@ void copyModerator()
     }
 }
 
-int main()
-{
+int main() {
     int gen = 1;
 
     srand(time(0));
@@ -99,9 +96,9 @@ int main()
     
     Eigen::MatrixXf *matrixArray = lightAssault1->ann->getMatrixPtr();    
     //*/
+    topScore_t bestIndvScores;
 
-    while (1)
-    {
+    while (1) {
         /*
         screen->resetImage();
         screen->createObstacle();
@@ -151,10 +148,9 @@ int main()
         std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
         std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
 
-        evolution->setBestIndvs();
+        bestIndvScores = evolution->setBestIndvs();
 
-        if (!(gen % 20))
-        {
+        if (!(gen % 20)) {
             evolution->genocideAll();
             std::cout << "-------------genocide-------------" << std::endl;
         }
@@ -163,7 +159,7 @@ int main()
         mtx.unlock();
         //*/
 
-        cv::waitKey(1); //time to copy
+        cv::waitKey(1);  //time to copy
         gen++;
     }
 

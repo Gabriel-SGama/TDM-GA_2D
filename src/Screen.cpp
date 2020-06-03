@@ -1,9 +1,7 @@
 #include "headers/Screen.h"
 
 //defaut constructor
-Screen::Screen()
-{
-
+Screen::Screen() {
     map = cv::Mat(HEIGHT, LENGTH, CV_8UC3, BACKGROUND_COLOR);
 
     rows = map.rows;
@@ -12,30 +10,25 @@ Screen::Screen()
     matToMatrix();
 }
 
-void Screen::setScreenParam(std::string name, int xPos, int yPos)
-{
+void Screen::setScreenParam(std::string name, int xPos, int yPos) {
     windowName = name;
     cv::namedWindow(windowName);
     cv::moveWindow(windowName, xPos, yPos);
 }
 
-uchar **Screen::getMatrix()
-{
+uchar **Screen::getMatrix() {
     return imgMatrix;
 }
 
-void Screen::matToMatrix()
-{
+void Screen::matToMatrix() {
     imgMatrix = new uchar *[rows];
 
-    for (int i = 0; i < rows; i++)
-    {
+    for (int i = 0; i < rows; i++) {
         imgMatrix[i] = map.ptr(i);
     }
 }
 
-cv::Scalar Screen::getColor(cv::Point pt)
-{
+cv::Scalar Screen::getColor(cv::Point pt) {
     //cv::Vec3b color;
     cv::Scalar color;
 
@@ -52,8 +45,7 @@ cv::Scalar Screen::getColor(cv::Point pt)
     return color;
 }
 
-int Screen::colorToId(cv::Scalar color)
-{
+int Screen::colorToId(cv::Scalar color) {
     if (color == BACKGROUND_COLOR)
         return NOTHING;
 
@@ -69,12 +61,10 @@ int Screen::colorToId(cv::Scalar color)
     else if (color == OBSTACLE_COLOR)
         return OBSTACLE;
 
-    return NOTHING; //vision ray
+    return NOTHING;  //vision ray
 }
 
-cv::Scalar Screen::colorToRay(cv::Scalar color)
-{
-
+cv::Scalar Screen::colorToRay(cv::Scalar color) {
     if (color == LIGHT_ASSAULT_COLOR)
         return LIGHT_ASSAULT_RAY;
     else if (color == SNIPER_COLOR)
@@ -84,11 +74,10 @@ cv::Scalar Screen::colorToRay(cv::Scalar color)
     else if (color == OBSTACLE_COLOR)
         return OBSTACLE_RAY;
 
-    return color; //vision ray color
+    return color;  //vision ray color
 }
 
-cv::Scalar Screen::idToRay(int rayId)
-{
+cv::Scalar Screen::idToRay(int rayId) {
     if (rayId == NOTHING)
         return BACKGROUND_COLOR;
     else if (rayId == OBSTACLE)
@@ -101,24 +90,20 @@ cv::Scalar Screen::idToRay(int rayId)
         return ASSAULT_RAY;
 }
 
-void Screen::resetImage()
-{
+void Screen::resetImage() {
     map.setTo(BACKGROUND_COLOR);
 }
 
-void Screen::updateMap()
-{
+void Screen::updateMap() {
     cv::imshow(windowName, map);
     cv::waitKey(30);
 }
 
-cv::Mat Screen::getMap()
-{
+cv::Mat Screen::getMap() {
     return map;
 }
 
-void Screen::createObstacle()
-{
+void Screen::createObstacle() {
     cv::Point pt1;
     cv::Point pt2;
 

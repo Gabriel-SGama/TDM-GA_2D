@@ -16,11 +16,9 @@ class Assault;
 
 #include "Moderator.h"
 
-class Assault : public Player
-{
-private:
-
-public:
+class Assault : public Player {
+   private:
+   public:
     Assault();
     ~Assault();
 };

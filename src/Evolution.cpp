@@ -389,46 +389,48 @@ void Evolution::genocide(Player **players, int NUMBER_OF_PLAYERS)
     }
 }
 
-void Evolution::setBestIndvs()
+topScore_t Evolution::setBestIndvs()
 {
-    int BIS = INICIAL_SCORE;
-    int BII = 0;
+    float BLAS = INICIAL_SCORE;
+    int BLAI = 0;
 
-    int BTS = INICIAL_SCORE;
-    int BTI = 0;
+    float BSS = INICIAL_SCORE;
+    int BSI = 0;
 
-    int BDS = INICIAL_SCORE;
-    int BDI = 0;
+    float BAS = INICIAL_SCORE;
+    int BAI = 0;
 
     //set best individuals players
     for (int i = 0; i < POP_SIZE; i++)
     {
-        if (lightAssaultTraining[i].bestLightAssault->score > BIS)
+        if (lightAssaultTraining[i].bestLightAssault->score > BLAS)
         {
-            BIS = lightAssaultTraining[i].bestLightAssault->score;
-            BII = i;
+            BLAS = lightAssaultTraining[i].bestLightAssault->score;
+            BLAI = i;
         }
 
-        if (assaultsTraining[i].bestAssault->score > BDS)
+        if (assaultsTraining[i].bestAssault->score > BAS)
         {
-            BDS = assaultsTraining[i].bestAssault->score;
-            BDI = i;
+            BAS = assaultsTraining[i].bestAssault->score;
+            BAI = i;
         }
 
-        if (snipersTraining[i].bestSniper->score > BTS)
+        if (snipersTraining[i].bestSniper->score > BSS)
         {
-            BTS = snipersTraining[i].bestSniper->score;
-            BTI = i;
+            BSS = snipersTraining[i].bestSniper->score;
+            BSI = i;
         }
     }
 
-    std::cout << "best light assault score: " << BIS << std::endl;
-    std::cout << "best sniper score: " << BTS << std::endl;
-    std::cout << "best assault score: " << BDS << std::endl;
+    std::cout << "best light assault score: " << BLAS << std::endl;
+    std::cout << "best sniper score: " << BSS << std::endl;
+    std::cout << "best assault score: " << BAS << std::endl;
 
-    bestLightAssaultANN->copyWheights(lightAssaultTraining[BII].bestLightAssault->player->ann->getMatrixPtr());
-    bestSniperANN->copyWheights(snipersTraining[BTI].bestSniper->player->ann->getMatrixPtr());
-    bestAssaultANN->copyWheights(assaultsTraining[BDI].bestAssault->player->ann->getMatrixPtr());
+    bestLightAssaultANN->copyWheights(lightAssaultTraining[BLAI].bestLightAssault->player->ann->getMatrixPtr());
+    bestSniperANN->copyWheights(snipersTraining[BSI].bestSniper->player->ann->getMatrixPtr());
+    bestAssaultANN->copyWheights(assaultsTraining[BAI].bestAssault->player->ann->getMatrixPtr());
 
     bestIndvs->setAllWeightsOneMatrix(bestLightAssaultANN->getMatrixPtr(), bestSniperANN->getMatrixPtr(), bestAssaultANN->getMatrixPtr());
+
+    return {BLAS, BSS, BAS};
 }

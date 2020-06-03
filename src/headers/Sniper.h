@@ -16,11 +16,10 @@ class Sniper;
 
 #include "Moderator.h"
 
-class Sniper : public Player
-{
-private:
+class Sniper : public Player {
+   private:
     /* data */
-public:
+   public:
     Sniper();
     ~Sniper();
 };

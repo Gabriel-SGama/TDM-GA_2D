@@ -1,7 +1,7 @@
 #include "headers/Assault.h"
 
-Assault::Assault() : Player()
-{
+Assault::Assault()
+    : Player() {
     playerType = ASSAULT;
     playerColor = ASSAULT_COLOR;
     playerRay = ASSAULT_RAY;
@@ -9,12 +9,11 @@ Assault::Assault() : Player()
     life = ASSAULT_HEALTH;
     visionDist = ASSAULT_VISION_DIST;
 
-    
     shotInterval = ASSAULT_SHOT_INTERVAL;
     speedLimit = ASSAULT_SPEED_LIMIT;
     angularSpeedLimit = ASSAULT_ANGULAR_SPEED_LIMIT;
 
-    direction = (rand() %(int) (M_PI * 200)) / 100.0;
+    direction = (rand() % (int)(M_PI * 200)) / 100.0;
     //std::cout << direction << std::endl;
     visionAngle = ASSAULT_VISION_ANGLE;
 
@@ -30,7 +29,7 @@ Assault::Assault() : Player()
 
     //vision + position + life  + direction + memory
     ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + MEMORY_SIZE;
-    
+
     //angle + front speed + side speed + Shot rays + memory
     ANNOutputSize = 1 + 1 + 1 + numberOfRays + MEMORY_SIZE;
 
@@ -41,6 +40,5 @@ Assault::Assault() : Player()
     output = ann->getOutputPtr();
 }
 
-Assault::~Assault()
-{
+Assault::~Assault() {
 }

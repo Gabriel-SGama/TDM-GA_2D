@@ -16,11 +16,10 @@ class LightAssault;
 
 #include "Moderator.h"
 
-class LightAssault : public Player
-{
-private:
+class LightAssault : public Player {
+   private:
     /* data */
-public:
+   public:
     LightAssault();
     ~LightAssault();
 };

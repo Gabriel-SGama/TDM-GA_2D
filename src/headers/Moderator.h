@@ -19,28 +19,28 @@ class Moderator;
 const int NUMBER_OF_TOTAL_PLAYERS = NUMBER_OF_LIGHT_ASSAULTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS;
 
 using namespace Eigen;
-typedef struct dataOfBestPlayers_t
-{
+typedef struct dataOfBestPlayers_t {
     int index;
     float score;
     Player *player;
 
-    dataOfBestPlayers_t() : index(0),
-                            score(-100){};
+    dataOfBestPlayers_t()
+        : index(0),
+          score(-100){};
 
 } dataOfBestPlayers_t;
 
 //repeats the same function call for all players alive
-class Moderator
-{
-private:
+class Moderator {
+   private:
     //players:
     LightAssault *lightAssaults;
     Sniper *snipers;
     Assault *assaults;
 
     int turn;
-public:
+
+   public:
     int NUMBER_OF_LIGHT_ASSAULT_TRAIN;
     int NUMBER_OF_SNIPER_TRAIN;
     int NUMBER_OF_ASSAULT_TRAIN;
@@ -58,12 +58,14 @@ public:
     Moderator();
     ~Moderator();
 
-    Screen *screen; //commun screen obj
+    Screen *screen;  //commun screen obj
 
     //initial values:
     void setModerator(int NUMBER_LIGHT_ASSAULT_TRAIN, int NUMBER_OF_SNIPER_TRAIN, int NUMBER_OF_ASSAULT_TRAIN);
     void setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset);
-    inline cv::Point **getPlayersCenterPtr() { return playersCenter; }
+    inline cv::Point **getPlayersCenterPtr() {
+        return playersCenter;
+    }
 
     void setScreen(Screen *screen);
     void setAllPlayersValues();
@@ -105,9 +107,15 @@ public:
     void resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, bool resetScore);
 
     //get best players
-    inline LightAssault *getLightAssaults() { return lightAssaults; }
-    inline Sniper *getSnipers() { return snipers; }
-    inline Assault *getAssaults() { return assaults; }
+    inline LightAssault *getLightAssaults() {
+        return lightAssaults;
+    }
+    inline Sniper *getSnipers() {
+        return snipers;
+    }
+    inline Assault *getAssaults() {
+        return assaults;
+    }
 
     //weights
     void setAllWeights(LightAssault *lightAssaults, Sniper *snipers, Assault *assaults);
