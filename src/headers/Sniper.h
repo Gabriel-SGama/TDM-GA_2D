@@ -14,7 +14,9 @@ const float SNIPER_VISION_ANGLE = M_PI / 4.5;
 
 class Sniper;
 
-#include "Moderator.h"
+#include "Player.h"
+
+// #include "Moderator.h"
 
 class Sniper : public Player {
    private:

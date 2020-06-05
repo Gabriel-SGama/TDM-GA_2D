@@ -13,6 +13,7 @@ Sniper::Sniper()
 
     speedLimit = SNIPER_SPEED_LIMIT;
     angularSpeedLimit = SNIPER_ANGULAR_SPEED_LIMIT;
+    initialPos = cv::Point(LENGTH - 400,150);
 
     direction = (rand() % (int)(M_PI * 200)) / 100.0;
     //std::cout << direction << std::endl;
@@ -28,18 +29,12 @@ Sniper::Sniper()
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
 
-    //vision + position + life + direction + memory
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + MEMORY_SIZE;
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1; //+ 2*(NUMBER_OF_SNIPERS - 1);
 
-    //angle + front speed + side speed + Shot rays + memory
-    ANNOutputSize = 1 + 1 + 1 + numberOfRays + MEMORY_SIZE;
+    ANNOutputSize = 1 + 1 + 1 + numberOfRays;
 
-    //ann = new ANN(ANNInputSize, ANNOutputSize);
-    ann = new ANN;
-    ann->setANNParameters(ANNInputSize, ANNOutputSize);
+    outputTest.setZero(ANNOutputSize);
 
-    input = ann->getInputPtr();
-    output = ann->getOutputPtr();
 }
 
 Sniper::~Sniper() {

@@ -1,24 +1,15 @@
 #pragma once
-#include <eigen3/Eigen/Dense>
-
 #include "Moderator.h"
 
 using namespace Eigen;
 
-#define POP_SIZE 15
+#define POP_SIZE 40
 #define INICIAL_SCORE -1000000
 
 //number of players for tournament
-const int TOURNAMENT_K_LIGHT_ASSAULTS = 5;
-const int TOURNAMENT_K_SNIPERS = 5;
-const int TOURNAMENT_K_ASSAULTS = 5;
-
-typedef struct topScore_t {
-    float BLAS;
-    float BSS;
-    float BAS;
-
-} topSocre_t;
+const int TOURNAMENT_K_LIGHT_ASSAULTS = 4;
+const int TOURNAMENT_K_SNIPERS = 4;
+const int TOURNAMENT_K_ASSAULTS = 4;
 
 class Evolution {
    private:
@@ -68,12 +59,12 @@ class Evolution {
     void tournamentAll();
     void tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs, int TOURNAMENT_K);
 
+    void tournamentAllMod();
+    void tournamentMod(Moderator *training, ANN *childs, int TOURNAMENT_K, int id);
     void mutation(MatrixXf *matrixArray);
 
     void genocideAll();
-    void genocide(Player **players, int NUMBER_OF_PLAYERS);
-
-    topScore_t setBestIndvs();
+    void genocide(Moderator *training, int id);
 
     void reset();
 };

@@ -11,8 +11,8 @@ Graph::~Graph() {
 void Graph::clear() {
 }
 
-void Graph::addBestScores(topScore_t topScore) {
-}
+// void Graph::addBestScores(topScore_t topScore) {
+// }
 
 void Graph::showGraphAll() {
 }

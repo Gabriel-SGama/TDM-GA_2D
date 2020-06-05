@@ -22,7 +22,7 @@ class Graph {
     ~Graph();
 
     void clear();
-    void addBestScores(topScore_t topScore);
+    // void addBestScores(topScore_t topScore);
     void showGraphAll();
     void showGraph();
 };

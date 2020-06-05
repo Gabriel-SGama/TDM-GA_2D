@@ -13,6 +13,7 @@ LightAssault::LightAssault()
 
     speedLimit = LIGHT_ASSAULT_SPEED_LIMIT;
     angularSpeedLimit = LIGHT_ASSAULT_ANGULAR_SPEED_LIMIT;
+    initialPos = cv::Point(LENGTH-300,HEIGHT-250);
 
     direction = (rand() % (int)(M_PI * 200)) / 100.0;
     visionAngle = LIGHT_ASSAULT_VISION_ANGLE;
@@ -27,16 +28,13 @@ LightAssault::LightAssault()
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
 
-    //vision + position + life + direction + memory
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + MEMORY_SIZE;
-    //angle + front speed + side speed + Shot rays + memory
-    ANNOutputSize = 1 + 1 + 1 + numberOfRays + MEMORY_SIZE;
+    //vision + position + life + direction
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1; //+ 2*(NUMBER_OF_LIGHT_ASSAULTS - 1);
+    //angle + front speed + side speed + Shot rays
+    ANNOutputSize = 1 + 1 + 1 + numberOfRays;
 
-    ann = new ANN;
-    ann->setANNParameters(ANNInputSize, ANNOutputSize);
+    outputTest.setZero(ANNOutputSize);
 
-    input = ann->getInputPtr();
-    output = ann->getOutputPtr();
 }
 
 LightAssault::~LightAssault() {

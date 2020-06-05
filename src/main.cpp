@@ -2,9 +2,8 @@
 #include <string.h>
 #include <thread>
 #include <mutex>
+#include <ctime>
 
-#include "headers/Moderator.h"
-#include "headers/ANN.h"
 #include "headers/Evolution.h"
 
 std::mutex mtx;
@@ -23,42 +22,22 @@ void copyModerator() {
     copyModerator->screen->setScreenParam("best teams", 0, 0);
     copyModerator->setAllPlayersValues();
 
-    Moderator *bestIndvsCopy = new Moderator;
-
-    bestIndvsCopy->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
-    bestIndvsCopy->setScreen(new Screen);
-    bestIndvsCopy->screen->setScreenParam("best indvs", LENGTH + 67, 0);
-    bestIndvsCopy->setAllPlayersValues();
-
-    ANN *bestLightAssaultMatrix = new ANN;
-    ANN *bestSniperMatrix = new ANN;
-    ANN *bestAssaultMatrix = new ANN;
-
-    bestLightAssaultMatrix->setANNParameters(lightAssaults->ANNInputSize, lightAssaults->ANNOutputSize);
-    bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
-    bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
+    cv::Point initialPos[] = {cv::Point(LENGTH-300,HEIGHT-250), cv::Point(LENGTH-400,150), cv::Point(0,150)};
 
     while (true) {
         mtx.lock();
-        // evolution->setBestIndvs();
-        // std::cout << "copying " << std::endl;
-        copyModerator->copyAllWeights(lightAssaults, snipers, assaults);
-        // std::cout << "finish copy " << std::endl;
+       
+        copyModerator->setInicialPosAll(initialPos, rand() % 3);
+        copyModerator->setAllWeightsMod(lightAssaults->ann, snipers->ann, assaults->ann);
 
         mtx.unlock();
 
         copyModerator->gameOfBest();
+        std::cout << "best scores:  "<< copyModerator->lightAssaultScore <<
+        " | " << copyModerator->sniperScore << " | " << copyModerator->assaultScore << std::endl;
+        
         copyModerator->resetAllPlayers(true);
 
-        mtx.lock();
-        bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
-        bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
-        bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
-
-        bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
-        mtx.unlock();
-        bestIndvsCopy->gameOfBest();
-        bestIndvsCopy->resetAllPlayers(true);
     }
 }
 
@@ -75,82 +54,30 @@ int main() {
     }
     */
 
+    std::clock_t begin;
+    std::clock_t end;    
+    double elapsed_secs;
+    double totalMin = 0;
+
     evolution = new Evolution;
 
     std::thread th(copyModerator);
-    /*
-    Screen *screen = new Screen;
-
-    screen->setScreenParam("test");
-    screen->createObstacle();
-
-    LightAssault *lightAssault1 = new LightAssault;
-    LightAssault *lightAssault2 = new LightAssault;
-    Sniper *sniper = new Sniper;
-    Assault *assault = new Assault;
-
-    lightAssault1->setPlayerValues(screen, 0, 100, nullptr);
-    lightAssault2->setPlayerValues(screen, 0, 100, nullptr);
-    sniper->setPlayerValues(screen, 1, 100, nullptr);
-    assault->setPlayerValues(screen, 2, 100, nullptr);
-    
-    Eigen::MatrixXf *matrixArray = lightAssault1->ann->getMatrixPtr();    
-    //*/
-    topScore_t bestIndvScores;
 
     while (1) {
-        /*
-        screen->resetImage();
-        screen->createObstacle();
-
-        lightAssault1->drawPlayer();
-        lightAssault2->drawPlayer();
-        sniper->drawPlayer();
-        assault->drawPlayer();
-
-        lightAssault1->updateVision();
-        lightAssault2->updateVision();
-        sniper->updateVision();
-        assault->updateVision();
-
-        //screen->updateMap();
-        lightAssault1->setComunInput();
-        //lightAssault2->setComunInput();
-        lightAssault1->ann->multiply();
-        //lightAssault2->ann->multiply();
-        lightAssault1->move();
-        screen->updateMap();
-
-        //lightAssault2->move();
-        //sniper->move();
-        //assault->move();
-        //*/
-        /*
-        if (gen == 5)
-        {
-            std::cout << "changing" << std::endl;
-            lightAssault1->ann->copyWheights(lightAssault2->ann->getMatrixPtr());
-        }
-
-        if (!(gen % 10))
-        {
-            matrixArray = lightAssault1->ann->getMatrixPtr();
-        }
-        std::cout << "matrix array:" << matrixArray[0] << std::endl;
-
-        //*/
-        ///*
         mtx.lock();
+        begin = clock();
         evolution->game();
-        evolution->tournamentAll();
+        end = clock();
+        elapsed_secs = double(end-begin) / (CLOCKS_PER_SEC*4);
+        totalMin += elapsed_secs / 60.0;
+        evolution->tournamentAllMod();
         std::cout << "-------------GEN " << gen << " -------------" << std::endl;
+        std::cout << "elapsed: " << elapsed_secs <<" | total time+-: " << totalMin << "(min)" << std::endl;
         std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
         std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
         std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
 
-        bestIndvScores = evolution->setBestIndvs();
-
-        if (!(gen % 20)) {
+        if (!(gen % 15)) {
             evolution->genocideAll();
             std::cout << "-------------genocide-------------" << std::endl;
         }

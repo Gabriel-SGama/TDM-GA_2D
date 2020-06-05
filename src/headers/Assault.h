@@ -14,8 +14,7 @@ const float ASSAULT_VISION_ANGLE = M_PI / 2.5;
 
 class Assault;
 
-#include "Moderator.h"
-
+#include "Player.h"
 class Assault : public Player {
    private:
    public:

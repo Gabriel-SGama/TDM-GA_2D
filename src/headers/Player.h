@@ -3,15 +3,14 @@
 #include <iostream>
 #include "math.h"
 #include <opencv2/opencv.hpp>
-#include <eigen3/Eigen/Dense>
 
 class Player;
 
 //Player ID:
-#define NOTHING 1
-#define LIGHT_ASSAULT 10
-#define ASSAULT 15
-#define SNIPER 20
+#define NOTHING 10
+#define LIGHT_ASSAULT 1
+#define ASSAULT 2
+#define SNIPER 3
 #define OBSTACLE 50
 
 #define ALLY 20
@@ -71,12 +70,6 @@ class Player {
     int shotInterval;
     int timeShot;
 
-    int timeStand;
-    int standInterval;
-
-    int timeSpin;
-    int spinInterval;
-
     //ray info
     int *raysID;
     int *raysDist;
@@ -87,19 +80,22 @@ class Player {
     float direction;
     float speedLimit;
     float angularSpeedLimit;
-    float lastAngularSpeed;
 
     double separationAngle;  //offset to next ray
     double angleCorrection;  //corrects rays positions
 
     Screen *screen;
 
-    //Moderator* moderator;
+
     cv::Point **playersCenter;
 
     VectorXf *input;
-
+    // VectorXf *inputTest;
+    
    public:
+    cv::Point initialPos;
+
+    VectorXf outputTest;
     int numberOfRays;
 
     ANN *ann;
@@ -107,7 +103,7 @@ class Player {
     int ANNInputSize;
     int ANNOutputSize;
 
-    VectorXf *output;
+    // VectorXf *output;
 
     explicit Player();
     ~Player();
@@ -147,7 +143,7 @@ class Player {
     void setAlive(bool alive, int punish);
 
     //initial values
-    void setPlayerValues(Screen *screen, int playerID, int life, cv::Point **playersCenter);  //inicial values
+    void setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter);  //inicial values
     void setPosition();                                                                       //initial position
     int checkPosition();
 
@@ -168,9 +164,13 @@ class Player {
 
     //ANN:
     void setComunInput();
+    // inline VectorXf* getInput() {return inputTest;}
 
     //reset
     void reset(int life, bool resetScore);
+
+    void setANN(ANN* ann);
+    inline void copyOutput(VectorXf *output) {outputTest = *output;}
 };
 
 #include "Moderator.h"

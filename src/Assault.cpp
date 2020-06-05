@@ -8,7 +8,8 @@ Assault::Assault()
     damage = ASSAULT_DAMAGE;
     life = ASSAULT_HEALTH;
     visionDist = ASSAULT_VISION_DIST;
-
+    initialPos = cv::Point(0,150);
+    
     shotInterval = ASSAULT_SHOT_INTERVAL;
     speedLimit = ASSAULT_SPEED_LIMIT;
     angularSpeedLimit = ASSAULT_ANGULAR_SPEED_LIMIT;
@@ -28,16 +29,12 @@ Assault::Assault()
     raysDist = new int[numberOfRays];
 
     //vision + position + life  + direction + memory
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + MEMORY_SIZE;
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1; //+ 2*(NUMBER_OF_ASSAULTS - 1);
 
     //angle + front speed + side speed + Shot rays + memory
-    ANNOutputSize = 1 + 1 + 1 + numberOfRays + MEMORY_SIZE;
+    ANNOutputSize = 1 + 1 + 1 + numberOfRays;
 
-    ann = new ANN;
-    ann->setANNParameters(ANNInputSize, ANNOutputSize);
-
-    input = ann->getInputPtr();
-    output = ann->getOutputPtr();
+    outputTest.setZero(ANNOutputSize);
 }
 
 Assault::~Assault() {

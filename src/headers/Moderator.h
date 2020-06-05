@@ -1,7 +1,7 @@
 #pragma once
 #include <eigen3/Eigen/Dense>
 
-#define DURATION 300
+#define DURATION 400
 
 //rewards
 #define LIGHT_ASSAULT_SHOT_REWARD 1
@@ -10,8 +10,6 @@
 
 class Moderator;
 
-#include "Screen.h"
-#include "Player.h"
 #include "Light_Assault.h"
 #include "Sniper.h"
 #include "Assault.h"
@@ -41,6 +39,10 @@ class Moderator {
     int turn;
 
    public:
+    ANN* lightAssaultANN;
+    ANN* sniperANN;
+    ANN* assaultANN;
+
     int NUMBER_OF_LIGHT_ASSAULT_TRAIN;
     int NUMBER_OF_SNIPER_TRAIN;
     int NUMBER_OF_ASSAULT_TRAIN;
@@ -53,7 +55,10 @@ class Moderator {
     float sniperScore;
     float assaultScore;
 
-    cv::Point **playersCenter;
+    // cv::Point **playersCenter;
+    cv::Point **lightAssaultCenter;
+    cv::Point **sniperCenter;
+    cv::Point **assaultCenter;
 
     Moderator();
     ~Moderator();
@@ -62,14 +67,14 @@ class Moderator {
 
     //initial values:
     void setModerator(int NUMBER_LIGHT_ASSAULT_TRAIN, int NUMBER_OF_SNIPER_TRAIN, int NUMBER_OF_ASSAULT_TRAIN);
-    void setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset);
-    inline cv::Point **getPlayersCenterPtr() {
-        return playersCenter;
-    }
+    void setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, cv::Point** pointPtr);
+    // inline cv::Point **getPlayersCenterPtr() {
+    //     return playersCenter;
+    // }
 
     void setScreen(Screen *screen);
     void setAllPlayersValues();
-    void setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS);
+    void setPlayersValues(Player *players, int NUMBER_OF_PLAYERS, cv::Point** centerPtr);
 
     //draw functions
     void drawAllPlayers();
@@ -86,19 +91,22 @@ class Moderator {
     void shotPlayer(Player *shooter, enemyInfo_t enemyInfo);
     int findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, cv::Point enemyPoint);
 
-    void checkAllPlayersLife();
-    void checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS);
+    bool checkAllPlayersLife();
+    bool checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS);
 
     //mode:
     void moveAllPlayers();
     void movePlayers(Player *players, int NUMBER_OF_PLAYERS);
 
     //ANN:
+    float getScore(int id);
+    MatrixXf* getMatrixPtr(int id);
+
     void defineAllPlayersInput();
     void definePlayersInput(Player *players, int NUMBER_OF_PLAYERS);
 
     void multiplyAllPlayers();
-    void multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS);
+    void multiplyPlayers(ANN* ann,Player *players, int NUMBER_OF_PLAYERS);
 
     void calculateScore();
 
@@ -117,15 +125,14 @@ class Moderator {
         return assaults;
     }
 
-    //weights
-    void setAllWeights(LightAssault *lightAssaults, Sniper *snipers, Assault *assaults);
-    void setWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
+    void setAllWeightsMod(ANN *inocentMatrix, ANN *sniperMatrix, ANN *detectiveMatrix);
 
-    void copyAllWeights(LightAssault *lightAssaults, Sniper *snipers, Assault *assaults);
-    void copyWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
+    void setInicialPosAll(cv::Point *inicialPos, int start);
+    void setInicialPos(Player* players, int NUMBER_OF_PLAYERS, cv::Point initialPos);
 
-    void setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *sniperMatrix, MatrixXf *detectiveMatrix);
-
+    void setScore(float score, int id);
+    MatrixXf* setMatrix(MatrixXf* matrixs, int id);
+    ANN* getANN(int id);
     void game();
     void gameOfBest();
 };
