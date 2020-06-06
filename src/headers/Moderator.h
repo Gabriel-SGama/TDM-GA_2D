@@ -4,61 +4,30 @@
 #define DURATION 400
 
 //rewards
-#define LIGHT_ASSAULT_SHOT_REWARD 1
-#define SNIPER_SHOT_REWARD 1
-#define ASSAULT_SHOT_REWARD 1
+#define SHOT_REWARD 1
 
 class Moderator;
+#include "Player.h"
 
-#include "Light_Assault.h"
-#include "Sniper.h"
-#include "Assault.h"
-
-const int NUMBER_OF_TOTAL_PLAYERS = NUMBER_OF_LIGHT_ASSAULTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS;
+const int NUMBER_OF_TOTAL_PLAYERS = 2*NUMBER_OF_PLAYERS;
 
 using namespace Eigen;
-typedef struct dataOfBestPlayers_t {
-    int index;
-    float score;
-    Player *player;
-
-    dataOfBestPlayers_t()
-        : index(0),
-          score(-100){};
-
-} dataOfBestPlayers_t;
-
 //repeats the same function call for all players alive
 class Moderator {
    private:
     //players:
-    LightAssault *lightAssaults;
-    Sniper *snipers;
-    Assault *assaults;
-
-    int turn;
+    Player *trainingTeam;
+    Player *bestTeam;
 
    public:
-    ANN* lightAssaultANN;
-    ANN* sniperANN;
-    ANN* assaultANN;
+    ANN* trainingANN;
+    ANN* bestANN;
 
-    int NUMBER_OF_LIGHT_ASSAULT_TRAIN;
-    int NUMBER_OF_SNIPER_TRAIN;
-    int NUMBER_OF_ASSAULT_TRAIN;
-
-    dataOfBestPlayers_t *bestLightAssault;
-    dataOfBestPlayers_t *bestSniper;
-    dataOfBestPlayers_t *bestAssault;
-
-    float lightAssaultScore;
-    float sniperScore;
-    float assaultScore;
+    float trainingScore;
 
     // cv::Point **playersCenter;
-    cv::Point **lightAssaultCenter;
-    cv::Point **sniperCenter;
-    cv::Point **assaultCenter;
+    cv::Point **trainingCenter;
+    cv::Point **bestCenter;
 
     Moderator();
     ~Moderator();
@@ -66,73 +35,69 @@ class Moderator {
     Screen *screen;  //commun screen obj
 
     //initial values:
-    void setModerator(int NUMBER_LIGHT_ASSAULT_TRAIN, int NUMBER_OF_SNIPER_TRAIN, int NUMBER_OF_ASSAULT_TRAIN);
-    void setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, cv::Point** pointPtr);
+    void setModerator();
+    void setPlayerCenterPtr(Player *players, cv::Point** pointPtr);
     // inline cv::Point **getPlayersCenterPtr() {
     //     return playersCenter;
     // }
 
     void setScreen(Screen *screen);
     void setAllPlayersValues();
-    void setPlayersValues(Player *players, int NUMBER_OF_PLAYERS, cv::Point** centerPtr);
+    void setPlayersValues(Player *players, cv::Point** centerPtr, int playerType, cv::Scalar color, cv::Scalar ray);
 
     //draw functions
     void drawAllPlayers();
-    void drawPlayers(Player *players, int NUMBER_OF_PLAYERS);
+    void drawPlayers(Player *players);
 
     //vision:
     void updateAllPlayersVision();
-    void updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS);
+    void updatePlayersVision(Player *players);
 
     //Conflicts:
     void conflictsAllPlayers();
-    void conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS, int numberOfrays);
+    void conflictsPlayers(Player *players, int numberOfrays);
 
     void shotPlayer(Player *shooter, enemyInfo_t enemyInfo);
-    int findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, cv::Point enemyPoint);
+    int findPlayer(Player *shooter, Player *players, cv::Point enemyPoint);
 
     bool checkAllPlayersLife();
-    bool checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS);
+    bool checkPlayersLife(Player *players);
 
     //mode:
     void moveAllPlayers();
-    void movePlayers(Player *players, int NUMBER_OF_PLAYERS);
+    void movePlayers(Player *players);
 
     //ANN:
-    float getScore(int id);
+    float getScore();
     MatrixXf* getMatrixPtr(int id);
 
     void defineAllPlayersInput();
-    void definePlayersInput(Player *players, int NUMBER_OF_PLAYERS);
+    void definePlayersInput(Player *players);
 
     void multiplyAllPlayers();
-    void multiplyPlayers(ANN* ann,Player *players, int NUMBER_OF_PLAYERS);
-
-    void calculateScore();
+    void multiplyPlayers(ANN* ann,Player *players);
 
     //reset:
     void resetAllPlayers(bool resetScore);
-    void resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, bool resetScore);
+    void resetPlayers(Player *players, bool resetScore);
 
     //get best players
-    inline LightAssault *getLightAssaults() {
-        return lightAssaults;
+    inline Player *getTrainingPlayers() {
+        return trainingTeam;
     }
-    inline Sniper *getSnipers() {
-        return snipers;
-    }
-    inline Assault *getAssaults() {
-        return assaults;
+    inline Player *getBestTeam() {
+        return bestTeam;
     }
 
-    void setAllWeightsMod(ANN *inocentMatrix, ANN *sniperMatrix, ANN *detectiveMatrix);
+    void setAllWeightsMod(ANN *trainingMatrix, ANN *bestMatrix);
 
     void setInicialPosAll(cv::Point *inicialPos, int start);
-    void setInicialPos(Player* players, int NUMBER_OF_PLAYERS, cv::Point initialPos);
+    void setInicialPos(Player* players, cv::Point initialPos);
 
-    void setScore(float score, int id);
+    void setScore(float score);
     MatrixXf* setMatrix(MatrixXf* matrixs, int id);
     ANN* getANN(int id);
+
     void game();
     void gameOfBest();
 };

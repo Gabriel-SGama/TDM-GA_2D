@@ -3,6 +3,37 @@
 #include "headers/Player.h"
 
 Player::Player() {
+    damage = PLAYER_DAMAGE;
+    life = PLAYER_HEALTH;
+    visionDist = PLAYER_VISION_DIST;
+    initialPos = cv::Point(0,150);
+    
+    shotInterval = PLAYER_SHOT_INTERVAL;
+    speedLimit = PLAYER_SPEED_LIMIT;
+    angularSpeedLimit = PLAYER_ANGULAR_SPEED_LIMIT;
+
+    direction = (rand() % (int)(M_PI * 200)) / 100.0;
+    //std::cout << direction << std::endl;
+    visionAngle = PLAYER_VISION_ANGLE;
+
+    numberOfRays = PLAYER_NUMBER_OF_RAYS;
+
+    separationAngle = visionAngle / numberOfRays;
+    angleCorrection = visionAngle / numberOfRays - separationAngle;
+
+    separationAngle += angleCorrection;
+
+    raysID = new int[numberOfRays];
+    raysDist = new int[numberOfRays];
+
+    //vision + position + life  + direction + memory
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1; //+ 2*(NUMBER_OF_ASSAULTS - 1);
+
+    //angle + front speed + side speed + Shot rays + memory
+    ANNOutputSize = 1 + 1 + 1 + numberOfRays;
+
+    outputTest.setZero(ANNOutputSize);
+
     score = 0;
     alive = true;
 
@@ -16,7 +47,9 @@ bool Player::isAlive() {
     return alive;
 }
 
-void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter) {
+void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter, int playerType, cv::Scalar playerColor, cv::Scalar playerRay) {
+    this->playerColor = playerColor;
+    this->playerRay = playerRay;
     this->playerType = playerType;
     this->playerID = playerID;
     playerIDStr = std::to_string(playerID);
@@ -174,7 +207,7 @@ void Player::takeDamage(int damage) {
     life -= damage;
 }
 
-void Player::setAlive(bool alive, int turn) {
+void Player::setAlive(bool alive) {
     this->alive = alive;
 
     if (!alive) {
@@ -232,12 +265,12 @@ void Player::setComunInput() {
     timeShot--;
 }
 
-void Player::reset(int life, bool resetScore) {
+void Player::reset(bool resetScore) {
     if (resetScore)
         score = 0;
 
     alive = true;
-    this->life = life;
+    this->life = PLAYER_HEALTH;
     timeShot = shotInterval;
 
     setPosition();

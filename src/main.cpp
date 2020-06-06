@@ -13,13 +13,11 @@ void copyModerator() {
     Moderator *copyModerator = new Moderator;
     //Screen *screen = new Screen;
 
-    LightAssault *lightAssaults = evolution->bestTeams->getLightAssaults();
-    Sniper *snipers = evolution->bestTeams->getSnipers();
-    Assault *assaults = evolution->bestTeams->getAssaults();
+    ANN *bestANN = evolution->bestTrainingANN;
 
-    copyModerator->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
+    copyModerator->setModerator();
     copyModerator->setScreen(new Screen);
-    copyModerator->screen->setScreenParam("best teams", 0, 0);
+    copyModerator->screen->setScreenParam("best team", 0, 0);
     copyModerator->setAllPlayersValues();
 
     cv::Point initialPos[] = {cv::Point(LENGTH-300,HEIGHT-250), cv::Point(LENGTH-400,150), cv::Point(0,150)};
@@ -28,14 +26,13 @@ void copyModerator() {
         mtx.lock();
        
         copyModerator->setInicialPosAll(initialPos, rand() % 3);
-        copyModerator->setAllWeightsMod(lightAssaults->ann, snipers->ann, assaults->ann);
+        // copyModerator->setAllWeightsMod(lightAssaults->ann, snipers->ann, assaults->ann);
+        copyModerator->setAllWeightsMod(copyModerator->bestANN, nullptr);
+        copyModerator->setAllWeightsMod(nullptr, evolution->bestTrainingANN);
 
         mtx.unlock();
 
         copyModerator->gameOfBest();
-        std::cout << "best scores:  "<< copyModerator->lightAssaultScore <<
-        " | " << copyModerator->sniperScore << " | " << copyModerator->assaultScore << std::endl;
-        
         copyModerator->resetAllPlayers(true);
 
     }
@@ -69,22 +66,19 @@ int main() {
         evolution->game();
         end = clock();
         elapsed_secs = double(end-begin) / (CLOCKS_PER_SEC*4);
-        totalMin += elapsed_secs / 60.0;
-        evolution->tournamentAllMod();
+        // totalMin += elapsed_secs / 60.0;
+        evolution->tournamentMod();
         std::cout << "-------------GEN " << gen << " -------------" << std::endl;
-        std::cout << "elapsed: " << elapsed_secs <<" | total time+-: " << totalMin << "(min)" << std::endl;
-        std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
-        std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
-        std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
+        std::cout << "elapsed: " << elapsed_secs << std::endl;
+        std::cout << "best team score: " << evolution->bestTeamScore << std::endl;
 
         if (!(gen % 15)) {
-            evolution->genocideAll();
+            evolution->genocide();
             std::cout << "-------------genocide-------------" << std::endl;
         }
 
         evolution->reset();
         mtx.unlock();
-        //*/
 
         cv::waitKey(1);  //time to copy
         gen++;

@@ -49,30 +49,27 @@ int Screen::colorToId(cv::Scalar color) {
     if (color == BACKGROUND_COLOR)
         return NOTHING;
 
-    else if (color == LIGHT_ASSAULT_COLOR)
-        return LIGHT_ASSAULT;
-
-    else if (color == ASSAULT_COLOR)
-        return ASSAULT;
-
-    else if (color == SNIPER_COLOR)
-        return SNIPER;
-
-    else if (color == OBSTACLE_COLOR)
+    if (color == OBSTACLE_COLOR)
         return OBSTACLE;
+
+    if (color == TRAINING_COLOR)
+        return TRAINING_PLAYER;
+
+    if (color == BEST_COLOR)
+        return BEST_PLAYER;
 
     return NOTHING;  //vision ray
 }
 
 cv::Scalar Screen::colorToRay(cv::Scalar color) {
-    if (color == LIGHT_ASSAULT_COLOR)
-        return LIGHT_ASSAULT_RAY;
-    else if (color == SNIPER_COLOR)
-        return SNIPER_RAY;
-    else if (color == ASSAULT_COLOR)
-        return ASSAULT_RAY;
-    else if (color == OBSTACLE_COLOR)
+    if (color == OBSTACLE_COLOR)
         return OBSTACLE_RAY;
+
+    if (color == TRAINING_COLOR)
+        return TRAINING_RAY;
+    
+    if (color == BEST_COLOR)
+        return BEST_RAY;
 
     return color;  //vision ray color
 }
@@ -80,14 +77,14 @@ cv::Scalar Screen::colorToRay(cv::Scalar color) {
 cv::Scalar Screen::idToRay(int rayId) {
     if (rayId == NOTHING)
         return BACKGROUND_COLOR;
-    else if (rayId == OBSTACLE)
+    
+    if (rayId == OBSTACLE)
         return OBSTACLE_RAY;
-    else if (rayId == LIGHT_ASSAULT)
-        return LIGHT_ASSAULT_RAY;
-    else if (rayId == SNIPER)
-        return SNIPER_RAY;
-    else
-        return ASSAULT_RAY;
+
+    if (rayId == TRAINING_PLAYER)
+        return TRAINING_RAY;
+
+    return BEST_RAY;
 }
 
 void Screen::resetImage() {

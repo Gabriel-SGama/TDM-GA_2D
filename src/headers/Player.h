@@ -6,13 +6,22 @@
 
 class Player;
 
+#define NUMBER_OF_PLAYERS 5
+#define PLAYER_HEALTH 100
+#define PLAYER_DAMAGE 35
+#define PLAYER_NUMBER_OF_RAYS 8
+#define PLAYER_SPEED_LIMIT 7.0
+#define PLAYER_VISION_DIST 120
+#define PLAYER_SHOT_INTERVAL 6
+
+const float PLAYER_ANGULAR_SPEED_LIMIT = M_PI / 45;
+const float PLAYER_VISION_ANGLE = M_PI / 2.5;
+
 //Player ID:
 #define NOTHING 10
-#define LIGHT_ASSAULT 1
-#define ASSAULT 2
-#define SNIPER 3
 #define OBSTACLE 50
-
+#define TRAINING_PLAYER 1
+#define BEST_PLAYER 2
 #define ALLY 20
 #define ENEMY -20
 
@@ -24,14 +33,12 @@ const int _RADIUS_TOTAL_DISTANCE = RADIUS + RADIUS_OFFSET;
 const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
 //Colors
-const cv::Scalar LIGHT_ASSAULT_COLOR = cv::Scalar(0, 255, 0);  //green
-const cv::Scalar SNIPER_COLOR = cv::Scalar(0, 0, 255);         //red
-const cv::Scalar ASSAULT_COLOR = cv::Scalar(255, 0, 0);        //blue
+const cv::Scalar TRAINING_COLOR = cv::Scalar(0, 255, 0);  //green
+const cv::Scalar BEST_COLOR = cv::Scalar(0, 0, 255);  //red
 
 //Ray colors
-const cv::Scalar LIGHT_ASSAULT_RAY = cv::Scalar(1, 255, 0);  //green ray
-const cv::Scalar ASSAULT_RAY = cv::Scalar(255, 1, 0);        //blue ray
-const cv::Scalar SNIPER_RAY = cv::Scalar(1, 0, 255);         //red ray
+const cv::Scalar TRAINING_RAY = cv::Scalar(1, 255, 0);  //green ray
+const cv::Scalar BEST_RAY = cv::Scalar(1, 0, 255);  //red ray
 
 const cv::Point aux = cv::Point(-RADIUS / 2, RADIUS / 2);  //offset to print text
 
@@ -105,7 +112,7 @@ class Player {
 
     // VectorXf *output;
 
-    explicit Player();
+    Player();
     ~Player();
 
     //gets:
@@ -140,10 +147,10 @@ class Player {
         score = newScore;
     }
 
-    void setAlive(bool alive, int punish);
+    void setAlive(bool alive);
 
     //initial values
-    void setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter);  //inicial values
+    void setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter, int playerType, cv::Scalar playerColor, cv::Scalar playerRay);  //inicial values
     void setPosition();                                                                       //initial position
     int checkPosition();
 
@@ -167,7 +174,7 @@ class Player {
     // inline VectorXf* getInput() {return inputTest;}
 
     //reset
-    void reset(int life, bool resetScore);
+    void reset(bool resetScore);
 
     void setANN(ANN* ann);
     inline void copyOutput(VectorXf *output) {outputTest = *output;}
