@@ -1,6 +1,8 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+#include <opencv2/opencv.hpp>
+
 class Screen;
 
 //screen dimensions
@@ -21,17 +23,17 @@ class Screen {
    private:
     cv::Mat map;  //ópecv image
 
+    
 
     uchar **imgMatrix;  //matrix to faster randon access
 
     //map parameters
     int rows;
     int cols;
-    std::string windowName;
 
    public:
-
-    Screen();
+	std::string windowName;    
+	Screen();
     ~Screen();
 
     void setScreenParam(std::string name, int xPos, int yPos);
@@ -48,7 +50,6 @@ class Screen {
     cv::Scalar colorToRay(cv::Scalar color);  //transforms color to ray color
     cv::Scalar idToRay(int rayId);            //transforms id to ray color
 
-    inline std::string getWindowName(){return windowName;}
     //gets:
     cv::Mat getMap();
 

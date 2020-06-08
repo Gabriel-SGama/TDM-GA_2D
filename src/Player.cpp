@@ -1,39 +1,10 @@
+#include <iostream>
 #include <cmath>
+#include <opencv2/opencv.hpp>
 #include "string.h"
 #include "headers/Player.h"
 
 Player::Player() {
-    damage = PLAYER_DAMAGE;
-    life = PLAYER_HEALTH;
-    visionDist = PLAYER_VISION_DIST;
-    initialPos = cv::Point(0,150);
-    
-    shotInterval = PLAYER_SHOT_INTERVAL;
-    speedLimit = PLAYER_SPEED_LIMIT;
-    angularSpeedLimit = PLAYER_ANGULAR_SPEED_LIMIT;
-
-    direction = (rand() % (int)(M_PI * 200)) / 100.0;
-    //std::cout << direction << std::endl;
-    visionAngle = PLAYER_VISION_ANGLE;
-
-    numberOfRays = PLAYER_NUMBER_OF_RAYS;
-
-    separationAngle = visionAngle / numberOfRays;
-    angleCorrection = visionAngle / numberOfRays - separationAngle;
-
-    separationAngle += angleCorrection;
-
-    raysID = new int[numberOfRays];
-    raysDist = new int[numberOfRays];
-
-    //vision + position + life  + direction + memory
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1; //+ 2*(NUMBER_OF_ASSAULTS - 1);
-
-    //angle + front speed + side speed + Shot rays + memory
-    ANNOutputSize = 1 + 1 + 1 + numberOfRays;
-
-    outputTest.setZero(ANNOutputSize);
-
     score = 0;
     alive = true;
 
@@ -47,31 +18,25 @@ bool Player::isAlive() {
     return alive;
 }
 
-void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter, int playerType, cv::Scalar playerColor, cv::Scalar playerRay) {
-    this->playerColor = playerColor;
-    this->playerRay = playerRay;
+void Player::setPlayerValues(Screen *screen, int playerID, int life, cv::Point **playersCenter) {
     this->playerType = playerType;
     this->playerID = playerID;
     playerIDStr = std::to_string(playerID);
     this->screen = screen;
+    this->life = life;
     this->playersCenter = playersCenter;
 
     setPosition();
     drawPlayer();
 }
 
-void Player::setANN(ANN *ann) {
-    this->ann = ann;
-
-    input = ann->getInputPtr();
-    // output = ann->getOutputPtr();
-}
-
 void Player::setPosition() {
 
     do {
-        center.x = rand() % (300) + initialPos.x;
-        center.y = rand() % (150) + initialPos.y;
+        center.x = rand() % (LENGTH - safeDist);
+        center.y = rand() % (HEIGHT - safeDist);
+        // center.x = rand() % (300) + initialPos.x;
+        // center.y = rand() % (150) + initialPos.y;
 
     } while (!checkPosition());
 }
@@ -95,7 +60,7 @@ int Player::checkPosition() {
 void Player::drawPlayer() {
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
     cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, playerRay, 3);
-    // cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
+    //cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
 }
 
 void Player::updateVision() {
@@ -116,10 +81,11 @@ void Player::drawVisionLines(double currentAngle, int id) {
     cv::Scalar color;
 
     int i;
+    offset.x = _RADIUS_TOTAL_DISTANCE * cos(currentAngle);
+    offset.y = _RADIUS_TOTAL_DISTANCE * sin(currentAngle);
 
     for (i = 0; i < visionDist; i++) {
-        offset.x = _RADIUS_TOTAL_DISTANCE * cos(currentAngle);
-        offset.y = _RADIUS_TOTAL_DISTANCE * sin(currentAngle);
+
 
         pt.x = i * cos(currentAngle);
         pt.y = i * sin(currentAngle);
@@ -156,62 +122,107 @@ int Player::checkMove(cv::Point offset) {
 
         //cv::circle(screen->getMap(), pt, 1, cv::Scalar(0, 1, 255), cv::FILLED);
     }
+
     return 1;
 }
 
 void Player::move() {
-    direction += outputTest[INDEX_DIRECTION] * angularSpeedLimit;
+
+    direction += output[0][INDEX_DIRECTION] * angularSpeedLimit;
 
     if (direction > 2 * M_PI)
         direction -= 2 * M_PI;
     else if (direction < -2 * M_PI)
         direction += 2 * M_PI;
 
-    int frontSpeed = speedLimit * outputTest[INDEX_FRONT_SPEED];
-    int sideSpeed = speedLimit * outputTest[INDEX_SIDE_SPEED];
+    int frontSpeed = speedLimit * output[0][INDEX_FRONT_SPEED];
+    if(frontSpeed < 0)
+        frontSpeed = 0;
 
-    cv::Point offset = cv::Point((int)(frontSpeed * cos(direction) + sideSpeed * cos(direction + M_PI_2)), (int)(frontSpeed * sin(direction) + sideSpeed * sin(direction + M_PI_2)));
+    // int sideSpeed = speedLimit * output[0][INDEX_SIDE_SPEED];
+
+    // cv::Point offset = cv::Point((int)(frontSpeed * cos(direction) + sideSpeed * cos(direction + M_PI_2)), (int)(frontSpeed * sin(direction) + sideSpeed * sin(direction + M_PI_2)));
+    cv::Point offset = cv::Point((int)frontSpeed * cos(direction), (int)frontSpeed * sin(direction));
 
     if (checkMove(offset))
         center += offset;
 }
 
 enemyInfo_t Player::killPlayer(int rayNumber) {
-    if (rayNumber < 0 || rayNumber > numberOfRays || timeShot > 0) {
-        if (timeShot <= 0)
-            timeShot = shotInterval;
 
+    if (timeShot > 0) {
+        timeShot--;
         return {cv::Point(-1, -1), NOTHING};
     }
 
     timeShot = shotInterval;
 
-    double currentAngle;
+    int i;
+    int id;
+
+    cv::Point offset;
+    cv::Point finalPt;
+    cv::Point pt;
     cv::Point enemyPoint;
+    
+    offset.x = _RADIUS_TOTAL_DISTANCE * cos(direction);
+    offset.y = _RADIUS_TOTAL_DISTANCE * sin(direction);
 
-    currentAngle = separationAngle * rayNumber + direction - visionAngle / 2;
+    for (i = 0; i < visionDist; i++) {
+        
+        pt.x = i * cos(direction);
+        pt.y = i * sin(direction);
 
-    //enemy location
-    enemyPoint.x = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * cos(currentAngle);
-    enemyPoint.y = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * sin(currentAngle);
+        finalPt = pt + center + offset;
 
-    enemyPoint += center;
+        id = screen->colorToId(screen->getColor(finalPt));
+
+        if (id != NOTHING)
+            break;
+    }
+
+    enemyPoint = finalPt;
 
     cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0), 1);
     cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
 
-    return {enemyPoint, raysID[rayNumber]};
+
+
+    // if (rayNumber < 0 || rayNumber > numberOfRays || timeShot > 0) {
+    //     if (timeShot <= 0)
+    //         timeShot = shotInterval;
+
+    //     return {cv::Point(-1, -1), NOTHING};
+    // }
+
+    // timeShot = shotInterval;
+
+    // double currentAngle;
+    // cv::Point enemyPoint;
+
+    // currentAngle = separationAngle * rayNumber + direction - visionAngle / 2;
+
+    // //enemy location
+    // enemyPoint.x = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * cos(currentAngle);
+    // enemyPoint.y = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * sin(currentAngle);
+
+    // enemyPoint += center;
+
+    // cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0), 1);
+    // cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
+
+    return {enemyPoint, id};
 }
 
 void Player::takeDamage(int damage) {
     life -= damage;
 }
 
-void Player::setAlive(bool alive) {
+void Player::setAlive(bool alive, int turn) {
     this->alive = alive;
 
     if (!alive) {
-        updateScore(-3);
+        updateScore(- 3);
         center.x = 0;
         center.y = 0;
     }
@@ -230,47 +241,47 @@ void Player::setComunInput() {
             (*input)[i] = ENEMY;
 
         (*input)[i + 1] = raysDist[j] / 10.0;
-        // (*input)[i + 1] = raysDist[j];
     }
-    //*/
+    // i = 2 * numberOfRays;
+    // for (j = 0; i < 2 * (NUMBER_OF_TOTAL_PLAYERS - 1 + numberOfRays); i += 2, j++)
+    // {
+    //     if (j == playerID)
+    //     {
+    //         i -= 2;
+    //         continue;
+    //     }
 
-    ///*
-    /*
-    i = 2 * numberOfRays;
-    for (j = 0; j < NUMBER_OF_LIGHT_ASSAULTS; i += 2, j++) {
-        if (j == playerID) {
-            i -= 2;
-            continue;
-        }
+    //     (*input)[i] = playersCenter[j]->x / 50.0;
+    //     (*input)[i + 1] = playersCenter[j]->y / 50.0;
+    // }
+    // i--;
 
-        (*input)[i] = (center.x - playersCenter[j]->x) / 50.0;
-        (*input)[i + 1] = (center.y - playersCenter[j]->y) / 50.0;
-    }
-    */
-    //*/
-
-    // i = 2 * (numberOfRays + NUMBER_OF_LIGHT_ASSAULTS - 1);
     i = 2 * numberOfRays;
 
     (*input)[i] = center.x / 50.0;
     (*input)[i + 1] = center.y / 50.0;
     (*input)[i + 2] = direction;
     (*input)[i + 3] = life / 10.0;
+    (*input)[i + 4] = timeShot;
 
-    // (*input)[i] = center.x;
-    // (*input)[i + 1] = center.y;
-    // (*input)[i + 2] = direction;
-    // (*input)[i + 3] = life;
+    i += 5;
 
-    timeShot--;
+    for (j = 0; j < MEMORY_SIZE; i++, j++) {
+        (*input)[i] = (*output)[j + INDEX_SHOT + 1];
+    }
+
+    if(timeShot > 0)
+        timeShot--;
 }
 
-void Player::reset(bool resetScore) {
+void Player::reset(int life, bool resetScore) {
     if (resetScore)
         score = 0;
 
     alive = true;
-    this->life = PLAYER_HEALTH;
+
+    this->life = life;
+
     timeShot = shotInterval;
 
     setPosition();

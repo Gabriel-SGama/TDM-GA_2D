@@ -2,8 +2,9 @@
 #include <string.h>
 #include <thread>
 #include <mutex>
-#include <ctime>
 
+#include "headers/Moderator.h"
+#include "headers/ANN.h"
 #include "headers/Evolution.h"
 
 std::mutex mtx;
@@ -13,28 +14,54 @@ void copyModerator() {
     Moderator *copyModerator = new Moderator;
     //Screen *screen = new Screen;
 
-    ANN *bestANN = evolution->bestTrainingANN;
+    LightAssault *lightAssaults = evolution->bestTeams->getLightAssaults();
+    Sniper *snipers = evolution->bestTeams->getSnipers();
+    Assault *assaults = evolution->bestTeams->getAssaults();
 
-    copyModerator->setModerator();
+    copyModerator->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
     copyModerator->setScreen(new Screen);
-    copyModerator->screen->setScreenParam("best team", 0, 0);
+    copyModerator->screen->setScreenParam("best teams", 0, 0);
     copyModerator->setAllPlayersValues();
 
+    Moderator *bestIndvsCopy = new Moderator;
+
+    bestIndvsCopy->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
+    bestIndvsCopy->setScreen(new Screen);
+    bestIndvsCopy->screen->setScreenParam("best indvs", LENGTH + 67, 0);
+    bestIndvsCopy->setAllPlayersValues();
+
+    ANN *bestLightAssaultMatrix = new ANN;
+    ANN *bestSniperMatrix = new ANN;
+    ANN *bestAssaultMatrix = new ANN;
+
+    bestLightAssaultMatrix->setANNParameters(lightAssaults->ANNInputSize, lightAssaults->ANNOutputSize);
+    bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
+    bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
     cv::Point initialPos[] = {cv::Point(LENGTH-300,HEIGHT-250), cv::Point(LENGTH-400,150), cv::Point(0,150)};
 
     while (true) {
         mtx.lock();
-       
-        copyModerator->setInicialPosAll(initialPos, rand() % 3);
-        // copyModerator->setAllWeightsMod(lightAssaults->ann, snipers->ann, assaults->ann);
-        copyModerator->setAllWeightsMod(copyModerator->bestANN, nullptr);
-        copyModerator->setAllWeightsMod(nullptr, evolution->bestTrainingANN);
+        // evolution->setBestIndvs();
+        // std::cout << "copying " << std::endl;
+        copyModerator->setInicialPosAll(initialPos, rand()%3);
+        copyModerator->copyAllWeights(lightAssaults, snipers, assaults);
+        // std::cout << "finish copy " << std::endl;
 
         mtx.unlock();
 
         copyModerator->gameOfBest();
         copyModerator->resetAllPlayers(true);
 
+        mtx.lock();
+        bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
+        bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
+        bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
+
+        bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
+        bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
+        mtx.unlock();
+        bestIndvsCopy->gameOfBest();
+        bestIndvsCopy->resetAllPlayers(true);
     }
 }
 
@@ -51,29 +78,26 @@ int main() {
     }
     */
 
-    std::clock_t begin;
-    std::clock_t end;    
-    double elapsed_secs;
-    double totalMin = 0;
-
     evolution = new Evolution;
 
     std::thread th(copyModerator);
+  
+    topScore_t bestIndvScores;
 
     while (1) {
+      
         mtx.lock();
-        begin = clock();
         evolution->game();
-        end = clock();
-        elapsed_secs = double(end-begin) / (CLOCKS_PER_SEC*4);
-        // totalMin += elapsed_secs / 60.0;
-        evolution->tournamentMod();
+        evolution->tournamentAll();
         std::cout << "-------------GEN " << gen << " -------------" << std::endl;
-        std::cout << "elapsed: " << elapsed_secs << std::endl;
-        std::cout << "best team score: " << evolution->bestTeamScore << std::endl;
+        std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
+        std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
+        std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
 
-        if (!(gen % 15)) {
-            evolution->genocide();
+        bestIndvScores = evolution->setBestIndvs();
+
+        if (!(gen % 20)) {
+            evolution->genocideAll();
             std::cout << "-------------genocide-------------" << std::endl;
         }
 

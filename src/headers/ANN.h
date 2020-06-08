@@ -7,13 +7,14 @@
 //output indexs
 #define INDEX_DIRECTION 0
 #define INDEX_FRONT_SPEED 1
-#define INDEX_SIDE_SPEED 2
-#define INDEX_SHOT 3
+// #define INDEX_SIDE_SPEED 2
+#define INDEX_SHOT 2
+#define MEMORY_SIZE 10
 
 using namespace Eigen;
 
-const std::vector<int> layers({55});
-const int layerSize = 1;
+const std::vector<int> layers({45});
+const int layerSize = 0;
 
 class ANN {
    private:
@@ -31,7 +32,7 @@ class ANN {
 
     void setANNParameters(int inputSize, int outputSize);
     void reset();
-    VectorXf* multiply();
+    void multiply();
 
     inline VectorXf *getOutputPtr() { return &output; }
     inline VectorXf *getInputPtr() { return &input; }
@@ -40,4 +41,6 @@ class ANN {
     MatrixXf *setMatrix(MatrixXf *matrixArray);
 
     void copyWheights(MatrixXf *matrixArray);
+    //evolution:
+    void simpleBreeding(MatrixXf *matrixArray);
 };

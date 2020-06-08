@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "headers/Moderator.h"
+#include "headers/ANN.h"
 #include "headers/Evolution.h"
 
 Moderator::Moderator() {
@@ -10,38 +11,64 @@ Moderator::Moderator() {
 Moderator::~Moderator() {
 }
 
-void Moderator::setModerator() {
-    trainingScore = 0;
+void Moderator::setModerator(int NUMBER_OF_LIGHT_ASSAULT_TRAIN, int NUMBER_OF_SNIPER_TRAIN, int NUMBER_OF_ASSAULT_TRAIN) {
+    turn = 0;
+    lightAssaultScore = 0;
+    sniperScore = 0;
+    assaultScore = 0;
+
+    this->NUMBER_OF_LIGHT_ASSAULT_TRAIN = NUMBER_OF_LIGHT_ASSAULT_TRAIN;
+    this->NUMBER_OF_SNIPER_TRAIN = NUMBER_OF_SNIPER_TRAIN;
+    this->NUMBER_OF_ASSAULT_TRAIN = NUMBER_OF_ASSAULT_TRAIN;
 
     //allocs all memory
-    trainingTeam = new Player[NUMBER_OF_PLAYERS];
-    bestTeam = new Player[NUMBER_OF_PLAYERS];
-    // playersCenter = new cv::Point *[NUMBER_OF_TOTAL_PLAYERS];
+    lightAssaults = new LightAssault[NUMBER_OF_LIGHT_ASSAULT_TRAIN];
+    snipers = new Sniper[NUMBER_OF_SNIPER_TRAIN];
+    assaults = new Assault[NUMBER_OF_ASSAULT_TRAIN];
 
-    trainingCenter = new cv::Point *[NUMBER_OF_PLAYERS];
-    bestCenter = new cv::Point *[NUMBER_OF_PLAYERS];
+    bestLightAssault = new dataOfBestPlayers_t;
+    bestSniper = new dataOfBestPlayers_t;
+    bestAssault = new dataOfBestPlayers_t;
 
-    //neuron networks for each player
-    trainingANN = new ANN;
-    bestANN = new ANN;
+    bestLightAssault->player = lightAssaults;
+    bestSniper->player = snipers;
+    bestAssault->player = assaults;
+    bestLightAssault->score = INICIAL_SCORE;
+    bestSniper->score = INICIAL_SCORE;
+    bestAssault->score = INICIAL_SCORE;
 
-    //set initial values of the neuron network
-    trainingANN->setANNParameters(trainingTeam->ANNInputSize, trainingTeam->ANNOutputSize);
-    bestANN->setANNParameters(bestTeam->ANNInputSize, bestTeam->ANNOutputSize);
+    playersCenter = new cv::Point *[NUMBER_OF_TOTAL_PLAYERS];
 
-    //difines each to players
-    for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        trainingTeam[i].setANN(trainingANN);
-        bestTeam[i].setANN(bestANN);
-    }
-
-    setPlayerCenterPtr(trainingTeam, trainingCenter);
-    setPlayerCenterPtr(bestTeam, bestCenter);
+    setPlayerCenterPtr(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN, 0);
+    setPlayerCenterPtr(snipers, NUMBER_OF_SNIPER_TRAIN, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
+    setPlayerCenterPtr(assaults, NUMBER_OF_ASSAULT_TRAIN, NUMBER_OF_SNIPER_TRAIN + NUMBER_OF_LIGHT_ASSAULT_TRAIN);
 }
 
-void Moderator::setPlayerCenterPtr(Player *players, cv::Point **pointPtr) {
+
+void Moderator::setInicialPosAll(cv::Point *inicialPos, int start) {
+    setInicialPos(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN, inicialPos[start]);
+    start++;
+    if (start > 2)
+        start = 0;
+
+    setInicialPos(snipers, NUMBER_OF_SNIPER_TRAIN, inicialPos[start]);
+
+    start++;
+    if (start > 2)
+        start = 0;
+
+    setInicialPos(assaults, NUMBER_OF_ASSAULT_TRAIN, inicialPos[start]);
+}
+
+void Moderator::setInicialPos(Player *players, int NUMBER_OF_PLAYERS, cv::Point initialPos) {
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
+        players[i].initialPos = initialPos;
+    }
+}
+
+void Moderator::setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
-        pointPtr[i] = players[i].getCenterPtr();
+        playersCenter[i + offset] = players[i].getCenterPtr();
 }
 
 void Moderator::setScreen(Screen *screen) {
@@ -51,42 +78,34 @@ void Moderator::setScreen(Screen *screen) {
     screen->createObstacle();
 }
 
-void Moderator::setInicialPosAll(cv::Point *inicialPos, int start) {
-    setInicialPos(trainingTeam, inicialPos[start]);
-    start++;
-    setInicialPos(bestTeam, inicialPos[start%3]);
-}
-
-void Moderator::setInicialPos(Player *players, cv::Point initialPos) {
-    for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        players[i].initialPos = initialPos;
-    }
-}
-
 void Moderator::setAllPlayersValues() {
-    setPlayersValues(trainingTeam, trainingCenter, TRAINING_PLAYER, TRAINING_COLOR, TRAINING_RAY);
-    setPlayersValues(bestTeam, bestCenter, BEST_PLAYER, BEST_COLOR, BEST_RAY);
+    int playerNumber = 0;
+
+    setPlayersValues(playerNumber, lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
+    setPlayersValues(playerNumber, snipers, NUMBER_OF_SNIPER_TRAIN);
+    setPlayersValues(playerNumber, assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
-void Moderator::setPlayersValues(Player *players, cv::Point **centerPtr, int playerType, cv::Scalar color, cv::Scalar ray) {
-    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
-        players[i].setPlayerValues(screen, i, centerPtr, playerType, color, ray);
+void Moderator::setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS) {
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++, playerNumber++)
+        players[i].setPlayerValues(screen, playerNumber, LIGHT_ASSAULT_HEALTH, playersCenter);
 }
 
 void Moderator::drawAllPlayers() {
     screen->resetImage();
-
-    cv::rectangle(screen->getMap(), cv::Point(0, 150), cv::Point(300, 300), cv::Scalar(0, 0, 0), 1);
-    cv::rectangle(screen->getMap(), cv::Point(LENGTH - 300, HEIGHT - 150), cv::Point(LENGTH, HEIGHT), cv::Scalar(0, 0, 0), 1);
-    cv::rectangle(screen->getMap(), cv::Point(LENGTH - 400, 150), cv::Point(LENGTH - 100, 300), cv::Scalar(0, 0, 0), 1);
+    
+    // cv::rectangle(screen->getMap(), cv::Point(0, 150), cv::Point(300, 300), cv::Scalar(0, 1, 0), 1);
+    // cv::rectangle(screen->getMap(), cv::Point(LENGTH - 300, HEIGHT - 150), cv::Point(LENGTH, HEIGHT), cv::Scalar(0, 0, 1), 1);
+    // cv::rectangle(screen->getMap(), cv::Point(LENGTH - 400, 150), cv::Point(LENGTH - 100, 300), cv::Scalar(0, 1, 0), 1);
 
     screen->createObstacle();
 
-    drawPlayers(trainingTeam);
-    drawPlayers(bestTeam);
+    drawPlayers(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
+    drawPlayers(snipers, NUMBER_OF_SNIPER_TRAIN);
+    drawPlayers(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
-void Moderator::drawPlayers(Player *players) {
+void Moderator::drawPlayers(Player *players, int NUMBER_OF_PLAYERS) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
         if (players[i].isAlive())
             players[i].drawPlayer();
@@ -94,11 +113,12 @@ void Moderator::drawPlayers(Player *players) {
 }
 
 void Moderator::updateAllPlayersVision() {
-    updatePlayersVision(trainingTeam);
-    updatePlayersVision(bestTeam);
+    updatePlayersVision(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
+    updatePlayersVision(snipers, NUMBER_OF_SNIPER_TRAIN);
+    updatePlayersVision(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
-void Moderator::updatePlayersVision(Player *players) {
+void Moderator::updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
         if (players[i].isAlive())
             players[i].updateVision();
@@ -106,114 +126,127 @@ void Moderator::updatePlayersVision(Player *players) {
 }
 
 void Moderator::conflictsAllPlayers() {
-    conflictsPlayers(trainingTeam, trainingTeam->numberOfRays);
-    conflictsPlayers(bestTeam, bestTeam->numberOfRays);
+    conflictsPlayers(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN, lightAssaults->numberOfRays);
+    conflictsPlayers(snipers, NUMBER_OF_SNIPER_TRAIN, snipers->numberOfRays);
+    conflictsPlayers(assaults, NUMBER_OF_ASSAULT_TRAIN, assaults->numberOfRays);
 }
 
-void Moderator::conflictsPlayers(Player *players, int numberOfRays) {
+void Moderator::conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS, int numberOfRays) {
     enemyInfo_t enemyInfo;
 
     int maxIndex = 0;
     int k;
     float max = -1;
 
-    for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        if (players[i].isAlive()) {
-            for (k = INDEX_SHOT; k < numberOfRays + INDEX_SHOT; k++) {
-                if (players[i].outputTest[k] > max) {
-                    max = players[i].outputTest[k];
-                    maxIndex = k;
-                }
-            }
-
-            if (max > 0.5) {
-                enemyInfo = players[i].killPlayer(maxIndex - INDEX_SHOT);
-            } else
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
+    {
+        if(players[i].isAlive() && players[i].output[0][INDEX_SHOT] > 0.5){
+            enemyInfo = players[i].killPlayer(0);
+            if(enemyInfo.playerType == NOTHING || enemyInfo.playerType == OBSTACLE)
                 continue;
 
-            if (enemyInfo.playerType == NOTHING || enemyInfo.playerType == OBSTACLE)
-                continue;
-
-            shotPlayer(&players[i], enemyInfo);
+        shotPlayer(&players[i], enemyInfo);
+            
         }
+        
     }
+    
+    // for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
+    //     if (players[i].isAlive()) {
+    //         for (k = INDEX_SHOT; k < numberOfRays + INDEX_SHOT; k++) {
+    //             if (players[i].output[0][k] > max) {
+    //                 max = players[i].output[0][k];
+    //                 maxIndex = k;
+    //             }
+    //         }
+
+    //         if (max > 0.0001) {
+    //             enemyInfo = players[i].killPlayer(maxIndex - INDEX_SHOT);
+    //         } else
+    //             continue;
+
+    //         if (enemyInfo.playerType == NOTHING || enemyInfo.playerType == OBSTACLE)
+    //             continue;
+
+    //         shotPlayer(&players[i], enemyInfo);
+    //     }
+    // }
 }
 
 void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo) {
     //find the player that was shot
-    if (enemyInfo.playerType == TRAINING_PLAYER && findPlayer(shooter, trainingTeam, enemyInfo.posiAprox)) {
-        if (shooter->getPlayerType() != TRAINING_PLAYER)
-            shooter->updateScore(SHOT_REWARD);
+    if (enemyInfo.playerType == LIGHT_ASSAULT && findPlayer(shooter, lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN, enemyInfo.posiAprox)) {
+        if (shooter->getPlayerType() != LIGHT_ASSAULT)
+            shooter->updateScore(1 * LIGHT_ASSAULT_SHOT_REWARD);
         else
-            shooter->updateScore(-2.5 * SHOT_REWARD);
+            shooter->updateScore(1 * -2.5 * LIGHT_ASSAULT_SHOT_REWARD);
     }
 
-    else if (findPlayer(shooter, bestTeam, enemyInfo.posiAprox)) {
-        if (shooter->getPlayerType() != BEST_PLAYER)
-            shooter->updateScore(SHOT_REWARD);
+    else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, NUMBER_OF_SNIPER_TRAIN, enemyInfo.posiAprox)) {
+        if (shooter->getPlayerType() != SNIPER)
+            shooter->updateScore(1 * SNIPER_SHOT_REWARD);
         else
-            shooter->updateScore(-2.5 * SHOT_REWARD);
+            shooter->updateScore(1 * -2.5 * SNIPER_SHOT_REWARD);
+
+    } else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, assaults, NUMBER_OF_ASSAULT_TRAIN, enemyInfo.posiAprox)) {
+        if (shooter->getPlayerType() != ASSAULT)
+            shooter->updateScore(1 * ASSAULT_SHOT_REWARD);
+        else
+            shooter->updateScore(1 * -2.5 * ASSAULT_SHOT_REWARD);
     }
 }
 
-int Moderator::findPlayer(Player *shooter, Player *players, cv::Point enemyPoint) {
+int Moderator::findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, cv::Point enemyPoint) {
     float distance;
 
     //find the player that was shot
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        if (!players[i].isAlive() /* || players[i].getPlayerID() == shooter->getPlayerID()*/)
+        if (!players[i].isAlive() || players[i].getPlayerID() == shooter[i].getPlayerID())
             continue;
 
         distance = cv::norm(players[i].getCenter() - enemyPoint);
 
         if (distance <= RADIUS + 1) {
             players[i].takeDamage(shooter->getDamage());
-            int shooterType = shooter->getPlayerType();
 
-            if (shooterType != players[i].getPlayerType()) {
-                if (shooterType == TRAINING_PLAYER)
-                    trainingScore++;
-                
-            } else {
-                if (shooterType == TRAINING_PLAYER)
-                    trainingScore--;
+            if (players[i].getLife() <= 0) {
+                //friend fire doesnt count to score
+                if (shooter->getPlayerType() == players[i].getPlayerType())
+                    players[i].updateScore(3);
+                else if (shooter->getPlayerType() == LIGHT_ASSAULT)
+                    lightAssaultScore += 1;
+                else if (shooter->getPlayerType() == SNIPER)
+                    sniperScore += 1;
+                else
+                    assaultScore += 1;
             }
             return 1;
         }
     }
+
     return 0;
 }
 
-bool Moderator::checkAllPlayersLife() {
-    bool TT = checkPlayersLife(trainingTeam);
-    bool BT = checkPlayersLife(bestTeam);
-
-    if (TT && BT)
-        return true;
-
-    return false;
+void Moderator::checkAllPlayersLife() {
+    checkPlayersLife(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
+    checkPlayersLife(snipers, NUMBER_OF_SNIPER_TRAIN);
+    checkPlayersLife(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
-bool Moderator::checkPlayersLife(Player *players) {
-    bool match = false;
-
+void Moderator::checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        if (players[i].isAlive()) {
-            match = true;
-            if (players[i].getLife() <= 0)
-                players[i].setAlive(false);
-        }
+        if (players[i].getLife() <= 0 && players[i].isAlive())
+            players[i].setAlive(false, turn);
     }
-
-    return match;
 }
 
 void Moderator::moveAllPlayers() {
-    movePlayers(trainingTeam);
-    movePlayers(bestTeam);
+    movePlayers(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
+    movePlayers(snipers, NUMBER_OF_SNIPER_TRAIN);
+    movePlayers(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
-void Moderator::movePlayers(Player *players) {
+void Moderator::movePlayers(Player *players, int NUMBER_OF_PLAYERS) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
         if (players[i].isAlive())
             players[i].move();
@@ -221,28 +254,63 @@ void Moderator::movePlayers(Player *players) {
 }
 
 void Moderator::multiplyAllPlayers() {
-    multiplyPlayers(trainingANN, trainingTeam);
-    multiplyPlayers(bestANN, bestTeam);
+    multiplyPlayers(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
+    multiplyPlayers(snipers, NUMBER_OF_SNIPER_TRAIN);
+    multiplyPlayers(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
-void Moderator::multiplyPlayers(ANN *ann, Player *players) {
+void Moderator::multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        if (players[i].isAlive()) {
-            players[i].setComunInput();
-            players[i].copyOutput(ann->multiply());
-        }
+        if (players[i].isAlive())
+            players[i].ann->multiply();
     }
 }
 
 void Moderator::defineAllPlayersInput() {
-    definePlayersInput(trainingTeam);
-    definePlayersInput(bestTeam);
+    definePlayersInput(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
+    definePlayersInput(snipers, NUMBER_OF_SNIPER_TRAIN);
+    definePlayersInput(assaults, NUMBER_OF_ASSAULT_TRAIN);
 }
 
-void Moderator::definePlayersInput(Player *players) {
+void Moderator::definePlayersInput(Player *players, int NUMBER_OF_PLAYERS) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
         if (players[i].isAlive())
             players[i].setComunInput();
+    }
+}
+
+void Moderator::calculateScore() {
+    int i;
+    float indvScore;
+
+    for (i = 0; i < NUMBER_OF_LIGHT_ASSAULT_TRAIN; i++) {
+        indvScore = lightAssaults[i].getScore();
+
+        if (indvScore > bestLightAssault->score) {
+            bestLightAssault->score = indvScore;
+            bestLightAssault->player = &lightAssaults[i];
+            bestLightAssault->index = i;
+        }
+    }
+
+    for (i = 0; i < NUMBER_OF_SNIPER_TRAIN; i++) {
+        indvScore = snipers[i].getScore();
+
+        if (indvScore > bestSniper->score) {
+            bestSniper->score = indvScore;
+            bestSniper->player = &snipers[i];
+            bestSniper->index = i;
+        }
+    }
+
+    for (i = 0; i < NUMBER_OF_ASSAULT_TRAIN; i++) {
+        indvScore = assaults[i].getScore();
+
+        if (indvScore > bestAssault->score) {
+            bestAssault->score = indvScore;
+            bestAssault->player = &assaults[i];
+            bestAssault->index = i;
+        }
     }
 }
 
@@ -250,37 +318,98 @@ void Moderator::resetAllPlayers(bool resetScore) {
     screen->resetImage();
     screen->createObstacle();
 
-    trainingScore = 0;
+    if (resetScore) {
+        bestLightAssault->score = INICIAL_SCORE;
+        bestSniper->score = INICIAL_SCORE;
+        bestAssault->score = INICIAL_SCORE;
+    }
 
-    resetPlayers(trainingTeam, resetScore);
-    resetPlayers(bestTeam, resetScore);
+    lightAssaultScore = 0;
+    sniperScore = 0;
+    assaultScore = 0;
+
+    resetPlayers(lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN, LIGHT_ASSAULT_HEALTH, resetScore);
+    resetPlayers(snipers, NUMBER_OF_SNIPER_TRAIN, SNIPER_HEALTH, resetScore);
+    resetPlayers(assaults, NUMBER_OF_ASSAULT_TRAIN, ASSAULT_HEALTH, resetScore);
 }
 
-void Moderator::resetPlayers(Player *players, bool resetScore) {
+void Moderator::resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, bool resetScore) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
-        players[i].reset(resetScore);
+        players[i].reset(life, resetScore);
 }
 
-void Moderator::setAllWeightsMod(ANN *trainingMatrix, ANN *bestMatrix) {
-    if (trainingMatrix != nullptr)
-        this->trainingANN->copyWheights(trainingMatrix->getMatrixPtr());
-    if (bestMatrix != nullptr)
-        this->bestANN->copyWheights(bestMatrix->getMatrixPtr());
+void Moderator::setAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnipers, Assault *bestAssaults) {
+    if (bestLightAssaults != nullptr)
+        setWeights(bestLightAssaults, lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
+
+    if (bestSnipers != nullptr)
+        setWeights(bestSnipers, snipers, NUMBER_OF_SNIPER_TRAIN);
+
+    if (bestAssaults != nullptr)
+        setWeights(bestAssaults, assaults, NUMBER_OF_ASSAULT_TRAIN);
+}
+
+void Moderator::setWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS) {
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
+        players[i].ann->setMatrix(bestPlayers[i].ann->getMatrixPtr());
+}
+
+void Moderator::copyAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnipers, Assault *bestAssaults) {
+    if (bestLightAssaults != nullptr)
+        copyWeights(bestLightAssaults, lightAssaults, NUMBER_OF_LIGHT_ASSAULT_TRAIN);
+
+    if (bestSnipers != nullptr)
+        copyWeights(bestSnipers, snipers, NUMBER_OF_SNIPER_TRAIN);
+
+    if (bestAssaults != nullptr)
+        copyWeights(bestAssaults, assaults, NUMBER_OF_ASSAULT_TRAIN);
+}
+
+void Moderator::copyWeights(Player *bestPlayers, Player *players, int NUMBER_OF_PLAYERS) {
+    int j;
+
+    MatrixXf *newMatrixArray;
+    MatrixXf *matrixArray;
+
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
+        newMatrixArray = new MatrixXf[layerSize + 1];
+        delete[] players[i].ann->getMatrixPtr();
+        matrixArray = bestPlayers[i].ann->getMatrixPtr();
+
+        for (j = 0; j < layerSize + 1; j++)
+            newMatrixArray[j] = matrixArray[j];
+
+        players[i].ann->setMatrix(newMatrixArray);
+    }
+}
+
+void Moderator::setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *traitorMatrix, MatrixXf *detectiveMatrix) {
+    int i;
+
+    for (i = 0; i < NUMBER_OF_LIGHT_ASSAULT_TRAIN; i++)
+        lightAssaults[i].ann->setMatrix(inocentMatrix);
+
+    for (i = 0; i < NUMBER_OF_SNIPER_TRAIN; i++)
+        snipers[i].ann->setMatrix(traitorMatrix);
+
+    for (i = 0; i < NUMBER_OF_ASSAULT_TRAIN; i++)
+        assaults[i].ann->setMatrix(detectiveMatrix);
 }
 
 void Moderator::game() {
-    for (int turn = 0; turn < DURATION; turn++) {
+    for (turn = 0; turn < DURATION; turn++) {
         drawAllPlayers();
         updateAllPlayersVision();
 
+        defineAllPlayersInput();
         multiplyAllPlayers();
 
         conflictsAllPlayers();
-        if (!checkAllPlayersLife())
-            break;
+        checkAllPlayersLife();
 
         moveAllPlayers();
     }
+    calculateScore();
 }
 
 void Moderator::gameOfBest() {
@@ -288,46 +417,15 @@ void Moderator::gameOfBest() {
         drawAllPlayers();
         updateAllPlayersVision();
 
+        defineAllPlayersInput();
         multiplyAllPlayers();
 
+        cv::imshow(screen->windowName,screen->getMap());
         conflictsAllPlayers();
         screen->updateMap();
-
-        if (!checkAllPlayersLife())
-            break;
+        checkAllPlayersLife();
 
         moveAllPlayers();
     }
-}
-
-float Moderator::getScore() {
-    
-    return trainingScore;
-}
-
-void Moderator::setScore(float score) {
-    
-    trainingScore = score;
-}
-
-MatrixXf *Moderator::getMatrixPtr(int id) {
-    if (id == TRAINING_PLAYER)
-        return trainingANN->getMatrixPtr();
-
-    return bestANN->getMatrixPtr();
-
-}
-
-ANN *Moderator::getANN(int id) {
-    if (id == TRAINING_PLAYER)
-        return trainingANN;
-
-    return bestANN;
-}
-
-MatrixXf *Moderator::setMatrix(MatrixXf *matrixs, int id) {
-    if (id == TRAINING_PLAYER)
-        return trainingANN->setMatrix(matrixs);
-
-    return bestANN->setMatrix(matrixs);
+    calculateScore();
 }

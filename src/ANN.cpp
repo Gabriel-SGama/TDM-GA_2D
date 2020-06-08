@@ -14,6 +14,8 @@ void ANN::setANNParameters(int inputSize, int outputSize) {
     input.resize(inputSize);
     output.resize(outputSize);
 
+    //output[INDEX_SHOT] = -1;
+
     aux.push_back(inputSize);
 
     for (i = 0; i < layerSize; i++) {
@@ -44,12 +46,18 @@ void ANN::reset() {
     }
 }
 
-VectorXf* ANN::multiply() {
+void ANN::multiply() {
     int i;
     int j;
 
+    //std::cout << "input: " << std::endl;
+    //std::cout << input << std::endl;
+
     if (layerSize > 0) {
         intermediunOut[0] = matrixArray[0] * input;
+
+        //std::cout <<"inter: " << std::endl;
+        //std::cout << intermediunOut[0] << std::endl;
 
         for (j = 0; j < intermediunOut[0].size(); j++) {
             intermediunOut[0][j] = tanh(intermediunOut[0][j]);
@@ -68,11 +76,14 @@ VectorXf* ANN::multiply() {
         output = matrixArray[0] * input;
     }
 
+    //std::cout << "matrix: " << matrixArray[0] << std::endl;
+
     for (j = 0; j < output.size(); j++) {
         output[j] = tanh(output[j]);
     }
 
-    return &output;
+    //std::cout <<"output: " << std::endl;
+    //std::cout << output << std::endl;
 }
 
 MatrixXf *ANN::setMatrix(MatrixXf *matrixArray) {
@@ -86,4 +97,9 @@ MatrixXf *ANN::setMatrix(MatrixXf *matrixArray) {
 void ANN::copyWheights(MatrixXf *matrixArray) {
     for (int i = 0; i < layerSize + 1; i++)
         this->matrixArray[i] = matrixArray[i];
+}
+
+void ANN::simpleBreeding(MatrixXf *matrixArray) {
+    for (int i = 0; i < layerSize + 1; i++)
+        this->matrixArray[i] = (matrixArray[i] + this->matrixArray[i]) / 2;
 }
