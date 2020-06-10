@@ -1,8 +1,6 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include <opencv2/opencv.hpp>
-
 class Screen;
 
 //screen dimensions

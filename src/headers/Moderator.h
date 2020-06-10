@@ -15,8 +15,10 @@ class Moderator;
 #include "Light_Assault.h"
 #include "Sniper.h"
 #include "Assault.h"
+#include "Evolution.h"
 
-const int NUMBER_OF_TOTAL_PLAYERS = NUMBER_OF_LIGHT_ASSAULTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS;
+// const int NUMBER_OF_TOTAL_PLAYERS = NUMBER_OF_LIGHT_ASSAULTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS;
+const int NUMBER_OF_TOTAL_PLAYERS = 3 * NUMBER_OF_PLAYERS;
 
 using namespace Eigen;
 typedef struct dataOfBestPlayers_t {
@@ -38,13 +40,13 @@ class Moderator {
     Sniper *snipers;
     Assault *assaults;
 
+    cv::Point **LACenter;
+    cv::Point **SCenter;
+    cv::Point **ACenter;
+
     int turn;
 
    public:
-    int NUMBER_OF_LIGHT_ASSAULT_TRAIN;
-    int NUMBER_OF_SNIPER_TRAIN;
-    int NUMBER_OF_ASSAULT_TRAIN;
-
     dataOfBestPlayers_t *bestLightAssault;
     dataOfBestPlayers_t *bestSniper;
     dataOfBestPlayers_t *bestAssault;
@@ -61,8 +63,9 @@ class Moderator {
     Screen *screen;  //commun screen obj
 
     //initial values:
-    void setModerator(int NUMBER_LIGHT_ASSAULT_TRAIN, int NUMBER_OF_SNIPER_TRAIN, int NUMBER_OF_ASSAULT_TRAIN);
-    void setPlayerCenterPtr(Player *players, int NUMBER_OF_PLAYERS, int offset);
+    void setModerator();
+    void setPlayerCenterPtr(Player *players, int offset);
+    void setPlayerCenterPtr(Player *players, cv::Point** centerPtr);
     inline cv::Point **getPlayersCenterPtr() {
         return playersCenter;
     }
@@ -70,46 +73,46 @@ class Moderator {
 
     void setInicialPosAll(cv::Point *inicialPos, int start);
 
-    void setInicialPos(Player *players, int NUMBER_OF_PLAYERS, cv::Point initialPos);
+    void setInicialPos(Player *players, cv::Point initialPos);
 
     void setScreen(Screen *screen);
     void setAllPlayersValues();
-    void setPlayersValues(int &playerNumber, Player *players, int NUMBER_OF_PLAYERS);
+    void setPlayersValues(int& playerNumber ,Player *players, cv::Point** centerPtr);
 
     //draw functions
     void drawAllPlayers();
-    void drawPlayers(Player *players, int NUMBER_OF_PLAYERS);
+    void drawPlayers(Player *players);
 
     //vision:
     void updateAllPlayersVision();
-    void updatePlayersVision(Player *players, int NUMBER_OF_PLAYERS);
+    void updatePlayersVision(Player *players);
 
     //Conflicts:
     void conflictsAllPlayers();
-    void conflictsPlayers(Player *players, int NUMBER_OF_PLAYERS, int numberOfrays);
+    void conflictsPlayers(Player *players);
 
     void shotPlayer(Player *shooter, enemyInfo_t enemyInfo);
-    int findPlayer(Player *shooter, Player *players, int NUMBER_OF_PLAYERS, cv::Point enemyPoint);
+    int findPlayer(Player *shooter, Player *players, cv::Point enemyPoint);
 
     void checkAllPlayersLife();
-    void checkPlayersLife(Player *players, int NUMBER_OF_PLAYERS);
+    void checkPlayersLife(Player *players);
 
     //mode:
     void moveAllPlayers();
-    void movePlayers(Player *players, int NUMBER_OF_PLAYERS);
+    void movePlayers(Player *players);
 
     //ANN:
     void defineAllPlayersInput();
-    void definePlayersInput(Player *players, int NUMBER_OF_PLAYERS);
+    void definePlayersInput(Player *players);
 
     void multiplyAllPlayers();
-    void multiplyPlayers(Player *players, int NUMBER_OF_PLAYERS);
+    void multiplyPlayers(Player *players);
 
     void calculateScore();
 
     //reset:
     void resetAllPlayers(bool resetScore);
-    void resetPlayers(Player *players, int NUMBER_OF_PLAYERS, int life, bool resetScore);
+    void resetPlayers(Player *players, int life, bool resetScore);
 
     //get best players
     inline LightAssault *getLightAssaults() {
@@ -124,10 +127,10 @@ class Moderator {
 
     //weights
     void setAllWeights(LightAssault *lightAssaults, Sniper *snipers, Assault *assaults);
-    void setWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
+    void setWeights(Player *bestPlayer, Player *players);
 
     void copyAllWeights(LightAssault *lightAssaults, Sniper *snipers, Assault *assaults);
-    void copyWeights(Player *bestPlayer, Player *players, int NUMBER_OF_PLAYERS);
+    void copyWeights(Player *bestPlayer, Player *players);
 
     void setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *sniperMatrix, MatrixXf *detectiveMatrix);
 

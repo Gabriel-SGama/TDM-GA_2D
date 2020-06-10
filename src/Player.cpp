@@ -9,6 +9,8 @@ Player::Player() {
     alive = true;
 
     timeShot = shotInterval;
+    // direction = (rand() % (int)(M_PI * 200)) / 100.0;
+
 }
 
 Player::~Player() {
@@ -18,12 +20,11 @@ bool Player::isAlive() {
     return alive;
 }
 
-void Player::setPlayerValues(Screen *screen, int playerID, int life, cv::Point **playersCenter) {
-    this->playerType = playerType;
+void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter) {
+    
     this->playerID = playerID;
     playerIDStr = std::to_string(playerID);
     this->screen = screen;
-    this->life = life;
     this->playersCenter = playersCenter;
 
     setPosition();
@@ -33,10 +34,10 @@ void Player::setPlayerValues(Screen *screen, int playerID, int life, cv::Point *
 void Player::setPosition() {
 
     do {
-        center.x = rand() % (LENGTH - safeDist);
-        center.y = rand() % (HEIGHT - safeDist);
-        // center.x = rand() % (300) + initialPos.x;
-        // center.y = rand() % (150) + initialPos.y;
+        // center.x = rand() % (LENGTH - safeDist);
+        // center.y = rand() % (HEIGHT - safeDist);
+        center.x = rand() % (300) + initialPos.x;
+        center.y = rand() % (150) + initialPos.y;
 
     } while (!checkPosition());
 }
@@ -60,7 +61,7 @@ int Player::checkPosition() {
 void Player::drawPlayer() {
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
     cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, playerRay, 3);
-    //cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
+    // cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
 }
 
 void Player::updateVision() {
@@ -148,7 +149,7 @@ void Player::move() {
         center += offset;
 }
 
-enemyInfo_t Player::killPlayer(int rayNumber) {
+enemyInfo_t Player::killPlayer() {
 
     if (timeShot > 0) {
         timeShot--;
@@ -188,29 +189,6 @@ enemyInfo_t Player::killPlayer(int rayNumber) {
 
 
 
-    // if (rayNumber < 0 || rayNumber > numberOfRays || timeShot > 0) {
-    //     if (timeShot <= 0)
-    //         timeShot = shotInterval;
-
-    //     return {cv::Point(-1, -1), NOTHING};
-    // }
-
-    // timeShot = shotInterval;
-
-    // double currentAngle;
-    // cv::Point enemyPoint;
-
-    // currentAngle = separationAngle * rayNumber + direction - visionAngle / 2;
-
-    // //enemy location
-    // enemyPoint.x = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * cos(currentAngle);
-    // enemyPoint.y = (_RADIUS_TOTAL_DISTANCE + raysDist[rayNumber]) * sin(currentAngle);
-
-    // enemyPoint += center;
-
-    // cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0), 1);
-    // cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
-
     return {enemyPoint, id};
 }
 
@@ -218,11 +196,19 @@ void Player::takeDamage(int damage) {
     life -= damage;
 }
 
-void Player::setAlive(bool alive, int turn) {
+void Player::setAlive(bool alive) {
     this->alive = alive;
 
     if (!alive) {
         updateScore(- 3);
+        // do
+        // {
+        //     center.x = rand() % (LENGTH - safeDist);
+        //     center.y = rand() % (HEIGHT - safeDist);
+        // } while (!checkPosition());
+        
+        // this->alive = true;
+        // this->life = 75;
         center.x = 0;
         center.y = 0;
     }
@@ -231,7 +217,7 @@ void Player::setAlive(bool alive, int turn) {
 void Player::setComunInput() {
     int i = 0;
     int j;
-    ///*
+    
     for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++) {
         if (raysID[j] == playerType)
             (*input)[i] = ALLY;
@@ -242,27 +228,43 @@ void Player::setComunInput() {
 
         (*input)[i + 1] = raysDist[j] / 10.0;
     }
-    // i = 2 * numberOfRays;
-    // for (j = 0; i < 2 * (NUMBER_OF_TOTAL_PLAYERS - 1 + numberOfRays); i += 2, j++)
-    // {
-    //     if (j == playerID)
-    //     {
-    //         i -= 2;
-    //         continue;
-    //     }
 
-    //     (*input)[i] = playersCenter[j]->x / 50.0;
-    //     (*input)[i + 1] = playersCenter[j]->y / 50.0;
+    // for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++) {
+    //     if (raysID[j] == playerType)
+    //         (*input)[i] = ALLY / 50.0;
+    //     else if (raysID[j] == NOTHING || raysID[j] == OBSTACLE)
+    //         (*input)[i] = raysID[j] / 50.0;
+    //     else
+    //         (*input)[i] = ENEMY / 50.0;
+
+    //     (*input)[i + 1] = raysDist[j] / visionDist;
     // }
-    // i--;
 
     i = 2 * numberOfRays;
+    for (j = 0; j < NUMBER_OF_PLAYERS; j++) {
+        if(j == playerID % NUMBER_OF_PLAYERS)
+            continue;
+
+        (*input)[i] = playersCenter[j]->x / 50.0;
+        (*input)[i + 1] = playersCenter[j]->y / 50.0;
+        
+        i += 2;
+    }
+    i--;
+
+    // i = 2 * numberOfRays;
 
     (*input)[i] = center.x / 50.0;
     (*input)[i + 1] = center.y / 50.0;
     (*input)[i + 2] = direction;
     (*input)[i + 3] = life / 10.0;
     (*input)[i + 4] = timeShot;
+
+    // (*input)[i] = center.x / LENGTH;
+    // (*input)[i + 1] = center.y / LENGTH;
+    // (*input)[i + 2] = direction / (2.0*M_PI);
+    // (*input)[i + 3] = life / 100.0;
+    // (*input)[i + 4] = 1.0 * timeShot / shotInterval;
 
     i += 5;
 

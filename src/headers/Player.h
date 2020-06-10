@@ -7,15 +7,17 @@
 
 class Player;
 
+#define NUMBER_OF_PLAYERS 3
+
 //Player ID:
-#define NOTHING 1
-#define LIGHT_ASSAULT 10
-#define ASSAULT 15
-#define SNIPER 20
+#define NOTHING 10
+#define LIGHT_ASSAULT 1
+#define ASSAULT 2
+#define SNIPER 3
 #define OBSTACLE 50
 
-#define ALLY 20
-#define ENEMY -20
+#define ALLY 30
+#define ENEMY -30
 
 //Vision and player paramters
 #define RADIUS 10
@@ -140,10 +142,10 @@ class Player {
         score = newScore;
     }
 
-    void setAlive(bool alive, int punish);
+    void setAlive(bool alive);
 
     //initial values
-    void setPlayerValues(Screen *screen, int playerID, int life, cv::Point **playersCenter);  //inicial values
+    void setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter);  //inicial values
     void setPosition();                                                                       //initial position
     int checkPosition();
 
@@ -160,7 +162,7 @@ class Player {
 
     //conflicts
     void takeDamage(int damage);            //get shot
-    enemyInfo_t killPlayer(int rayNumber);  //shot playe
+    enemyInfo_t killPlayer();  //shot playe
 
     //ANN:
     void setComunInput();

@@ -123,6 +123,14 @@ void Screen::createObstacle() {
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 
+    // pt1.x = LENGTH / 7;
+    // pt1.y = HEIGHT / 5;
+
+    // pt2.x = pt1.x + LENGTH / 4;
+    // pt2.y = pt1.y + _OBSTACLE_LENGTH;
+
+    // cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
     //top rect
     pt1.x = LENGTH / 2;
     pt1.y = HEIGHT / 6;
@@ -160,7 +168,7 @@ void Screen::createObstacle() {
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 
     //lower horizontal rect
-    pt1.x = 0;
+    pt1.x = LENGTH / 6;
     pt1.y = 3 * HEIGHT / 4;
 
     pt2.x = LENGTH / 2;

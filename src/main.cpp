@@ -18,14 +18,14 @@ void copyModerator() {
     Sniper *snipers = evolution->bestTeams->getSnipers();
     Assault *assaults = evolution->bestTeams->getAssaults();
 
-    copyModerator->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
+    copyModerator->setModerator();
     copyModerator->setScreen(new Screen);
     copyModerator->screen->setScreenParam("best teams", 0, 0);
     copyModerator->setAllPlayersValues();
 
     Moderator *bestIndvsCopy = new Moderator;
 
-    bestIndvsCopy->setModerator(NUMBER_OF_LIGHT_ASSAULTS, NUMBER_OF_SNIPERS, NUMBER_OF_ASSAULTS);
+    bestIndvsCopy->setModerator();
     bestIndvsCopy->setScreen(new Screen);
     bestIndvsCopy->screen->setScreenParam("best indvs", LENGTH + 67, 0);
     bestIndvsCopy->setAllPlayersValues();
@@ -60,6 +60,7 @@ void copyModerator() {
         bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
         bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
         mtx.unlock();
+        
         bestIndvsCopy->gameOfBest();
         bestIndvsCopy->resetAllPlayers(true);
     }

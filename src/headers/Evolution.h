@@ -9,9 +9,7 @@ using namespace Eigen;
 #define INICIAL_SCORE -1000000
 
 //number of players for tournament
-const int TOURNAMENT_K_LIGHT_ASSAULTS = 5;
-const int TOURNAMENT_K_SNIPERS = 5;
-const int TOURNAMENT_K_ASSAULTS = 5;
+const int TOURNAMENT_K = 3;
 
 typedef struct topScore_t {
     float BLAS;
@@ -22,9 +20,7 @@ typedef struct topScore_t {
 
 class Evolution {
    private:
-    int TOTAL_NUMBER_OF_LIGHT_ASSAULTS;
-    int TOTAL_NUMBER_OF_SNIPERS;
-    int TOTAL_NUMER_OF_ASSAULTS;
+    int TOTAL_NUMBER_OF_PLAYERS;
 
     Moderator *lightAssaultTraining;
     Moderator *snipersTraining;
@@ -58,20 +54,20 @@ class Evolution {
     ~Evolution();
 
     void setParam(Moderator *moderators);
-    void createANN(ANN *childs, int NUMBER_OF_PLAYERS, int inputSize, int outputSize);
+    void createANN(ANN *childs, int inputSize, int outputSize);
     void setPlayersPtr();
 
     void game();
 
     void eletismAll();
-    void eletism(Player *players, int NUMBER_OF_PLAYERS, MatrixXf *matrixOfBest);
+    void eletism(Player *players, MatrixXf *matrixOfBest);
     void tournamentAll();
-    void tournament(Player **players, int NUMBER_OF_PLAYERS, ANN *childs, int TOURNAMENT_K);
+    void tournament(Player **players, ANN *childs);
 
     void mutation(MatrixXf *matrixArray);
 
     void genocideAll();
-    void genocide(Player **players, int NUMBER_OF_PLAYERS);
+    void genocide(Player **players);
 
     topScore_t setBestIndvs();
 

@@ -2,19 +2,19 @@
 #include <vector>
 #include <eigen3/Eigen/Dense>
 
-#define RAND_LIMIT 1
+#define RAND_LIMIT 3
 
 //output indexs
 #define INDEX_DIRECTION 0
 #define INDEX_FRONT_SPEED 1
 // #define INDEX_SIDE_SPEED 2
 #define INDEX_SHOT 2
-#define MEMORY_SIZE 10
+#define MEMORY_SIZE 0
 
 using namespace Eigen;
 
-const std::vector<int> layers({45});
-const int layerSize = 0;
+const std::vector<int> layers({25});
+const int layerSize = 1;
 
 class ANN {
    private:

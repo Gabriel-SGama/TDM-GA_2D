@@ -1,6 +1,6 @@
-#include "headers/ANN.h"
-
 #include <iostream>
+
+#include "headers/ANN.h"
 
 ANN::ANN() {
 }
