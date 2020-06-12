@@ -63,7 +63,6 @@ class Moderator {
     Screen *screen;  //commun screen obj
 
     //initial values:
-    void setModerator();
     void setPlayerCenterPtr(Player *players, int offset);
     void setPlayerCenterPtr(Player *players, cv::Point** centerPtr);
     inline cv::Point **getPlayersCenterPtr() {

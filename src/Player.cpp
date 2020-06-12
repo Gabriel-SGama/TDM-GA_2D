@@ -22,6 +22,26 @@ bool Player::isAlive() {
 
 void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter) {
     
+    separationAngle = visionAngle / numberOfRays;
+    angleCorrection = visionAngle / numberOfRays - separationAngle;
+
+    separationAngle += angleCorrection;
+
+    raysID = new int[numberOfRays];
+    raysDist = new int[numberOfRays];
+
+    //vision + position + life + direction + shot interval + other players position + memory
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1  + NUMBER_OF_PLAYERS * 2 - 2 + MEMORY_SIZE;
+
+    //angle + front speed + shot + memory
+    ANNOutputSize = 1 + 1 + 1 + MEMORY_SIZE;
+
+    ann = new ANN;
+    ann->setANNParameters(ANNInputSize, ANNOutputSize);
+
+    input = ann->getInputPtr();
+    output = ann->getOutputPtr();
+
     this->playerID = playerID;
     playerIDStr = std::to_string(playerID);
     this->screen = screen;
@@ -242,7 +262,7 @@ void Player::setComunInput() {
 
     i = 2 * numberOfRays;
     for (j = 0; j < NUMBER_OF_PLAYERS; j++) {
-        if(j == playerID % NUMBER_OF_PLAYERS)
+        if(j == (playerID % NUMBER_OF_PLAYERS))
             continue;
 
         (*input)[i] = playersCenter[j]->x / 50.0;
@@ -250,8 +270,8 @@ void Player::setComunInput() {
         
         i += 2;
     }
-    i--;
-
+    // i--;
+    i = 2 * numberOfRays + 2 * (NUMBER_OF_PLAYERS - 1);
     // i = 2 * numberOfRays;
 
     (*input)[i] = center.x / 50.0;
@@ -281,9 +301,7 @@ void Player::reset(int life, bool resetScore) {
         score = 0;
 
     alive = true;
-
     this->life = life;
-
     timeShot = shotInterval;
 
     setPosition();

@@ -18,14 +18,12 @@ void copyModerator() {
     Sniper *snipers = evolution->bestTeams->getSnipers();
     Assault *assaults = evolution->bestTeams->getAssaults();
 
-    copyModerator->setModerator();
     copyModerator->setScreen(new Screen);
     copyModerator->screen->setScreenParam("best teams", 0, 0);
     copyModerator->setAllPlayersValues();
 
     Moderator *bestIndvsCopy = new Moderator;
 
-    bestIndvsCopy->setModerator();
     bestIndvsCopy->setScreen(new Screen);
     bestIndvsCopy->screen->setScreenParam("best indvs", LENGTH + 67, 0);
     bestIndvsCopy->setAllPlayersValues();
@@ -41,7 +39,6 @@ void copyModerator() {
 
     while (true) {
         mtx.lock();
-        // evolution->setBestIndvs();
         // std::cout << "copying " << std::endl;
         copyModerator->setInicialPosAll(initialPos, rand()%3);
         copyModerator->copyAllWeights(lightAssaults, snipers, assaults);
@@ -80,13 +77,11 @@ int main() {
     */
 
     evolution = new Evolution;
-
-    std::thread th(copyModerator);
-  
     topScore_t bestIndvScores;
 
+    std::thread th(copyModerator);
+
     while (1) {
-      
         mtx.lock();
         evolution->game();
         evolution->tournamentAll();

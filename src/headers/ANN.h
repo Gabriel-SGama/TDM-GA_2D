@@ -20,9 +20,6 @@ class ANN {
    private:
     std::vector<int> aux;  //size of each layer
 
-    VectorXf input;   //ann input
-    VectorXf output;  //ann output
-
     VectorXf *intermediunOut;
     MatrixXf *matrixArray;
 
@@ -34,8 +31,8 @@ class ANN {
     void reset();
     void multiply();
 
-    inline VectorXf *getOutputPtr() { return &output; }
-    inline VectorXf *getInputPtr() { return &input; }
+    inline VectorXf *getOutputPtr() { return &intermediunOut[layerSize + 1]; }
+    inline VectorXf *getInputPtr() { return &intermediunOut[0]; }
     inline MatrixXf *getMatrixPtr() { return matrixArray; }
 
     MatrixXf *setMatrix(MatrixXf *matrixArray);

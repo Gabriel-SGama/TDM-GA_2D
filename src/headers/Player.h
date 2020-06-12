@@ -21,7 +21,7 @@ class Player;
 
 //Vision and player paramters
 #define RADIUS 10
-#define RADIUS_OFFSET 3
+#define RADIUS_OFFSET 1
 
 const int _RADIUS_TOTAL_DISTANCE = RADIUS + RADIUS_OFFSET;
 const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
@@ -54,7 +54,7 @@ typedef struct enemyInfo_t {
 class Player {
    protected:
     cv::Point center;  //position
-    cv::Point movePt;  //position
+    cv::Point movePt;  
 
     cv::Scalar playerColor;  //color
     cv::Scalar playerRay;    //color

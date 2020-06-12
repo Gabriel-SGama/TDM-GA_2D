@@ -1,7 +1,7 @@
 #include "headers/Sniper.h"
 
 Sniper::Sniper()
-    : Player() {
+     : Player() {
     playerType = SNIPER;
     playerColor = SNIPER_COLOR;
     playerRay = SNIPER_RAY;
@@ -22,28 +22,27 @@ Sniper::Sniper()
 
     numberOfRays = SNIPER_NUMBER_OF_RAYS;
 
-    separationAngle = visionAngle / numberOfRays;
-    angleCorrection = visionAngle / numberOfRays - separationAngle;
+    // separationAngle = visionAngle / numberOfRays;
+    // angleCorrection = visionAngle / numberOfRays - separationAngle;
 
-    separationAngle += angleCorrection;
+    // separationAngle += angleCorrection;
 
-    raysID = new int[numberOfRays];
-    raysDist = new int[numberOfRays];
+    // raysID = new int[numberOfRays];
+    // raysDist = new int[numberOfRays];
 
-    //vision + position + life + direction + memory
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1  + NUMBER_OF_PLAYERS * 2 - 2 + MEMORY_SIZE;
+    // //vision + position + life + direction + memory
+    // ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1  + NUMBER_OF_PLAYERS * 2 - 2 + MEMORY_SIZE;
 
-    //angle + front speed + side speed + Shot rays + memory
-    // ANNOutputSize = 1 + 1 + 1 + numberOfRays + MEMORY_SIZE;
-    // ANNOutputSize = 1 + 1 + numberOfRays + MEMORY_SIZE;
-    ANNOutputSize = 1 + 1 + 1 + MEMORY_SIZE;
+    // //angle + front speed + side speed + Shot rays + memory
+    // // ANNOutputSize = 1 + 1 + 1 + numberOfRays + MEMORY_SIZE;
+    // // ANNOutputSize = 1 + 1 + numberOfRays + MEMORY_SIZE;
+    // ANNOutputSize = 1 + 1 + 1 + MEMORY_SIZE;
 
-    //ann = new ANN(ANNInputSize, ANNOutputSize);
-    ann = new ANN;
-    ann->setANNParameters(ANNInputSize, ANNOutputSize);
+    // ann = new ANN;
+    // ann->setANNParameters(ANNInputSize, ANNOutputSize);
 
-    input = ann->getInputPtr();
-    output = ann->getOutputPtr();
+    // input = ann->getInputPtr();
+    // output = ann->getOutputPtr();
 }
 
 Sniper::~Sniper() {

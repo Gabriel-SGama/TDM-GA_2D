@@ -4,12 +4,6 @@
 #include "headers/Moderator.h"
 
 Moderator::Moderator() {
-}
-
-Moderator::~Moderator() {
-}
-
-void Moderator::setModerator() {
     turn = 0;
     lightAssaultScore = 0;
     sniperScore = 0;
@@ -44,6 +38,9 @@ void Moderator::setModerator() {
     // setPlayerCenterPtr(lightAssaults, 0);
     // setPlayerCenterPtr(snipers, NUMBER_OF_PLAYERS);
     // setPlayerCenterPtr(assaults, 2 * NUMBER_OF_PLAYERS);
+}
+
+Moderator::~Moderator() {
 }
 
 void Moderator::setInicialPosAll(cv::Point *inicialPos, int start) {

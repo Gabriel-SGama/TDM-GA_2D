@@ -14,7 +14,6 @@ Evolution::Evolution() {
 
     //best individual players
     bestIndvs = new Moderator;
-    bestIndvs->setModerator();
     bestIndvs->setScreen(new Screen);
     bestIndvs->setAllPlayersValues();
 
@@ -29,7 +28,6 @@ Evolution::Evolution() {
 
     //best team players
     bestTeams = new Moderator;
-    bestTeams->setModerator();
     bestTeams->setScreen(new Screen);
     bestTeams->setAllPlayersValues();
 
@@ -41,15 +39,12 @@ Evolution::Evolution() {
     assaultsTraining = new Moderator[POP_SIZE];
 
     for (int i = 0; i < POP_SIZE; i++) {
-        lightAssaultTraining[i].setModerator();
         lightAssaultTraining[i].setScreen(new Screen);
         lightAssaultTraining[i].setAllPlayersValues();
 
-        snipersTraining[i].setModerator();
         snipersTraining[i].setScreen(new Screen);
         snipersTraining[i].setAllPlayersValues();
 
-        assaultsTraining[i].setModerator();
         assaultsTraining[i].setScreen(new Screen);
         assaultsTraining[i].setAllPlayersValues();
 
@@ -300,7 +295,7 @@ void Evolution::mutation(MatrixXf *matrixArray) {
     int maxMut;
     //simple mutation
     for (int i = 0; i < layerSize + 1; i++) {
-        maxMut = rand() % 20 + 15; // 15-35
+        maxMut = rand() % 35 + 5; // 5-40
         for (quant = 0; quant < maxMut; quant++) {
             line = rand() % matrixArray[i].rows();
             colun = rand() % matrixArray[i].cols();
