@@ -8,14 +8,15 @@
 #define SNIPER_SHOT_REWARD 1
 #define ASSAULT_SHOT_REWARD 1
 
+#define INICIAL_SCORE -1000000
+
 class Moderator;
 
 #include "Screen.h"
-#include "Player.h"
 #include "Light_Assault.h"
 #include "Sniper.h"
 #include "Assault.h"
-#include "Evolution.h"
+
 
 const int NUMBER_OF_TOTAL_PLAYERS = 3 * NUMBER_OF_PLAYERS;
 

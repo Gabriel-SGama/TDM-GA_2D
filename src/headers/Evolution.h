@@ -5,8 +5,6 @@
 
 using namespace Eigen;
 
-#define INICIAL_SCORE -1000000
-
 //----------------EVOLUTION VALUES----------------
 #define POP_SIZE 15
 const int TOURNAMENT_K = 3;

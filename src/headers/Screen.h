@@ -21,8 +21,6 @@ class Screen {
    private:
     cv::Mat map;  //ópecv image
 
-    
-
     uchar **imgMatrix;  //matrix to faster randon access
 
     //map parameters
@@ -30,8 +28,8 @@ class Screen {
     int cols;
 
    public:
-	std::string windowName;    
-	Screen();
+    std::string windowName;
+    Screen();
     ~Screen();
 
     void setScreenParam(std::string name, int xPos, int yPos);

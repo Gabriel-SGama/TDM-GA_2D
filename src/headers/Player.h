@@ -90,7 +90,6 @@ class Player {
 
     Screen *screen;
 
-    //Moderator* moderator;
     cv::Point **playersCenter;
 
     VectorXf *input;
@@ -170,5 +169,3 @@ class Player {
     //reset
     void reset(int life, bool resetScore);
 };
-
-#include "Moderator.h"

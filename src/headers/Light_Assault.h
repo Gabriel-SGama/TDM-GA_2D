@@ -14,11 +14,10 @@ const float LIGHT_ASSAULT_VISION_ANGLE = M_PI / 1.1;
 
 class LightAssault;
 
-#include "Moderator.h"
+#include "Player.h"
 
 class LightAssault : public Player {
    private:
-    /* data */
    public:
     LightAssault();
     ~LightAssault();
