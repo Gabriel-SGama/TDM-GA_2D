@@ -1,16 +1,16 @@
 # Name of the project
-PROJ_NAME=trabSimoes.o
-PROJ_NAME_DEBUG=trabSimoesDebug.o
+PROJ_NAME=tdm-GA.o
+PROJ_NAME_DEBUG=debug.o
 
-# .c files
-C_SOURCE=$(wildcard ./src/*.cpp)
+# .cpp files
+CPP_SOURCE=$(wildcard ./src/*.cpp)
 
 # .h files
 H_SOURCE=$(wildcard ./src/*.h)
 
 # Object files
-OBJ=$(subst .cpp,.o,$(subst src,objects,$(C_SOURCE)))
-OBJ_DEBUG=$(subst .cpp,.o,$(subst src,objectsDebug,$(C_SOURCE)))
+OBJ=$(subst .cpp,.o,$(subst src,objects,$(CPP_SOURCE)))
+OBJ_DEBUG=$(subst .cpp,.o,$(subst src,objectsDebug,$(CPP_SOURCE)))
 
 # Compiler and linker
 CC=g++
