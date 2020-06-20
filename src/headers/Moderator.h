@@ -3,7 +3,7 @@
 
 #define DURATION 400
 
-//rewards
+//----------------REWARD VALUES----------------
 #define LIGHT_ASSAULT_SHOT_REWARD 1
 #define SNIPER_SHOT_REWARD 1
 #define ASSAULT_SHOT_REWARD 1
@@ -17,7 +17,6 @@ class Moderator;
 #include "Assault.h"
 #include "Evolution.h"
 
-// const int NUMBER_OF_TOTAL_PLAYERS = NUMBER_OF_LIGHT_ASSAULTS + NUMBER_OF_SNIPERS + NUMBER_OF_ASSAULTS;
 const int NUMBER_OF_TOTAL_PLAYERS = 3 * NUMBER_OF_PLAYERS;
 
 using namespace Eigen;
@@ -32,14 +31,14 @@ typedef struct dataOfBestPlayers_t {
 
 } dataOfBestPlayers_t;
 
-//repeats the same function call for all players alive
 class Moderator {
    private:
-    //players:
+    //----------------PLAYERS----------------
     LightAssault *lightAssaults;
     Sniper *snipers;
     Assault *assaults;
 
+    //----------------PLAYERS CENTER----------------
     cv::Point **LACenter;
     cv::Point **SCenter;
     cv::Point **ACenter;
@@ -47,10 +46,12 @@ class Moderator {
     int turn;
 
    public:
+    //----------------BEST PLAYERS----------------
     dataOfBestPlayers_t *bestLightAssault;
     dataOfBestPlayers_t *bestSniper;
     dataOfBestPlayers_t *bestAssault;
 
+    //----------------BEST PLAYERS SCORE----------------
     float lightAssaultScore;
     float sniperScore;
     float assaultScore;
@@ -62,12 +63,10 @@ class Moderator {
 
     Screen *screen;  //commun screen obj
 
-    //initial values:
+    //----------------INICIAL VALUES----------------
     void setPlayerCenterPtr(Player *players, int offset);
     void setPlayerCenterPtr(Player *players, cv::Point** centerPtr);
-    inline cv::Point **getPlayersCenterPtr() {
-        return playersCenter;
-    }
+    inline cv::Point **getPlayersCenterPtr() { return playersCenter; }
 
 
     void setInicialPosAll(cv::Point *inicialPos, int start);
@@ -78,15 +77,15 @@ class Moderator {
     void setAllPlayersValues();
     void setPlayersValues(int& playerNumber ,Player *players, cv::Point** centerPtr);
 
-    //draw functions
+    //----------------DRAW FUNCTIONS----------------
     void drawAllPlayers();
     void drawPlayers(Player *players);
 
-    //vision:
+    //----------------VISION----------------
     void updateAllPlayersVision();
     void updatePlayersVision(Player *players);
 
-    //Conflicts:
+    //----------------CONFLICTS----------------
     void conflictsAllPlayers();
     void conflictsPlayers(Player *players);
 
@@ -96,11 +95,11 @@ class Moderator {
     void checkAllPlayersLife();
     void checkPlayersLife(Player *players);
 
-    //mode:
+    //----------------MOVE----------------
     void moveAllPlayers();
     void movePlayers(Player *players);
 
-    //ANN:
+    //----------------ANN----------------
     void defineAllPlayersInput();
     void definePlayersInput(Player *players);
 
@@ -109,11 +108,11 @@ class Moderator {
 
     void calculateScore();
 
-    //reset:
+    //----------------RESET----------------
     void resetAllPlayers(bool resetScore);
     void resetPlayers(Player *players, int life, bool resetScore);
 
-    //get best players
+    //----------------GET BEST PLAYERS----------------
     inline LightAssault *getLightAssaults() {
         return lightAssaults;
     }
@@ -124,7 +123,7 @@ class Moderator {
         return assaults;
     }
 
-    //weights
+    //----------------WEIGHTS----------------
     void setAllWeights(LightAssault *lightAssaults, Sniper *snipers, Assault *assaults);
     void setWeights(Player *bestPlayer, Player *players);
 

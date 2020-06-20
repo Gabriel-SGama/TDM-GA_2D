@@ -9,7 +9,7 @@ class Player;
 
 #define NUMBER_OF_PLAYERS 3
 
-//Player ID:
+//----------------PLAYER ID----------------
 #define NOTHING 10
 #define LIGHT_ASSAULT 1
 #define ASSAULT 2
@@ -19,19 +19,19 @@ class Player;
 #define ALLY 30
 #define ENEMY -30
 
-//Vision and player paramters
+//----------------VISION AND PLAYERS PARAMTERS----------------
 #define RADIUS 10
 #define RADIUS_OFFSET 1
 
 const int _RADIUS_TOTAL_DISTANCE = RADIUS + RADIUS_OFFSET;
 const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
-//Colors
+//----------------COLORS----------------
 const cv::Scalar LIGHT_ASSAULT_COLOR = cv::Scalar(0, 255, 0);  //green
 const cv::Scalar SNIPER_COLOR = cv::Scalar(0, 0, 255);         //red
 const cv::Scalar ASSAULT_COLOR = cv::Scalar(255, 0, 0);        //blue
 
-//Ray colors
+//----------------RAY COLORS----------------
 const cv::Scalar LIGHT_ASSAULT_RAY = cv::Scalar(1, 255, 0);  //green ray
 const cv::Scalar ASSAULT_RAY = cv::Scalar(255, 1, 0);        //blue ray
 const cv::Scalar SNIPER_RAY = cv::Scalar(1, 0, 255);         //red ray
@@ -66,19 +66,19 @@ class Player {
     int playerType;  //type of player
     int playerID;    //number of player
     int life;        //current life
-    //int radiusOffset;
     int damage;  //player damage
-    int visionDist;
 
     int shotInterval;
     int timeShot;
 
-    //ray info
+    //----------------RAY INFO----------------
     int *raysID;
     int *raysDist;
 
     float score;  //player score
 
+    //----------------VISION INFO----------------
+    int visionDist;
     float visionAngle;
     float direction;
     float speedLimit;

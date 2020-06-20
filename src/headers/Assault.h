@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 
+//----------------ASSAULT VALUES----------------
 #define ASSAULT_HEALTH 100
 #define ASSAULT_DAMAGE 35
 #define ASSAULT_NUMBER_OF_RAYS 8

@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 
+//----------------SNIPER VALUES----------------
 #define SNIPER_HEALTH 75
 #define SNIPER_DAMAGE 50
 #define SNIPER_NUMBER_OF_RAYS 5

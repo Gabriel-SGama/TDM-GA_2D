@@ -4,12 +4,13 @@
 #include "headers/Moderator.h"
 
 Moderator::Moderator() {
+    //----------------INICIAL VALUES----------------
     turn = 0;
     lightAssaultScore = 0;
     sniperScore = 0;
     assaultScore = 0;
 
-    //allocs all memory
+    //----------------ALLOCS ALL PLAYERS MEMORY----------------
     lightAssaults = new LightAssault[NUMBER_OF_PLAYERS];
     snipers = new Sniper[NUMBER_OF_PLAYERS];
     assaults = new Assault[NUMBER_OF_PLAYERS];
@@ -18,6 +19,7 @@ Moderator::Moderator() {
     bestSniper = new dataOfBestPlayers_t;
     bestAssault = new dataOfBestPlayers_t;
 
+    //----------------PLAYER INICIAL VALUES----------------
     bestLightAssault->player = lightAssaults;
     bestSniper->player = snipers;
     bestAssault->player = assaults;
@@ -25,6 +27,7 @@ Moderator::Moderator() {
     bestSniper->score = INICIAL_SCORE;
     bestAssault->score = INICIAL_SCORE;
 
+    //----------------PLAYERS CENTER----------------
     playersCenter = new cv::Point *[NUMBER_OF_TOTAL_PLAYERS];
 
     LACenter = new cv::Point *[NUMBER_OF_PLAYERS];
@@ -142,20 +145,21 @@ void Moderator::conflictsPlayers(Player *players) {
 }
 
 void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo) {
-    //find the player that was shot
+    //----------------LIGHT ASSAULT----------------
     if (enemyInfo.playerType == LIGHT_ASSAULT && findPlayer(shooter, lightAssaults, enemyInfo.posiAprox)) {
         if (shooter->getPlayerType() != LIGHT_ASSAULT)
             shooter->updateScore(LIGHT_ASSAULT_SHOT_REWARD);
         else
             shooter->updateScore(-2.5 * LIGHT_ASSAULT_SHOT_REWARD);
-    }
-
-    else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, enemyInfo.posiAprox)) {
+        
+        //----------------SNIPER----------------
+    } else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, enemyInfo.posiAprox)) {
         if (shooter->getPlayerType() != SNIPER)
             shooter->updateScore(SNIPER_SHOT_REWARD);
         else
             shooter->updateScore(-2.5 * SNIPER_SHOT_REWARD);
 
+        //----------------ASSAULT----------------
     } else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, assaults, enemyInfo.posiAprox)) {
         if (shooter->getPlayerType() != ASSAULT)
             shooter->updateScore(ASSAULT_SHOT_REWARD);
@@ -167,13 +171,14 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo) {
 int Moderator::findPlayer(Player *shooter, Player *players, cv::Point enemyPoint) {
     float distance;
 
-    //find the player that was shot
+    //----------------CHECK ALL PLAYERS----------------
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
         if (!players[i].isAlive() || players[i].getPlayerID() == shooter[i].getPlayerID())
             continue;
 
         distance = cv::norm(players[i].getCenter() - enemyPoint);
 
+        //----------------FOUND PLAYER----------------
         if (distance <= RADIUS + 1) {
             players[i].takeDamage(shooter->getDamage());
 
@@ -251,6 +256,7 @@ void Moderator::calculateScore() {
     int i;
     float indvScore;
 
+    //----------------LIGHT ASSAULT SCORE----------------
     for (i = 0; i < NUMBER_OF_PLAYERS; i++) {
         indvScore = lightAssaults[i].getScore();
 
@@ -261,6 +267,7 @@ void Moderator::calculateScore() {
         }
     }
 
+    //----------------SNIPER SCORE----------------
     for (i = 0; i < NUMBER_OF_PLAYERS; i++) {
         indvScore = snipers[i].getScore();
 
@@ -271,6 +278,7 @@ void Moderator::calculateScore() {
         }
     }
 
+    //----------------ASSAULT SCORE----------------
     for (i = 0; i < NUMBER_OF_PLAYERS; i++) {
         indvScore = assaults[i].getScore();
 
@@ -286,6 +294,7 @@ void Moderator::resetAllPlayers(bool resetScore) {
     screen->resetImage();
     screen->createObstacle();
 
+    //----------------RESET SCORE----------------
     if (resetScore) {
         bestLightAssault->score = INICIAL_SCORE;
         bestSniper->score = INICIAL_SCORE;
@@ -296,6 +305,7 @@ void Moderator::resetAllPlayers(bool resetScore) {
     sniperScore = 0;
     assaultScore = 0;
 
+    //----------------RESET PLAYERS----------------
     resetPlayers(lightAssaults, LIGHT_ASSAULT_HEALTH, resetScore);
     resetPlayers(snipers, SNIPER_HEALTH, resetScore);
     resetPlayers(assaults, ASSAULT_HEALTH, resetScore);
@@ -340,14 +350,12 @@ void Moderator::copyWeights(Player *bestPlayers, Player *players) {
     MatrixXf *matrixArray;
 
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        // newMatrixArray = new MatrixXf[layerSize + 1];
         newMatrixArray = players[i].ann->getMatrixPtr();
         matrixArray = bestPlayers[i].ann->getMatrixPtr();
 
         for (j = 0; j < layerSize + 1; j++)
             newMatrixArray[j] = matrixArray[j];
 
-        // players[i].ann->setMatrix(newMatrixArray);
     }
 }
 

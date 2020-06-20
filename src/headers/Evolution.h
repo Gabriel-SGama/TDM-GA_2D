@@ -5,36 +5,38 @@
 
 using namespace Eigen;
 
-#define POP_SIZE 15
 #define INICIAL_SCORE -1000000
 
-//number of players for tournament
+//----------------EVOLUTION VALUES----------------
+#define POP_SIZE 15
 const int TOURNAMENT_K = 3;
-
 typedef struct topScore_t {
     float BLAS;
     float BSS;
     float BAS;
 
 } topSocre_t;
-
 class Evolution {
    private:
     int TOTAL_NUMBER_OF_PLAYERS;
 
+    //----------------TRAINING MODERATORS----------------
     Moderator *lightAssaultTraining;
     Moderator *snipersTraining;
     Moderator *assaultsTraining;
 
+    //----------------TRAINING PLAYERS----------------
     Player **allLightAssaults;
     Player **allSnipers;
     Player **allAssaults;
 
+    //----------------TRAINING CHILDS----------------
     ANN *lightAssaultChilds;
     ANN *snipersChilds;
     ANN *assaultsChilds;
 
    public:
+    //----------------TRAINING TEAM SCORES----------------
     float bestLightAssaultTeamScore;
     float bestSniperTeamScore;
     float bestAssaultTeamScore;

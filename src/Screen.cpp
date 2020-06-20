@@ -1,6 +1,5 @@
 #include "headers/Screen.h"
 
-//defaut constructor
 Screen::Screen() {
     map = cv::Mat(HEIGHT, LENGTH, CV_8UC3, BACKGROUND_COLOR);
 
@@ -107,7 +106,7 @@ void Screen::createObstacle() {
     cv::Point pt1;
     cv::Point pt2;
 
-    //L:
+    //----------------L----------------
     pt1.x = LENGTH / 5;
     pt1.y = 0;
 
@@ -123,15 +122,7 @@ void Screen::createObstacle() {
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 
-    // pt1.x = LENGTH / 7;
-    // pt1.y = HEIGHT / 5;
-
-    // pt2.x = pt1.x + LENGTH / 4;
-    // pt2.y = pt1.y + _OBSTACLE_LENGTH;
-
-    // cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
-
-    //top rect
+    //----------------TOP RECT----------------
     pt1.x = LENGTH / 2;
     pt1.y = HEIGHT / 6;
 
@@ -140,7 +131,7 @@ void Screen::createObstacle() {
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 
-    //right side rect
+    //----------------RIGHT SIDE RECT----------------
     pt1.x = LENGTH - RADIUS * 12;
     pt1.y = HEIGHT / 3;
 
@@ -149,7 +140,7 @@ void Screen::createObstacle() {
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 
-    //middle rect
+    //----------------MIDDLE RECT----------------
     pt1.x = LENGTH / 2 - RADIUS * 20;
     pt1.y = HEIGHT / 2;
 
@@ -158,7 +149,7 @@ void Screen::createObstacle() {
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 
-    //lower vertical rect
+    //----------------LOWER VERT RECT----------------
     pt1.x = LENGTH / 1.5;
     pt1.y = HEIGHT;
 
@@ -167,7 +158,7 @@ void Screen::createObstacle() {
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 
-    //lower horizontal rect
+    //----------------LOWER HORIZ RECT----------------
     pt1.x = LENGTH / 6;
     pt1.y = 3 * HEIGHT / 4;
 
@@ -176,7 +167,7 @@ void Screen::createObstacle() {
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 
-    //limits:
+    //----------------LIMITS----------------
     pt1.x = 0;
     pt1.y = OFFSET_LIMIT;
 

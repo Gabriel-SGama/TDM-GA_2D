@@ -4,15 +4,17 @@
 
 #define RAND_LIMIT 3
 
-//output indexs
+//----------------OUTPUT INDEX----------------
 #define INDEX_DIRECTION 0
 #define INDEX_FRONT_SPEED 1
 // #define INDEX_SIDE_SPEED 2
 #define INDEX_SHOT 2
+
 #define MEMORY_SIZE 0
 
 using namespace Eigen;
 
+//----------------ANN LAYERS----------------
 const std::vector<int> layers({25});
 const int layerSize = 1;
 
@@ -38,6 +40,4 @@ class ANN {
     MatrixXf *setMatrix(MatrixXf *matrixArray);
 
     void copyWheights(MatrixXf *matrixArray);
-    //evolution:
-    void simpleBreeding(MatrixXf *matrixArray);
 };

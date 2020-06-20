@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 
+//----------------LIGHT ASSAULT VALUES----------------
 #define LIGHT_ASSAULT_HEALTH 50
 #define LIGHT_ASSAULT_DAMAGE 25
 #define LIGHT_ASSAULT_NUMBER_OF_RAYS 10

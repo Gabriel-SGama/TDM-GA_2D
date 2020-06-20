@@ -68,8 +68,3 @@ void ANN::copyWheights(MatrixXf *matrixArray) {
     for (int i = 0; i < layerSize + 1; i++)
         this->matrixArray[i] = matrixArray[i];
 }
-
-void ANN::simpleBreeding(MatrixXf *matrixArray) {
-    for (int i = 0; i < layerSize + 1; i++)
-        this->matrixArray[i] = (matrixArray[i] + this->matrixArray[i]) / 2;
-}
