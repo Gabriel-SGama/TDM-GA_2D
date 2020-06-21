@@ -2,8 +2,8 @@
 
 #include "Evolution.h"
 
-#define GRAPH_WIDTH 1000 
-#define GRAPH_HEIGHT 400 
+#define GRAPH_WIDTH 1200
+#define GRAPH_HEIGHT 300
 
 class Plot
 {

@@ -1,13 +1,16 @@
 #include <iostream>
 #include <string.h>
 #include <thread>
+#include <chrono>
 #include <mutex>
 
-// #include "headers/Evolution.h"
 #include "headers/Plot.h"
+
+using namespace std::chrono_literals;
 
 std::mutex mtx;
 Evolution *evolution;
+Plot *plot;
 
 void copyModerator() {
     Moderator *copyModerator = new Moderator;
@@ -46,6 +49,7 @@ void copyModerator() {
 
         copyModerator->gameOfBest();
         copyModerator->resetAllPlayers(true);
+        plot->plotData();
 
         //----------------BEST PLAYER MATCH----------------
         mtx.lock();
@@ -59,6 +63,7 @@ void copyModerator() {
 
         bestIndvsCopy->gameOfBest();
         bestIndvsCopy->resetAllPlayers(true);
+        plot->plotData();
     }
 }
 
@@ -76,8 +81,8 @@ int main() {
     */
 
     evolution = new Evolution;
-    scoreData_t bestIndvScores;
-    // Plot *plot = new Plot();
+    scoreData_t scoreData;
+    plot = new Plot();
     std::thread th(copyModerator);
 
     while (1) {
@@ -91,7 +96,7 @@ int main() {
         std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
         std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
 
-        bestIndvScores = evolution->setBestIndvs();
+        scoreData = evolution->setBestIndvs();
 
         if (!(gen % 20)) {
             evolution->genocideAll();
@@ -101,10 +106,9 @@ int main() {
         evolution->reset();
         mtx.unlock();
 
-        // plot->addData(bestIndvScores);
-        // plot->plotData();
-        
-        cv::waitKey(10);  //time to copy
+        plot->addData(scoreData);
+        std::this_thread::sleep_for(1ms); //time to start copy
+
         gen++;
     }
 

@@ -18,6 +18,7 @@ Plot::~Plot() {
 }
 
 void Plot::addData(scoreData_t info) {
+    //----------------MAX----------------
     if (info.BLAS > max)
         max = info.BLAS;
     if (info.BSS > max)
@@ -25,6 +26,7 @@ void Plot::addData(scoreData_t info) {
     if (info.BAS > max)
         max = info.BAS;
 
+    //----------------MIN----------------
     if (info.MLAS < min)
         min = info.MLAS;
     if (info.MSS < min)
@@ -45,6 +47,7 @@ void Plot::plotData() {
     const float offset = (max - min) * 0.1;
 
     for (int i = 1; i < data.size() - 1; i++) {
+        //----------------BEST----------------
         cv::line(graph, cv::Point((i - 1) * scaleX, GRAPH_HEIGHT - (data[i - 1].BLAS + offset) * scaleY),
                  cv::Point((i)*scaleX, GRAPH_HEIGHT - (data[i].BLAS + offset) * scaleY),
                  LIGHT_ASSAULT_COLOR);
@@ -55,6 +58,7 @@ void Plot::plotData() {
                  cv::Point((i)*scaleX, GRAPH_HEIGHT - (data[i].BAS + offset) * scaleY),
                  ASSAULT_COLOR);
 
+        //----------------MEDIUN----------------
         cv::line(graph, cv::Point((i - 1) * scaleX, GRAPH_HEIGHT - (data[i - 1].MLAS + offset) * scaleY),
                  cv::Point((i)*scaleX, GRAPH_HEIGHT - (data[i].MLAS + offset) * scaleY),
                  LIGHT_ASSAULT_COLOR);
@@ -67,6 +71,7 @@ void Plot::plotData() {
     }
 
     if (data.size() > 1) {
+        //----------------BEST----------------
         cv::line(graph, cv::Point((data.size() - 2) * scaleX, GRAPH_HEIGHT - (data[data.size() - 2].BLAS + offset) * scaleY),
                  cv::Point(GRAPH_WIDTH - 1, GRAPH_HEIGHT - (data[data.size() - 2].BLAS + offset) * scaleY),
                  LIGHT_ASSAULT_COLOR);
@@ -77,6 +82,7 @@ void Plot::plotData() {
                  cv::Point(GRAPH_WIDTH - 1, GRAPH_HEIGHT - (data[data.size() - 2].BAS + offset) * scaleY),
                  ASSAULT_COLOR);
 
+        //----------------MEDIUN----------------
         cv::line(graph, cv::Point((data.size() - 2) * scaleX, GRAPH_HEIGHT - (data[data.size() - 2].MLAS + offset) * scaleY),
                  cv::Point(GRAPH_WIDTH - 1, GRAPH_HEIGHT - (data[data.size() - 2].MLAS + offset) * scaleY),
                  LIGHT_ASSAULT_COLOR);
@@ -89,5 +95,4 @@ void Plot::plotData() {
     }
 
     cv::imshow("graph", graph);
-    cv::waitKey(1);
 }
