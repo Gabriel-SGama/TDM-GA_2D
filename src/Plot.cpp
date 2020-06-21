@@ -1,45 +1,48 @@
 #include "headers/Plot.h"
 
 Plot::Plot() {
-    max = 0;
-    min = 0;
+    max = -10;
+    min = 10;
 
     graph = cv::Mat(GRAPH_HEIGHT, GRAPH_WIDTH, CV_8UC3, cv::Scalar(0, 0, 0));
     cv::namedWindow("graph");
     cv::moveWindow("graph", 0, 1000);
 
+    cv::imshow("graph", graph);
+    cv::waitKey(1);
+    
     data.resize(0);
 }
 
 Plot::~Plot() {
 }
 
-void Plot::addData(scoreData_t data) {
-    if (data.BLAS > max)
-        max = data.BLAS;
-    if (data.BSS > max)
-        max = data.BSS;
-    if (data.BAS > max)
-        max = data.BAS;
+void Plot::addData(scoreData_t info) {
+    if (info.BLAS > max)
+        max = info.BLAS;
+    if (info.BSS > max)
+        max = info.BSS;
+    if (info.BAS > max)
+        max = info.BAS;
 
-    if (data.MLAS < min)
-        min = data.MLAS;
-    if (data.MSS < min)
-        min = data.MSS;
-    if (data.MAS < min)
-        min = data.MAS;
+    if (info.MLAS < min)
+        min = info.MLAS;
+    if (info.MSS < min)
+        min = info.MSS;
+    if (info.MAS < min)
+        min = info.MAS;
 
-    this->data.push_back(data);
+    this->data.push_back(info);
 }
 
 void Plot::plotData() {
     graph.setTo(cv::Scalar(0, 0, 0));
 
-    float dif = (max - min) * 1.2;
-    float scaleY = GRAPH_HEIGHT / dif;
-    float scaleX = (float)GRAPH_WIDTH / (data.size() - 1);
+    const float dif = (max - min) * 1.2;
+    const float scaleY = GRAPH_HEIGHT / dif;
+    const float scaleX = (float)GRAPH_WIDTH / (data.size() - 1);
 
-    float offset = (max - min) * 0.1;
+    const float offset = (max - min) * 0.1;
 
     for (int i = 1; i < data.size() - 1; i++) {
         cv::line(graph, cv::Point((i - 1) * scaleX, GRAPH_HEIGHT - (data[i - 1].BLAS + offset) * scaleY),
