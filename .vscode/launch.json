@@ -8,7 +8,7 @@
             "name": "g++ - Criar e depurar o arquivo ativo",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/trabSimoesDebug.o",
+            "program": "${workspaceFolder}/debugTDM.o",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

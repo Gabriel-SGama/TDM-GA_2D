@@ -77,13 +77,14 @@ int main() {
 
     evolution = new Evolution;
     scoreData_t bestIndvScores;
-    Plot plot;
+    // Plot *plot = new Plot();
     std::thread th(copyModerator);
 
     while (1) {
         mtx.lock();
         //----------------EVOLUTION----------------
         evolution->game();
+
         evolution->tournamentAll();
         std::cout << "-------------GEN " << gen << " -------------" << std::endl;
         std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
@@ -100,10 +101,10 @@ int main() {
         evolution->reset();
         mtx.unlock();
 
-        plot.addData(bestIndvScores);
-        plot.plotData();
+        // plot->addData(bestIndvScores);
+        // plot->plotData();
         
-        cv::waitKey(1);  //time to copy
+        cv::waitKey(10);  //time to copy
         gen++;
     }
 

@@ -403,6 +403,11 @@ scoreData_t Evolution::setBestIndvs() {
     std::cout << "best sniper score: " << BSS << std::endl;
     std::cout << "best assault score: " << BAS << std::endl;
 
+    // std::cout << "mediun light assault score: " << MLAS << std::endl;
+    // std::cout << "mediun sniper score: " << MSS << std::endl;
+    // std::cout << "mediun assault score: " << MAS << std::endl;
+
+
     //----------------SET WEIGHTS----------------
     bestLightAssaultANN->copyWheights(lightAssaultTraining[BLAI].bestLightAssault->player->ann->getMatrixPtr());
     bestSniperANN->copyWheights(snipersTraining[BSI].bestSniper->player->ann->getMatrixPtr());

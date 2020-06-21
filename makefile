@@ -1,16 +1,16 @@
 # Name of the project
 PROJ_NAME=tdm-GA.o
-PROJ_NAME_DEBUG=debug.o
+PROJ_NAME_DEBUG=debugTDM.o
 
 # .cpp files
-CPP_SOURCE=$(wildcard ./src/*.cpp)
+C_SOURCE=$(wildcard ./src/*.cpp)
 
 # .h files
 H_SOURCE=$(wildcard ./src/*.h)
 
 # Object files
-OBJ=$(subst .cpp,.o,$(subst src,objects,$(CPP_SOURCE)))
-OBJ_DEBUG=$(subst .cpp,.o,$(subst src,objectsDebug,$(CPP_SOURCE)))
+OBJ=$(subst .cpp,.o,$(subst src,objects,$(C_SOURCE)))
+OBJ_DEBUG=$(subst .cpp,.o,$(subst src,objectsDebug,$(C_SOURCE)))
 
 # Compiler and linker
 CC=g++
@@ -26,10 +26,15 @@ CC_FLAGS= -I /usr/local/include/eigen3 \
 		  -fopenmp \
 		  -O3
 
-CC_FLAGS_DEBUG = -g \
+CC_FLAGS_DEBUG = -I /usr/local/include/eigen3 \
+				 -g \
 		   		 -c \
-				 -lpthread \
-		  		 -Wall
+          		 -W	\
+          		 -Wall	\
+				 -Wextra \
+		  		 -pedantic \
+		  		 -lpthread \
+				 -O3
 
 # Command used at clean target
 RM = rm -rf
