@@ -70,7 +70,7 @@ class Moderator {
     inline cv::Point **getPlayersCenterPtr() { return playersCenter; }
 
 
-    void setInicialPosAll(cv::Point *inicialPos, int start);
+    void setInicialPosAll(const cv::Point *inicialPos, int start);
 
     void setInicialPos(Player *players, cv::Point initialPos);
 

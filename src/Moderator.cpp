@@ -46,7 +46,7 @@ Moderator::Moderator() {
 Moderator::~Moderator() {
 }
 
-void Moderator::setInicialPosAll(cv::Point *inicialPos, int start) {
+void Moderator::setInicialPosAll(const cv::Point *inicialPos, int start) {
     setInicialPos(lightAssaults, inicialPos[start]);
     start++;
     setInicialPos(snipers, inicialPos[start % 3]);
@@ -148,23 +148,29 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo) {
     //----------------LIGHT ASSAULT----------------
     if (enemyInfo.playerType == LIGHT_ASSAULT && findPlayer(shooter, lightAssaults, enemyInfo.posiAprox)) {
         if (shooter->getPlayerType() != LIGHT_ASSAULT)
-            shooter->updateScore(LIGHT_ASSAULT_SHOT_REWARD);
+            // shooter->updateScore(LIGHT_ASSAULT_SHOT_REWARD);
+            shooter->updateScore(shooter->getDamage() / 25);
         else
-            shooter->updateScore(-2.5 * LIGHT_ASSAULT_SHOT_REWARD);
+            // shooter->updateScore(-2.5 * LIGHT_ASSAULT_SHOT_REWARD);
+            shooter->updateScore(-2.5 * shooter->getDamage() / 25);
         
         //----------------SNIPER----------------
     } else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, enemyInfo.posiAprox)) {
         if (shooter->getPlayerType() != SNIPER)
-            shooter->updateScore(SNIPER_SHOT_REWARD);
+            // shooter->updateScore(SNIPER_SHOT_REWARD);
+            shooter->updateScore(shooter->getDamage() / 25);
         else
-            shooter->updateScore(-2.5 * SNIPER_SHOT_REWARD);
+            // shooter->updateScore(-2.5 * SNIPER_SHOT_REWARD);
+            shooter->updateScore(-2.5 * shooter->getDamage() / 25);
 
         //----------------ASSAULT----------------
     } else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, assaults, enemyInfo.posiAprox)) {
         if (shooter->getPlayerType() != ASSAULT)
-            shooter->updateScore(ASSAULT_SHOT_REWARD);
+            // shooter->updateScore(ASSAULT_SHOT_REWARD);
+            shooter->updateScore(shooter->getDamage() / 25);
         else
-            shooter->updateScore(-2.5 * ASSAULT_SHOT_REWARD);
+            // shooter->updateScore(-2.5 * ASSAULT_SHOT_REWARD);
+            shooter->updateScore(-2.5 * shooter->getDamage() / 25);
     }
 }
 
@@ -185,7 +191,7 @@ int Moderator::findPlayer(Player *shooter, Player *players, cv::Point enemyPoint
             if (players[i].getLife() <= 0) {
                 //friend fire doesnt count to score
                 if (shooter->getPlayerType() == players[i].getPlayerType())
-                    players[i].updateScore(3);
+                    players[i].updateScore(4);
                 else if (shooter->getPlayerType() == LIGHT_ASSAULT)
                     lightAssaultScore += 1;
                 else if (shooter->getPlayerType() == SNIPER)

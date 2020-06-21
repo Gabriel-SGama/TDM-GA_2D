@@ -3,7 +3,7 @@
 
 //----------------ASSAULT VALUES----------------
 #define ASSAULT_HEALTH 100
-#define ASSAULT_DAMAGE 35
+#define ASSAULT_DAMAGE 25
 #define ASSAULT_NUMBER_OF_RAYS 8
 #define ASSAULT_SPEED_LIMIT 7.0
 #define ASSAULT_VISION_DIST 160

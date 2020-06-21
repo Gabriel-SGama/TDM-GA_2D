@@ -106,11 +106,11 @@ void Evolution::setPlayersPtr() {
     for (i = 0; i < POP_SIZE; i++) {
         playersPtr = snipersTraining[i].getSnipers();
 
-        for (j = 0; j <NUMBER_OF_PLAYERS; j++) {
+        for (j = 0; j < NUMBER_OF_PLAYERS; j++) {
             allSnipers[numberOfSnipers + j] = &playersPtr[j];
         }
 
-        numberOfSnipers +=NUMBER_OF_PLAYERS;
+        numberOfSnipers += NUMBER_OF_PLAYERS;
     }
 
     //----------------ASSAULTS----------------
@@ -159,7 +159,6 @@ void Evolution::game() {
 }
 
 void Evolution::reset() {
-
     bestLightAssaultTeamScore = INICIAL_SCORE;
     bestSniperTeamScore = INICIAL_SCORE;
     bestAssaultTeamScore = INICIAL_SCORE;
@@ -167,8 +166,8 @@ void Evolution::reset() {
     //----------------SET BEST TEAMS----------------
     bestTeams->setAllWeights(bestLightAssaults->getLightAssaults(), bestSnipers->getSnipers(), bestAssaults->getAssaults());
 
-    cv::Point initialPos[] = {cv::Point(LENGTH-300,HEIGHT-250), cv::Point(LENGTH-400,150), cv::Point(0,150)};
-    int posIndex = rand()%3;
+    // cv::Point initialPos[] = {cv::Point(LENGTH - 300, HEIGHT - 250), cv::Point(LENGTH - 400, 150), cv::Point(0, 150)};
+    int posIndex = rand() % 3;
 
     //----------------RESET MODERATORS----------------
 #pragma omp parallel for
@@ -177,6 +176,7 @@ void Evolution::reset() {
         lightAssaultTraining[i].setInicialPosAll(initialPos, posIndex);
         snipersTraining[i].setInicialPosAll(initialPos, posIndex);
         assaultsTraining[i].setInicialPosAll(initialPos, posIndex);
+
         //----------------WEIGHTS----------------
         lightAssaultTraining[i].copyAllWeights(nullptr, bestTeams->getSnipers(), bestTeams->getAssaults());
         snipersTraining[i].copyAllWeights(bestTeams->getLightAssaults(), nullptr, bestTeams->getAssaults());
@@ -239,7 +239,7 @@ void Evolution::tournament(Player **players, ANN *childs) {
         }
     }
 
-//----------------TOURNAMENT----------------
+    //----------------TOURNAMENT----------------
 #pragma omp parallel for
     for (i = 0; i < TOTAL_NUMBER_OF_PLAYERS; i++) {
         if (i == bestIndex || i == secondBestIndex)
@@ -303,7 +303,7 @@ void Evolution::mutation(MatrixXf *matrixArray) {
     int maxMut;
 
     for (int i = 0; i < layerSize + 1; i++) {
-        maxMut = rand() % 35 + 5; // 5-40
+        maxMut = rand() % 35 + 5;  // 5-40
         for (quant = 0; quant < maxMut; quant++) {
             line = rand() % matrixArray[i].rows();
             colun = rand() % matrixArray[i].cols();
@@ -359,7 +359,7 @@ void Evolution::genocide(Player **players) {
     }
 }
 
-topScore_t Evolution::setBestIndvs() {
+scoreData_t Evolution::setBestIndvs() {
     float BLAS = INICIAL_SCORE;
     int BLAI = 0;
 
@@ -369,8 +369,16 @@ topScore_t Evolution::setBestIndvs() {
     float BAS = INICIAL_SCORE;
     int BAI = 0;
 
+    float MLAS = 0;
+    float MSS = 0;
+    float MAS = 0;
+
     //----------------SET BEST INDV PLAYERS----------------
     for (int i = 0; i < POP_SIZE; i++) {
+        MLAS += lightAssaultTraining[i].bestLightAssault->score;
+        MSS += snipersTraining[i].bestSniper->score;
+        MAS += assaultsTraining[i].bestAssault->score;
+
         if (lightAssaultTraining[i].bestLightAssault->score > BLAS) {
             BLAS = lightAssaultTraining[i].bestLightAssault->score;
             BLAI = i;
@@ -387,6 +395,10 @@ topScore_t Evolution::setBestIndvs() {
         }
     }
 
+    MLAS /= (float)TOTAL_NUMBER_OF_PLAYERS;
+    MSS /= (float)TOTAL_NUMBER_OF_PLAYERS;
+    MAS /= (float)TOTAL_NUMBER_OF_PLAYERS;
+
     std::cout << "best light assault score: " << BLAS << std::endl;
     std::cout << "best sniper score: " << BSS << std::endl;
     std::cout << "best assault score: " << BAS << std::endl;
@@ -398,5 +410,5 @@ topScore_t Evolution::setBestIndvs() {
 
     bestIndvs->setAllWeightsOneMatrix(bestLightAssaultANN->getMatrixPtr(), bestSniperANN->getMatrixPtr(), bestAssaultANN->getMatrixPtr());
 
-    return {BLAS, BSS, BAS};
+    return {BLAS, BSS, BAS, MLAS, MSS, MAS};
 }

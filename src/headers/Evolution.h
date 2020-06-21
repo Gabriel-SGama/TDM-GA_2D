@@ -5,15 +5,22 @@
 
 using namespace Eigen;
 
+const cv::Point initialPos[] = {cv::Point(LENGTH - 300, HEIGHT - 250), cv::Point(LENGTH - 400, 150), cv::Point(0, 150)};
+
 //----------------EVOLUTION VALUES----------------
 #define POP_SIZE 15
 const int TOURNAMENT_K = 3;
-typedef struct topScore_t {
+typedef struct scoreData_t {
+//----------------BEST SCORES----------------
     float BLAS;
     float BSS;
     float BAS;
+//----------------MEDIUN SOCRES----------------
+    float MLAS;
+    float MSS;
+    float MAS;
+} scoreData_t;
 
-} topSocre_t;
 class Evolution {
    private:
     int TOTAL_NUMBER_OF_PLAYERS;
@@ -69,7 +76,7 @@ class Evolution {
     void genocideAll();
     void genocide(Player **players);
 
-    topScore_t setBestIndvs();
+    scoreData_t setBestIndvs();
 
     void reset();
 };

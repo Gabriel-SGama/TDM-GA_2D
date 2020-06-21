@@ -213,7 +213,7 @@ void Player::setAlive(bool alive) {
     this->alive = alive;
 
     if (!alive) {
-        updateScore(-3);
+        score -= 4;
         // do
         // {
         //     center.x = rand() % (LENGTH - safeDist);
