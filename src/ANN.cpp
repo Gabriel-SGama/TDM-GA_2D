@@ -31,8 +31,6 @@ void ANN::setANNParameters(int inputSize, int outputSize) {
     for (i = 0; i < layerSize + 2; i++) {
         intermediunOut[i] = VectorXf(aux[i]);
     }
-
-    std::cout << intermediunOut[i] << std::endl;
 }
 
 void ANN::reset() {
