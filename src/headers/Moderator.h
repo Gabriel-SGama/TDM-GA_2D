@@ -131,7 +131,8 @@ class Moderator {
     void copyAllWeights(LightAssault *lightAssaults, Sniper *snipers, Assault *assaults);
     void copyWeights(Player *bestPlayer, Player *players);
 
-    void setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *sniperMatrix, MatrixXf *detectiveMatrix);
+    // void setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *sniperMatrix, MatrixXf *detectiveMatrix);
+    void setAllWeightsOneMatrix(MatrixF *inocentMatrix, MatrixF *sniperMatrix, MatrixF *detectiveMatrix);
 
     void game();
     void gameOfBest();

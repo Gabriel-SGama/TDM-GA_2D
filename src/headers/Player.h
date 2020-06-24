@@ -92,7 +92,8 @@ class Player {
 
     cv::Point **playersCenter;
 
-    VectorXf *input;
+    // VectorXf *input;
+    vectorF *input;
 
    public:
     cv::Point initialPos;
@@ -104,7 +105,8 @@ class Player {
     int ANNInputSize;
     int ANNOutputSize;
 
-    VectorXf *output;
+    // VectorXf *output;
+    vectorF *output;
 
     explicit Player();
     ~Player();

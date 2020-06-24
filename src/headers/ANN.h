@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <eigen3/Eigen/Dense>
+#include "MatrixF.h"
 
 #define RAND_LIMIT 3
 
@@ -22,8 +23,10 @@ class ANN {
    private:
     std::vector<int> aux;  //size of each layer
 
-    VectorXf *intermediunOut;
-    MatrixXf *matrixArray;
+    // VectorXf *intermediunOut;
+    vectorF *intermediunOutTest;
+    // MatrixXf *matrixArray;
+    MatrixF *matrixArrayTest;
 
    public:
     ANN();
@@ -33,11 +36,20 @@ class ANN {
     void reset();
     void multiply();
 
-    inline VectorXf *getOutputPtr() { return &intermediunOut[layerSize + 1]; }
-    inline VectorXf *getInputPtr() { return &intermediunOut[0]; }
-    inline MatrixXf *getMatrixPtr() { return matrixArray; }
+    // inline VectorXf *getOutputPtr() { return &intermediunOut[layerSize + 1]; }
+    // inline VectorXf *getInputPtr() { return &intermediunOut[0]; }
+    // inline MatrixXf *getMatrixPtr() { return matrixArray; }
 
-    MatrixXf *setMatrix(MatrixXf *matrixArray);
+    // MatrixXf *setMatrix(MatrixXf *matrixArray);
 
-    void copyWheights(MatrixXf *matrixArray);
+    // void copyWheights(MatrixXf *matrixArray);
+
+    inline vectorF *getOutputPtr() { return &intermediunOutTest[layerSize + 1]; }
+    inline vectorF *getInputPtr() { return &intermediunOutTest[0]; }
+    inline MatrixF *getMatrixPtr() { return matrixArrayTest; }
+
+    MatrixF *setMatrix(MatrixF *matrixArray);
+
+    void copyWheights(MatrixF *matrixArray);
+
 };

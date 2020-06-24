@@ -215,9 +215,14 @@ void Evolution::tournament(Player **players, ANN *childs) {
     Player *best1;
     Player *best2;
 
-    MatrixXf *matrixArray;
-    MatrixXf *matrixArrayBest1;
-    MatrixXf *matrixArrayBest2;
+    // MatrixXf *matrixArray;
+    // MatrixXf *matrixArrayBest1;
+    // MatrixXf *matrixArrayBest2;
+
+    MatrixF *matrixArray;
+    MatrixF *matrixArrayBest1;
+    MatrixF *matrixArrayBest2;
+
 
     //----------------GET TOP 2 && WORST----------------
     for (i = 0; i < TOTAL_NUMBER_OF_PLAYERS; i++) {
@@ -269,7 +274,7 @@ void Evolution::tournament(Player **players, ANN *childs) {
         matrixArrayBest2 = best2->ann->getMatrixPtr();
 
         for (j = 0; j < layerSize + 1; j++) {
-            matrixArray[j] = (matrixArrayBest1[j] + matrixArrayBest2[j]) / 2.0;
+            matrixArray[j] = matrixArrayBest1[j];//(matrixArrayBest1[j] + matrixArrayBest2[j]) / 2.0;
         }
 
         mutation(matrixArray);
@@ -296,19 +301,43 @@ void Evolution::tournament(Player **players, ANN *childs) {
     }
 }
 
-void Evolution::mutation(MatrixXf *matrixArray) {
+// void Evolution::mutation(MatrixXf *matrixArray) {
+//     int quant;
+//     int line;
+//     int colun;
+//     int maxMut;
+
+//     for (int i = 0; i < layerSize + 1; i++) {
+//         maxMut = rand() % 35 + 5;  // 5-40
+//         for (quant = 0; quant < maxMut; quant++) {
+//             line = rand() % matrixArray[i].rows();
+//             colun = rand() % matrixArray[i].cols();
+
+//             matrixArray[i](line, colun) += (rand() % (2 * 750) - 750) / 1000.0;
+//         }
+//     }
+// }
+
+
+void Evolution::mutation(MatrixF *matrixArray) {
     int quant;
     int line;
     int colun;
     int maxMut;
 
+    int posi;
+    int maxPosi;
+
     for (int i = 0; i < layerSize + 1; i++) {
         maxMut = rand() % 35 + 5;  // 5-40
+        maxPosi = matrixArray[i].lines * matrixArray[i].coluns;
+        
         for (quant = 0; quant < maxMut; quant++) {
-            line = rand() % matrixArray[i].rows();
-            colun = rand() % matrixArray[i].cols();
+            // line = rand() % matrixArray[i].lines;
+            // colun = rand() % matrixArray[i].coluns;
+            posi = rand() % maxPosi;
 
-            matrixArray[i](line, colun) += (rand() % (2 * 750) - 750) / 1000.0;
+            matrixArray[i].matrix[posi] += (rand() % (2 * 750) - 750) / 1000.0;
         }
     }
 }

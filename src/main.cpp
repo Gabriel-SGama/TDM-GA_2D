@@ -13,6 +13,7 @@ Evolution *evolution;
 Plot *plot;
 
 void copyModerator() {
+
     Moderator *copyModerator = new Moderator;
 
     LightAssault *lightAssaults = evolution->bestTeams->getLightAssaults();
@@ -86,12 +87,18 @@ int main() {
     plot = new Plot;
     std::thread th(copyModerator);
 
+    // Moderator testMod;
+    // testMod.setScreen(new Screen);
+    // testMod.screen->setScreenParam("teste", 0, 0);
+    // testMod.setAllPlayersValues();
+    // testMod.gameOfBest();
+
     while (1) {
         mtx.lock();
         //----------------EVOLUTION----------------
         evolution->game();
-
         evolution->tournamentAll();
+
         std::cout << "-------------GEN " << gen << " -------------" << std::endl;
         std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
         std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;

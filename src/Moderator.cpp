@@ -343,11 +343,27 @@ void Moderator::copyAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnip
         copyWeights(bestAssaults, assaults);
 }
 
+// void Moderator::copyWeights(Player *bestPlayers, Player *players) {
+//     int j;
+
+//     MatrixXf *newMatrixArray;
+//     MatrixXf *matrixArray;
+
+//     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
+//         newMatrixArray = players[i].ann->getMatrixPtr();
+//         matrixArray = bestPlayers[i].ann->getMatrixPtr();
+
+//         for (j = 0; j < layerSize + 1; j++)
+//             newMatrixArray[j] = matrixArray[j];
+
+//     }
+// }
+
 void Moderator::copyWeights(Player *bestPlayers, Player *players) {
     int j;
 
-    MatrixXf *newMatrixArray;
-    MatrixXf *matrixArray;
+    MatrixF *newMatrixArray;
+    MatrixF *matrixArray;
 
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
         newMatrixArray = players[i].ann->getMatrixPtr();
@@ -359,7 +375,21 @@ void Moderator::copyWeights(Player *bestPlayers, Player *players) {
     }
 }
 
-void Moderator::setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *traitorMatrix, MatrixXf *detectiveMatrix) {
+
+// void Moderator::setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *traitorMatrix, MatrixXf *detectiveMatrix) {
+//     int i;
+
+//     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
+//         lightAssaults[i].ann->setMatrix(inocentMatrix);
+
+//     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
+//         snipers[i].ann->setMatrix(traitorMatrix);
+
+//     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
+//         assaults[i].ann->setMatrix(detectiveMatrix);
+// }
+
+void Moderator::setAllWeightsOneMatrix(MatrixF *inocentMatrix, MatrixF *traitorMatrix, MatrixF *detectiveMatrix) {
     int i;
 
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)

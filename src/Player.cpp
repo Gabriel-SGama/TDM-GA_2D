@@ -234,13 +234,17 @@ void Player::setComunInput() {
     //----------------VISION----------------
     for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++) {
         if (raysID[j] == playerType)
-            (*input)[i] = ALLY;
+            // (*input)[i] = ALLY;
+            (*input).vector[i] = ALLY;
         else if (raysID[j] == NOTHING || raysID[j] == OBSTACLE)
-            (*input)[i] = raysID[j];
+            // (*input)[i] = raysID[j];
+            (*input).vector[i] = raysID[j];
         else
-            (*input)[i] = ENEMY;
+            // (*input)[i] = ENEMY;
+            (*input).vector[i] = ENEMY;
 
-        (*input)[i + 1] = raysDist[j] / 10.0;
+        // (*input)[i + 1] = raysDist[j] / 10.0;
+        (*input).vector[i + 1] = raysDist[j] / 10.0;
     }
 
     // for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++) {
@@ -260,8 +264,11 @@ void Player::setComunInput() {
         if (j == (playerID % NUMBER_OF_PLAYERS))
             continue;
 
-        (*input)[i] = playersCenter[j]->x / 50.0;
-        (*input)[i + 1] = playersCenter[j]->y / 50.0;
+        // (*input)[i] = playersCenter[j]->x / 50.0;
+        // (*input)[i + 1] = playersCenter[j]->y / 50.0;
+
+        (*input).vector[i] = playersCenter[j]->x / 50.0;
+        (*input).vector[i + 1] = playersCenter[j]->y / 50.0;
 
         i += 2;
     }
@@ -270,11 +277,18 @@ void Player::setComunInput() {
     // i = 2 * numberOfRays;
 
     //----------------PLAYER VALUES----------------
-    (*input)[i] = center.x / 50.0;
-    (*input)[i + 1] = center.y / 50.0;
-    (*input)[i + 2] = direction;
-    (*input)[i + 3] = life / 10.0;
-    (*input)[i + 4] = timeShot;
+    // (*input)[i] = center.x / 50.0;
+    // (*input)[i + 1] = center.y / 50.0;
+    // (*input)[i + 2] = direction;
+    // (*input)[i + 3] = life / 10.0;
+    // (*input)[i + 4] = timeShot;
+
+    (*input).vector[i] = center.x / 50.0;
+    (*input).vector[i + 1] = center.y / 50.0;
+    (*input).vector[i + 2] = direction;
+    (*input).vector[i + 3] = life / 10.0;
+    (*input).vector[i + 4] = timeShot;
+
 
     // (*input)[i] = center.x / LENGTH;
     // (*input)[i + 1] = center.y / LENGTH;
@@ -286,7 +300,8 @@ void Player::setComunInput() {
 
     //----------------MEMORY----------------
     for (j = 0; j < MEMORY_SIZE; i++, j++) {
-        (*input)[i] = (*output)[j + INDEX_SHOT + 1];
+        // (*input)[i] = (*output)[j + INDEX_SHOT + 1];
+        (*input).vector[i] = (*output)[j + INDEX_SHOT + 1];
     }
 
     if (timeShot > 0)

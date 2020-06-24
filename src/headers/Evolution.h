@@ -68,10 +68,12 @@ class Evolution {
 
     void eletismAll();
     void eletism(Player *players, MatrixXf *matrixOfBest);
+    // void eletism(Player *players, MatrixF *matrixOfBest);
     void tournamentAll();
     void tournament(Player **players, ANN *childs);
 
-    void mutation(MatrixXf *matrixArray);
+    // void mutation(MatrixXf *matrixArray);
+    void mutation(MatrixF *matrixArray);
 
     void genocideAll();
     void genocide(Player **players);
