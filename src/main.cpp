@@ -36,7 +36,6 @@ void copyModerator() {
     bestLightAssaultMatrix->setANNParameters(lightAssaults->ANNInputSize, lightAssaults->ANNOutputSize);
     bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
     bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
-    // cv::Point initialPos[] = {cv::Point(LENGTH - 300, HEIGHT - 250), cv::Point(LENGTH - 400, 150), cv::Point(0, 150)};
 
     while (true) {
         //----------------BEST TEAM MATCH----------------
@@ -63,6 +62,8 @@ void copyModerator() {
 
         bestIndvsCopy->gameOfBest();
         bestIndvsCopy->resetAllPlayers(true);
+
+        //----------------PLOT----------------
         plot->plotData();
     }
 }
@@ -82,7 +83,7 @@ int main() {
 
     evolution = new Evolution;
     scoreData_t scoreData;
-    plot = new Plot();
+    plot = new Plot;
     std::thread th(copyModerator);
 
     while (1) {
@@ -107,7 +108,7 @@ int main() {
         mtx.unlock();
 
         plot->addData(scoreData);
-        std::this_thread::sleep_for(1ms); //time to start copy
+        std::this_thread::sleep_for(1ms); //time to change threads
 
         gen++;
     }
