@@ -46,7 +46,7 @@ class Evolution {
     float bestSniperTeamScore;
     float bestAssaultTeamScore;
 
-    Moderator *bestIndvs;
+    // Moderator *bestIndvs;
     Moderator *bestTeams;
 
     Moderator *bestLightAssaults;

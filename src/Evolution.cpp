@@ -13,19 +13,19 @@ Evolution::Evolution() {
     bestSniperTeamScore = INICIAL_SCORE;
     bestAssaultTeamScore = INICIAL_SCORE;
 
-    //----------------BEST INDIVS----------------
-    bestIndvs = new Moderator;
-    bestIndvs->setScreen(new Screen);
-    bestIndvs->setAllPlayersValues();
+    //----------------TEMP INDIVS----------------
+    LightAssault tempLA;
+    Sniper tempS;
+    Assault tempA;
 
     //----------------BEST INDIVS ANN----------------
     bestLightAssaultANN = new ANN;
     bestSniperANN = new ANN;
     bestAssaultANN = new ANN;
 
-    bestLightAssaultANN->setANNParameters(bestIndvs->getLightAssaults()->ANNInputSize, bestIndvs->getLightAssaults()->ANNOutputSize);
-    bestSniperANN->setANNParameters(bestIndvs->getSnipers()->ANNInputSize, bestIndvs->getSnipers()->ANNOutputSize);
-    bestAssaultANN->setANNParameters(bestIndvs->getAssaults()->ANNInputSize, bestIndvs->getAssaults()->ANNOutputSize);
+    bestLightAssaultANN->setANNParameters(tempLA.ANNInputSize, tempLA.ANNOutputSize);
+    bestSniperANN->setANNParameters(tempS.ANNInputSize, tempS.ANNOutputSize);
+    bestAssaultANN->setANNParameters(tempA.ANNInputSize, tempA.ANNOutputSize);
 
     //----------------BEST TEAMS----------------
     bestTeams = new Moderator;
@@ -301,24 +301,6 @@ void Evolution::tournament(Player **players, ANN *childs) {
     }
 }
 
-// void Evolution::mutation(MatrixXf *matrixArray) {
-//     int quant;
-//     int line;
-//     int colun;
-//     int maxMut;
-
-//     for (int i = 0; i < layerSize + 1; i++) {
-//         maxMut = rand() % 35 + 5;  // 5-40
-//         for (quant = 0; quant < maxMut; quant++) {
-//             line = rand() % matrixArray[i].rows();
-//             colun = rand() % matrixArray[i].cols();
-
-//             matrixArray[i](line, colun) += (rand() % (2 * 750) - 750) / 1000.0;
-//         }
-//     }
-// }
-
-
 void Evolution::mutation(MatrixF *matrixArray) {
     int quant;
     int maxMut;
@@ -435,8 +417,6 @@ scoreData_t Evolution::setBestIndvs() {
     bestLightAssaultANN->copyWheights(lightAssaultTraining[BLAI].bestLightAssault->player->ann->getMatrixPtr());
     bestSniperANN->copyWheights(snipersTraining[BSI].bestSniper->player->ann->getMatrixPtr());
     bestAssaultANN->copyWheights(assaultsTraining[BAI].bestAssault->player->ann->getMatrixPtr());
-
-    bestIndvs->setAllWeightsOneMatrix(bestLightAssaultANN->getMatrixPtr(), bestSniperANN->getMatrixPtr(), bestAssaultANN->getMatrixPtr());
 
     return {BLAS, BSS, BAS, MLAS, MSS, MAS};
 }
