@@ -80,5 +80,12 @@ class Evolution {
 
     scoreData_t setBestIndvs();
 
+    void saveANNAll(const char* fileName);
+    void saveANN(ANN* bestMatrix, std::ofstream* fileObj);
+
+    void readANNAll(const char* fileName);
+    void readANN(ANN* bestMatrix, std::ifstream* fileObj);
+
+
     void reset();
 };

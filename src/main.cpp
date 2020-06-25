@@ -86,7 +86,39 @@ int main() {
     scoreData_t scoreData;
     plot = new Plot;
     std::thread th(copyModerator);
+    
+    /*
+    evolution->readANNAll();
+    Moderator *bestIndvsCopy = new Moderator;
 
+    bestIndvsCopy->setScreen(new Screen);
+    bestIndvsCopy->screen->setScreenParam("best indvs", LENGTH + 67, 0);
+    bestIndvsCopy->setAllPlayersValues();
+
+    ANN *bestLightAssaultMatrix = new ANN;
+    ANN *bestSniperMatrix = new ANN;
+    ANN *bestAssaultMatrix = new ANN;
+
+    LightAssault *lightAssaults = evolution->bestTeams->getLightAssaults();
+    Sniper *snipers = evolution->bestTeams->getSnipers();
+    Assault *assaults = evolution->bestTeams->getAssaults();
+
+    bestLightAssaultMatrix->setANNParameters(lightAssaults->ANNInputSize, lightAssaults->ANNOutputSize);
+    bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
+    bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
+
+    //----------------BEST PLAYER MATCH----------------
+    bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
+    bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
+    bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
+
+    bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
+    bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
+
+    bestIndvsCopy->gameOfBest();
+    bestIndvsCopy->resetAllPlayers(true);
+    return 0;
+    */
     // Moderator testMod;
     // testMod.setScreen(new Screen);
     // testMod.screen->setScreenParam("teste", 0, 0);
@@ -112,6 +144,27 @@ int main() {
         }
 
         evolution->reset();
+
+        // if(gen == 50){
+        //     evolution->saveANNAll("matrix50.txt");
+        // }
+        // if(gen == 100){
+        //     evolution->saveANNAll("matrix100.txt");
+        // }
+        // if(gen == 150){
+        //     evolution->saveANNAll("matrix150.txt");
+        // }
+        // if(gen == 200){
+        //     evolution->saveANNAll("matrix200.txt");
+        // }
+        // if(gen == 250){
+        //     evolution->saveANNAll("matrix250.txt");
+        // }
+        // if(gen == 300){
+        //     evolution->saveANNAll("matrix300.txt");
+        //     return 0;
+        // }
+
         mtx.unlock();
 
         plot->addData(scoreData);

@@ -321,8 +321,6 @@ void Evolution::tournament(Player **players, ANN *childs) {
 
 void Evolution::mutation(MatrixF *matrixArray) {
     int quant;
-    int line;
-    int colun;
     int maxMut;
 
     int posi;
@@ -333,10 +331,7 @@ void Evolution::mutation(MatrixF *matrixArray) {
         maxPosi = matrixArray[i].lines * matrixArray[i].coluns;
         
         for (quant = 0; quant < maxMut; quant++) {
-            // line = rand() % matrixArray[i].lines;
-            // colun = rand() % matrixArray[i].coluns;
             posi = rand() % maxPosi;
-
             matrixArray[i].matrix[posi] += (rand() % (2 * 750) - 750) / 1000.0;
         }
     }
@@ -436,7 +431,6 @@ scoreData_t Evolution::setBestIndvs() {
     // std::cout << "mediun sniper score: " << MSS << std::endl;
     // std::cout << "mediun assault score: " << MAS << std::endl;
 
-
     //----------------SET WEIGHTS----------------
     bestLightAssaultANN->copyWheights(lightAssaultTraining[BLAI].bestLightAssault->player->ann->getMatrixPtr());
     bestSniperANN->copyWheights(snipersTraining[BSI].bestSniper->player->ann->getMatrixPtr());
@@ -445,4 +439,41 @@ scoreData_t Evolution::setBestIndvs() {
     bestIndvs->setAllWeightsOneMatrix(bestLightAssaultANN->getMatrixPtr(), bestSniperANN->getMatrixPtr(), bestAssaultANN->getMatrixPtr());
 
     return {BLAS, BSS, BAS, MLAS, MSS, MAS};
+}
+
+void Evolution::saveANNAll(const char* fileName){
+    std::ofstream fileObj(fileName);
+    saveANN(bestLightAssaultANN, &fileObj);
+    saveANN(bestSniperANN, &fileObj);
+    saveANN(bestAssaultANN, &fileObj);
+    fileObj.close();
+}
+
+void Evolution::saveANN(ANN* bestMatrix, std::ofstream* fileObj) {
+
+    MatrixF *matrixPtr;
+
+    matrixPtr = bestMatrix->getMatrixPtr();
+
+    for (int i = 0; i < layerSize + 1; i++) {
+        matrixPtr[i].writeMatrixToFile(fileObj);
+    }
+}
+
+void Evolution::readANNAll(const char* fileName){
+    std::ifstream fileObj;
+    fileObj.open(fileName, std::ios::in);
+    readANN(bestLightAssaultANN, &fileObj);
+    readANN(bestSniperANN, &fileObj);
+    readANN(bestAssaultANN, &fileObj);
+}
+
+void Evolution::readANN(ANN* bestMatrix, std::ifstream* fileObj){
+    MatrixF *matrixPtr;
+
+    matrixPtr = bestMatrix->getMatrixPtr();
+
+    for (int i = 0; i < layerSize + 1; i++) {
+        matrixPtr[i].readMatrixFromFile(fileObj);
+    }
 }

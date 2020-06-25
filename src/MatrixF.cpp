@@ -1,9 +1,5 @@
 #include "headers/MatrixF.h"
 
-#include <cstdint>
-#include <cstring>
-#include <iostream>
-
 MatrixF::MatrixF() {
     lines = 0;
     coluns = 0;
@@ -45,10 +41,10 @@ MatrixF::~MatrixF() {
 }
 
 vectorF MatrixF::operator*(const vectorF &vec) {
-    vectorF newVector;
-    newVector.createVector(this->lines);
+    vectorF resultVector;
+    resultVector.createVector(this->lines);
 
-    float *vector = newVector.vector;
+    float *vector = resultVector.vector;
     float sum;
 
     int line;
@@ -69,7 +65,7 @@ vectorF MatrixF::operator*(const vectorF &vec) {
         lineOffset += this->coluns;
     }
 
-    return newVector;
+    return resultVector;
 }
 
 void MatrixF::operator=(const MatrixF &matrix) {
@@ -89,10 +85,10 @@ MatrixF MatrixF::operator+(const MatrixF &matrix) {
 
     int lineOffset = 0;
 
-    MatrixF resultMatrixObj;
-    resultMatrixObj.createMatrix(this->lines, this->coluns);
+    MatrixF resultSumMatrixObj;
+    resultSumMatrixObj.createMatrix(this->lines, this->coluns);
     
-    float *resultMatrix = resultMatrixObj.matrix;
+    float *resultMatrix = resultSumMatrixObj.matrix;
 
     for (line = 0; line < this->lines; line++) {
         for (colun = 0; colun < this->coluns; colun++) {
@@ -102,7 +98,7 @@ MatrixF MatrixF::operator+(const MatrixF &matrix) {
         lineOffset += this->coluns;
     }
 
-    return resultMatrixObj;
+    return resultSumMatrixObj;
 }
 
 MatrixF MatrixF::operator/(const float &val) {
@@ -141,8 +137,41 @@ void MatrixF::print(){
         lineOffset += this->coluns;
         std::cout << "\n";
     }
-
 }
+
+void MatrixF::writeMatrixToFile(std::ofstream* fileObj){
+    int line;
+    int colun;
+
+    int lineOffset = 0;
+
+    for (line = 0; line < this->lines; line++) {
+        
+        for (colun = 0; colun < this->coluns; colun++) {
+            (*fileObj) << matrix[lineOffset + colun] << " ";
+        }
+
+        lineOffset += this->coluns;
+        (*fileObj) << "\n";
+    }
+}
+
+void MatrixF::readMatrixFromFile(std::istream* fileObj){
+    int line;
+    int colun;
+
+    int lineOffset = 0;
+
+    for (line = 0; line < this->lines; line++) {
+        
+        for (colun = 0; colun < this->coluns; colun++) {
+            (*fileObj) >> matrix[lineOffset + colun];
+        }
+
+        lineOffset += this->coluns;
+    }
+}
+
 
 vectorF::vectorF() {
     size = 0;
