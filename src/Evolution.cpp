@@ -14,18 +14,18 @@ Evolution::Evolution() {
     bestAssaultTeamScore = INICIAL_SCORE;
 
     //----------------TEMP INDIVS----------------
-    LightAssault tempLA;
-    Sniper tempS;
-    Assault tempA;
+    Moderator tempMod;
+    tempMod.setScreen(new Screen);
+    tempMod.setAllPlayersValues();
 
     //----------------BEST INDIVS ANN----------------
     bestLightAssaultANN = new ANN;
     bestSniperANN = new ANN;
     bestAssaultANN = new ANN;
 
-    bestLightAssaultANN->setANNParameters(tempLA.ANNInputSize, tempLA.ANNOutputSize);
-    bestSniperANN->setANNParameters(tempS.ANNInputSize, tempS.ANNOutputSize);
-    bestAssaultANN->setANNParameters(tempA.ANNInputSize, tempA.ANNOutputSize);
+    bestLightAssaultANN->setANNParameters(tempMod.getLightAssaults()->ANNInputSize, tempMod.getLightAssaults()->ANNOutputSize);
+    bestSniperANN->setANNParameters(tempMod.getSnipers()->ANNInputSize, tempMod.getSnipers()->ANNOutputSize);
+    bestAssaultANN->setANNParameters(tempMod.getAssaults()->ANNInputSize, tempMod.getAssaults()->ANNOutputSize);
 
     //----------------BEST TEAMS----------------
     bestTeams = new Moderator;

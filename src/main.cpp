@@ -119,6 +119,7 @@ int main() {
     bestIndvsCopy->resetAllPlayers(true);
     return 0;
     */
+   
     // Moderator testMod;
     // testMod.setScreen(new Screen);
     // testMod.screen->setScreenParam("teste", 0, 0);
