@@ -10,6 +10,7 @@
 #define INDEX_FRONT_SPEED 1
 // #define INDEX_SIDE_SPEED 2
 #define INDEX_SHOT 2
+#define INDEX_PLAYER_TYPE_CHANGE 3
 
 #define MEMORY_SIZE 0
 

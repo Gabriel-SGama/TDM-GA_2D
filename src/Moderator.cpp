@@ -37,10 +37,6 @@ Moderator::Moderator() {
     setPlayerCenterPtr(lightAssaults, LACenter);
     setPlayerCenterPtr(snipers, SCenter);
     setPlayerCenterPtr(assaults, ACenter);
-
-    // setPlayerCenterPtr(lightAssaults, 0);
-    // setPlayerCenterPtr(snipers, NUMBER_OF_PLAYERS);
-    // setPlayerCenterPtr(assaults, 2 * NUMBER_OF_PLAYERS);
 }
 
 Moderator::~Moderator() {
@@ -148,23 +144,23 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo) {
     //----------------LIGHT ASSAULT----------------
     if (enemyInfo.playerType == LIGHT_ASSAULT && findPlayer(shooter, lightAssaults, enemyInfo.posiAprox)) {
         if (shooter->getPlayerType() != LIGHT_ASSAULT)
-            shooter->updateScore(shooter->getDamage() / 25);
+            shooter->updateScore(shooter->getDamage());
         else
-            shooter->updateScore(-2.5 * shooter->getDamage() / 25);
+            shooter->updateScore(-2.5 * shooter->getDamage());
         
         //----------------SNIPER----------------
     } else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, enemyInfo.posiAprox)) {
         if (shooter->getPlayerType() != SNIPER)
-            shooter->updateScore(shooter->getDamage() / 25);
+            shooter->updateScore(shooter->getDamage());
         else
-            shooter->updateScore(-2.5 * shooter->getDamage() / 25);
+            shooter->updateScore(-2.5 * shooter->getDamage());
 
         //----------------ASSAULT----------------
     } else if (enemyInfo.playerType == ASSAULT && findPlayer(shooter, assaults, enemyInfo.posiAprox)) {
         if (shooter->getPlayerType() != ASSAULT)
-            shooter->updateScore(shooter->getDamage() / 25);
+            shooter->updateScore(shooter->getDamage());
         else
-            shooter->updateScore(-2.5 * shooter->getDamage() / 25);
+            shooter->updateScore(-2.5 * shooter->getDamage());
     }
 }
 
@@ -343,22 +339,6 @@ void Moderator::copyAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnip
         copyWeights(bestAssaults, assaults);
 }
 
-// void Moderator::copyWeights(Player *bestPlayers, Player *players) {
-//     int j;
-
-//     MatrixXf *newMatrixArray;
-//     MatrixXf *matrixArray;
-
-//     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-//         newMatrixArray = players[i].ann->getMatrixPtr();
-//         matrixArray = bestPlayers[i].ann->getMatrixPtr();
-
-//         for (j = 0; j < layerSize + 1; j++)
-//             newMatrixArray[j] = matrixArray[j];
-
-//     }
-// }
-
 void Moderator::copyWeights(Player *bestPlayers, Player *players) {
     int j;
 
@@ -374,20 +354,6 @@ void Moderator::copyWeights(Player *bestPlayers, Player *players) {
 
     }
 }
-
-
-// void Moderator::setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *traitorMatrix, MatrixXf *detectiveMatrix) {
-//     int i;
-
-//     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-//         lightAssaults[i].ann->setMatrix(inocentMatrix);
-
-//     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-//         snipers[i].ann->setMatrix(traitorMatrix);
-
-//     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-//         assaults[i].ann->setMatrix(detectiveMatrix);
-// }
 
 void Moderator::setAllWeightsOneMatrix(MatrixF *inocentMatrix, MatrixF *traitorMatrix, MatrixF *detectiveMatrix) {
     int i;

@@ -2,9 +2,17 @@
 #include <cmath>
 
 //----------------SNIPER VALUES----------------
-#define SNIPER_HEALTH 75
-#define SNIPER_DAMAGE 50
-#define SNIPER_NUMBER_OF_RAYS 5
+// #define SNIPER_HEALTH 3
+// #define SNIPER_DAMAGE 2
+// #define SNIPER_NUMBER_OF_RAYS 5
+// #define SNIPER_SPEED_LIMIT 5.0
+// #define SNIPER_VISION_DIST 250
+// #define SNIPER_SHOT_INTERVAL 10
+
+//----------------SNIPER VALUES----------------
+#define SNIPER_HEALTH 3
+#define SNIPER_DAMAGE 2
+#define SNIPER_NUMBER_OF_RAYS 10
 #define SNIPER_SPEED_LIMIT 5.0
 #define SNIPER_VISION_DIST 250
 #define SNIPER_SHOT_INTERVAL 10

@@ -40,11 +40,11 @@ void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCe
     raysDist = new int[numberOfRays];
 
     //----------------ANN----------------
-    //vision + position + life + direction + shot interval + other players position + memory
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + (NUMBER_OF_PLAYERS * 2 - 2) + MEMORY_SIZE;
+    //vision + position + life + direction + shot interval + playerTypeDynamic + other players position + memory
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + 1 + (NUMBER_OF_PLAYERS * 2 - 2) + MEMORY_SIZE;
 
-    //angle + front speed + shot + memory
-    ANNOutputSize = 1 + 1 + 1 + MEMORY_SIZE;
+    //angle + front speed + shot + memory + playerTypeChange
+    ANNOutputSize = 1 + 1 + 1 + 1 + MEMORY_SIZE;
 
     ann = new ANN;
     ann->setANNParameters(ANNInputSize, ANNOutputSize);
@@ -90,8 +90,60 @@ int Player::checkPosition() {
 
 void Player::drawPlayer() {
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
-    cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, playerRay, 3);
+    
+    playerStatus += (*output)[INDEX_PLAYER_TYPE_CHANGE] * 0.1;
+
+    if(playerStatus >= playerStatusS){
+        damage = SNIPER_DAMAGE;
+        visionDist = SNIPER_VISION_DIST;
+
+        timeShot = timeShot/shotInterval * SNIPER_SHOT_INTERVAL;
+        
+        shotInterval = SNIPER_SHOT_INTERVAL;
+        speedLimit = SNIPER_SPEED_LIMIT;
+        angularSpeedLimit = SNIPER_ANGULAR_SPEED_LIMIT;
+
+        visionAngle = SNIPER_VISION_ANGLE;
+        numberOfRays = SNIPER_NUMBER_OF_RAYS;
+
+        cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 3);
+    
+    }else if(playerStatus >= playerStatusA){
+        damage = ASSAULT_DAMAGE;
+        visionDist = ASSAULT_VISION_DIST;
+
+        timeShot = timeShot/shotInterval * ASSAULT_SHOT_INTERVAL;
+        
+        shotInterval = ASSAULT_SHOT_INTERVAL;
+        speedLimit = ASSAULT_SPEED_LIMIT;
+        angularSpeedLimit = ASSAULT_ANGULAR_SPEED_LIMIT;
+
+        visionAngle = ASSAULT_VISION_ANGLE;
+        numberOfRays = ASSAULT_NUMBER_OF_RAYS;
+
+        cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 3);
+    
+    }else {
+        damage = LIGHT_ASSAULT_DAMAGE;
+        visionDist = LIGHT_ASSAULT_VISION_DIST;
+
+        timeShot = timeShot/shotInterval * LIGHT_ASSAULT_SHOT_INTERVAL;
+        
+        shotInterval = LIGHT_ASSAULT_SHOT_INTERVAL;
+        speedLimit = LIGHT_ASSAULT_SPEED_LIMIT;
+        angularSpeedLimit = LIGHT_ASSAULT_ANGULAR_SPEED_LIMIT;
+
+        visionAngle = LIGHT_ASSAULT_VISION_ANGLE;
+        numberOfRays = LIGHT_ASSAULT_NUMBER_OF_RAYS;
+
+        cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 3);
+    }
     // cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
+    separationAngle = visionAngle / numberOfRays;
+    angleCorrection = visionAngle / numberOfRays - separationAngle;
+
+    separationAngle += angleCorrection;
+
 }
 
 void Player::updateVision() {
@@ -193,12 +245,15 @@ enemyInfo_t Player::killPlayer() {
     cv::Point pt;
     cv::Point enemyPoint;
 
-    offset.x = _RADIUS_TOTAL_DISTANCE * cos(direction);
-    offset.y = _RADIUS_TOTAL_DISTANCE * sin(direction);
+    const float cosDir = cos(direction);
+    const float sinDir = sin(direction);
+
+    offset.x = _RADIUS_TOTAL_DISTANCE * cosDir;
+    offset.y = _RADIUS_TOTAL_DISTANCE * sinDir;
 
     for (i = 0; i < visionDist; i++) {
-        pt.x = i * cos(direction);
-        pt.y = i * sin(direction);
+        pt.x = i * cosDir;
+        pt.y = i * sinDir;
 
         finalPt = pt + center + offset;
 
@@ -281,6 +336,7 @@ void Player::setComunInput() {
     (*input).vector[i + 2] = direction;
     (*input).vector[i + 3] = life / 10.0;
     (*input).vector[i + 4] = timeShot;
+    (*input).vector[i + 5] = playerStatus;
 
 
     // (*input)[i] = center.x / LENGTH;
@@ -289,7 +345,7 @@ void Player::setComunInput() {
     // (*input)[i + 3] = life / 100.0;
     // (*input)[i + 4] = 1.0 * timeShot / shotInterval;
 
-    i += 5;
+    i += 6;
 
     //----------------MEMORY----------------
     for (j = 0; j < MEMORY_SIZE; i++, j++) {

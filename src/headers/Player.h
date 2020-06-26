@@ -19,6 +19,13 @@ class Player;
 #define ALLY 30
 #define ENEMY -30
 
+//----------------PLAYER STATUS----------------
+#define PLAYER_STATUS_INTERVAL 5
+const float playerStatusInterval = PLAYER_STATUS_INTERVAL/3.0;
+const float playerStatusLA = 0;
+const float playerStatusA =  playerStatusInterval;
+const float playerStatusS = 2*playerStatusInterval;
+
 //----------------VISION AND PLAYERS PARAMTERS----------------
 #define RADIUS 10
 #define RADIUS_OFFSET 1
@@ -87,6 +94,8 @@ class Player {
 
     double separationAngle;  //offset to next ray
     double angleCorrection;  //corrects rays positions
+
+    float playerStatus; //player type changes dynamically
 
     Screen *screen;
 
@@ -171,3 +180,7 @@ class Player {
     //reset
     void reset(int life, bool resetScore);
 };
+
+#include "Light_Assault.h"
+#include "Sniper.h"
+#include "Assault.h"

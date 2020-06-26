@@ -241,7 +241,6 @@ void Evolution::tournament(Player **players, ANN *childs) {
     }
 
     //----------------TOURNAMENT----------------
-#pragma omp parallel for
     for (i = 0; i < TOTAL_NUMBER_OF_PLAYERS; i++) {
         if (i == bestIndex || i == secondBestIndex || i == worstIndex)
             continue;
