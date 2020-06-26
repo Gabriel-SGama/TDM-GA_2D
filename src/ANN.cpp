@@ -41,7 +41,6 @@ void ANN::multiply() {
     int i;
     int j;
 
-
     for (i = 1; i < layerSize + 2; i++) {
         intermediunOutTest[i] = matrixArrayTest[i-1] * intermediunOutTest[i-1];
 

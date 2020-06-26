@@ -72,7 +72,7 @@ class Evolution {
     void tournamentAll();
     void tournament(Player **players, ANN *childs);
 
-    // void mutation(MatrixXf *matrixArray);
+    void crossover(MatrixF *resultMatrix, MatrixF *matrix1, MatrixF *matrix2);
     void mutation(MatrixF *matrixArray);
 
     void genocideAll();

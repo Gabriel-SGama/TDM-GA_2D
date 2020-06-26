@@ -50,27 +50,3 @@ class MatrixF {
     
     void operator=(const MatrixF &matrix);
 };
-
-// std::ostream & operator << (std::ostream &out, const Matrix& matrix) {
-//     int line;
-//     int colun;
-
-//     int lineOffset = 0;
-
-//     for (line = 0; line < matrix.lines; line++) {
-//         for (colun = 0; colun < matrix.coluns; colun++) {
-//             out << matrix.matrix[lineOffset + colun];
-//             out << " ";
-//         }
-    
-//         lineOffset += matrix.coluns;
-//         out << "\n";
-//     }
-
-//     return out;
-// }
-
-// std::istream & operator >> (std::istream &in, const Matrix& matrix)
-// {
-//     return in;
-// }

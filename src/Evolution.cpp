@@ -215,10 +215,6 @@ void Evolution::tournament(Player **players, ANN *childs) {
     Player *best1;
     Player *best2;
 
-    // MatrixXf *matrixArray;
-    // MatrixXf *matrixArrayBest1;
-    // MatrixXf *matrixArrayBest2;
-
     MatrixF *matrixArray;
     MatrixF *matrixArrayBest1;
     MatrixF *matrixArrayBest2;
@@ -247,7 +243,7 @@ void Evolution::tournament(Player **players, ANN *childs) {
     //----------------TOURNAMENT----------------
 #pragma omp parallel for
     for (i = 0; i < TOTAL_NUMBER_OF_PLAYERS; i++) {
-        if (i == bestIndex || i == secondBestIndex)
+        if (i == bestIndex || i == secondBestIndex || i == worstIndex)
             continue;
 
         matrixArray = childs[i].getMatrixPtr();
@@ -273,10 +269,7 @@ void Evolution::tournament(Player **players, ANN *childs) {
         matrixArrayBest1 = best1->ann->getMatrixPtr();
         matrixArrayBest2 = best2->ann->getMatrixPtr();
 
-        for (j = 0; j < layerSize + 1; j++) {
-            matrixArray[j] = matrixArrayBest1[j];//(matrixArrayBest1[j] + matrixArrayBest2[j]) / 2.0;
-        }
-
+        crossover(matrixArray, matrixArrayBest1, matrixArrayBest2);
         mutation(matrixArray);
     }
 
@@ -291,13 +284,37 @@ void Evolution::tournament(Player **players, ANN *childs) {
             matrixArrayBest1 = players[bestIndex]->ann->getMatrixPtr();
             matrixArrayBest2 = players[secondBestIndex]->ann->getMatrixPtr();
 
-            for (j = 0; j < layerSize + 1; j++) {
-                matrixArray[j] = (matrixArrayBest1[j] + matrixArrayBest2[j]) / 2.0;
-            }
+            crossover(matrixArray, matrixArrayBest1, matrixArrayBest2);
         }
 
         //changes ptr
         childs[i].setMatrix(players[i]->ann->setMatrix(childs[i].getMatrixPtr()));
+    }
+}
+
+void Evolution::crossover(MatrixF *resultMatrix, MatrixF *matrix1, MatrixF *matrix2) {
+    int crossChance = 5;  // 0.1% * crossChance
+
+    int layer;
+    int posi;
+    int side;
+    int totalSize;
+
+    for (layer = 0; layer < layerSize + 1; layer++) {
+        totalSize = matrix1[layer].lines * matrix1[layer].coluns;
+        side = 0;
+
+        for (posi = 0; posi < totalSize; posi++) {
+            if (side == 1){
+                resultMatrix[layer].matrix[posi] = matrix2[layer].matrix[posi];
+                    if (rand() % 1000 < crossChance)
+                        side = 0;
+            } else {
+                resultMatrix[layer].matrix[posi] = matrix1[layer].matrix[posi];
+                if (rand() % 1000 < crossChance)
+                    side = 1;
+            }
+        }
     }
 }
 
@@ -309,7 +326,7 @@ void Evolution::mutation(MatrixF *matrixArray) {
     int maxPosi;
 
     for (int i = 0; i < layerSize + 1; i++) {
-        maxMut = rand() % 35 + 5;  // 5-40
+        maxMut = rand() % 25 + 5;  // 5-30
         maxPosi = matrixArray[i].lines * matrixArray[i].coluns;
         
         for (quant = 0; quant < maxMut; quant++) {

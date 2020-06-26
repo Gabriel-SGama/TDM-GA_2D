@@ -23,9 +23,7 @@ class ANN {
    private:
     std::vector<int> aux;  //size of each layer
 
-    // VectorXf *intermediunOut;
     vectorF *intermediunOutTest;
-    // MatrixXf *matrixArray;
     MatrixF *matrixArrayTest;
 
    public:
@@ -35,14 +33,6 @@ class ANN {
     void setANNParameters(int inputSize, int outputSize);
     void reset();
     void multiply();
-
-    // inline VectorXf *getOutputPtr() { return &intermediunOut[layerSize + 1]; }
-    // inline VectorXf *getInputPtr() { return &intermediunOut[0]; }
-    // inline MatrixXf *getMatrixPtr() { return matrixArray; }
-
-    // MatrixXf *setMatrix(MatrixXf *matrixArray);
-
-    // void copyWheights(MatrixXf *matrixArray);
 
     inline vectorF *getOutputPtr() { return &intermediunOutTest[layerSize + 1]; }
     inline vectorF *getInputPtr() { return &intermediunOutTest[0]; }
