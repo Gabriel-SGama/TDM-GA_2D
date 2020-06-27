@@ -3,6 +3,7 @@
 Sniper::Sniper()
      : Player() {
     playerType = SNIPER;
+    lastPlayerType = SNIPER;
     playerStatus = playerStatusS + playerStatusInterval / 2.0;
     playerColor = SNIPER_COLOR;
     playerRay = SNIPER_RAY;

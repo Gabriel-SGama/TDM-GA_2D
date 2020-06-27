@@ -3,6 +3,7 @@
 Assault::Assault()
     : Player() {
     playerType = ASSAULT;
+    lastPlayerType = ASSAULT;
     playerStatus = playerStatusA + playerStatusInterval / 2.0;
     playerColor = ASSAULT_COLOR;
     playerRay = ASSAULT_RAY;

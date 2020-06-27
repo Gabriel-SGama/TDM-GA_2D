@@ -3,6 +3,7 @@
 LightAssault::LightAssault()
     : Player() {
     playerType = LIGHT_ASSAULT;
+    lastPlayerType = LIGHT_ASSAULT;
     playerStatus = playerStatusLA + playerStatusInterval / 2.0;
     playerColor = LIGHT_ASSAULT_COLOR;
     playerRay = LIGHT_ASSAULT_RAY;

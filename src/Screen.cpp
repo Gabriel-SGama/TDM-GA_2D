@@ -106,6 +106,7 @@ void Screen::createObstacle() {
     cv::Point pt1;
     cv::Point pt2;
 
+/*
     //----------------L----------------
     pt1.x = LENGTH / 5;
     pt1.y = 0;
@@ -164,6 +165,104 @@ void Screen::createObstacle() {
 
     pt2.x = LENGTH / 2;
     pt2.y = pt1.y + _OBSTACLE_LENGTH;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+*/
+
+    //----------------MAP FOR MULTI PLAYER TYPES----------------
+    pt1.x = 100;
+    pt1.y = 0;
+
+    pt2.x = pt1.x + _OBSTACLE_LENGTH;
+    pt2.y = 125;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = pt2.x;
+    pt1.y = 125 - _OBSTACLE_LENGTH;
+
+    pt2.x = 250;
+    pt2.y = 125;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 0;
+    pt1.y = 250;
+
+    pt2.x = 130;
+    pt2.y = 250 +_OBSTACLE_LENGTH;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 250;
+    pt1.y = 220;
+
+    pt2.x = 250 + _OBSTACLE_LENGTH;
+    pt2.y = 350;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 100;
+    pt1.y = 410;
+
+    pt2.x = 250;
+    pt2.y = 410 + _OBSTACLE_LENGTH;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 165;
+    pt1.y = 410;
+
+    pt2.x = 165 + _OBSTACLE_LENGTH;
+    pt2.y = 550;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 0;
+    pt1.y = 650;
+
+    pt2.x = 150;
+    pt2.y = 650 + _OBSTACLE_LENGTH;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 380;
+    pt1.y = HEIGHT - 1;
+
+    pt2.x = 380 + _OBSTACLE_LENGTH;
+    pt2.y = 600;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 300;
+    pt1.y = 500;
+
+    pt2.x = 450;
+    pt2.y = 500 + _OBSTACLE_LENGTH;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 520;
+    pt1.y = 150;
+
+    pt2.x = 520 + _OBSTACLE_LENGTH;
+    pt2.y = 450;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 400;
+    pt1.y = 0;
+
+    pt2.x = 400 + _OBSTACLE_LENGTH;
+    pt2.y = 150;
+
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+
+    pt1.x = 650;
+    pt1.y = 400;
+
+    pt2.x = 800;
+    pt2.y = 400 + _OBSTACLE_LENGTH;
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 

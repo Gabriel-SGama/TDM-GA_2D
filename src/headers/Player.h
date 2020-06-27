@@ -95,6 +95,7 @@ class Player {
     double separationAngle;  //offset to next ray
     double angleCorrection;  //corrects rays positions
 
+    int lastPlayerType;
     float playerStatus; //player type changes dynamically
 
     Screen *screen;

@@ -1,7 +1,7 @@
 #pragma once
 #include <eigen3/Eigen/Dense>
 
-#define DURATION 400
+#define DURATION 600
 
 //----------------REWARD VALUES----------------
 #define LIGHT_ASSAULT_SHOT_REWARD 1
