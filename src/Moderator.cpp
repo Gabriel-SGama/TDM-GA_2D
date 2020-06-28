@@ -37,6 +37,18 @@ Moderator::Moderator() {
     setPlayerCenterPtr(lightAssaults, LACenter);
     setPlayerCenterPtr(snipers, SCenter);
     setPlayerCenterPtr(assaults, ACenter);
+
+    checkMoveCos = new float[NUMBER_OF_ANGLES_INTERVAL];
+    checkMoveSin = new float[NUMBER_OF_ANGLES_INTERVAL];
+    
+    float angle = 0;
+
+    for (int i = 0; i < NUMBER_OF_ANGLES_INTERVAL; i++) {
+        checkMoveCos[i] = cos(angle);
+        checkMoveSin[i] = sin(angle);
+        angle += ANGLE_INTERVAL;
+    }
+        
 }
 
 Moderator::~Moderator() {
@@ -83,7 +95,7 @@ void Moderator::setAllPlayersValues() {
 
 void Moderator::setPlayersValues(int &playerNumber, Player *players, cv::Point **centerPtr) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++, playerNumber++)
-        players[i].setPlayerValues(screen, playerNumber, centerPtr);
+        players[i].setPlayerValues(screen, playerNumber, centerPtr, checkMoveCos, checkMoveSin);
 }
 
 void Moderator::drawAllPlayers() {

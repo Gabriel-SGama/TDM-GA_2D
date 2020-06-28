@@ -10,14 +10,14 @@ class Player;
 #define NUMBER_OF_PLAYERS 3
 
 //----------------PLAYER ID----------------
-#define NOTHING 10
-#define LIGHT_ASSAULT 1
-#define ASSAULT 2
-#define SNIPER 3
-#define OBSTACLE 50
+#define NOTHING 1
+#define LIGHT_ASSAULT 11
+#define ASSAULT 12
+#define SNIPER 13
+#define OBSTACLE 5
 
-#define ALLY 30
-#define ENEMY -30
+#define ALLY 3
+#define ENEMY -3
 
 //----------------PLAYER STATUS----------------
 #define PLAYER_STATUS_INTERVAL 5
@@ -26,12 +26,23 @@ const float playerStatusLA = 0;
 const float playerStatusA =  playerStatusInterval;
 const float playerStatusS = 2*playerStatusInterval;
 
-//----------------VISION AND PLAYERS PARAMTERS----------------
+//----------------PLAYERS VISION----------------
+const float ANGLE_INTERVAL = 0.1;
+const int NUMBER_OF_ANGLES_INTERVAL = 2 * M_PI / ANGLE_INTERVAL;
+const int NUMBER_OF_ANGLES_TO_CHECK = NUMBER_OF_ANGLES_INTERVAL / 4;
+
+//----------------PLAYERS PARAMTERS----------------
 #define RADIUS 10
 #define RADIUS_OFFSET 1
 
 const int _RADIUS_TOTAL_DISTANCE = RADIUS + RADIUS_OFFSET;
 const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
+
+//----------------TOUCH SENSORS----------------
+
+const int TOUCH_SENSOR_DIST = 20;
+const float TOUCH_ANGLE_INTERVAL = M_PI / 4.0;
+const int NUMBER_OF_TOUCH_SENSORS = 2 * M_PI / TOUCH_ANGLE_INTERVAL;
 
 //----------------COLORS----------------
 const cv::Scalar LIGHT_ASSAULT_COLOR = cv::Scalar(0, 255, 0);  //green
@@ -82,9 +93,14 @@ class Player {
     int *raysID;
     int *raysDist;
 
+    int *touchRayID;
+
     float score;  //player score
 
     //----------------VISION INFO----------------
+    float* checkMoveCos; //angles for move check for players
+    float* checkMoveSin; //angles for move check for players
+
     int visionDist;
     float visionAngle;
     float direction;
@@ -102,7 +118,6 @@ class Player {
 
     cv::Point **playersCenter;
 
-    // VectorXf *input;
     vectorF *input;
 
    public:
@@ -115,7 +130,6 @@ class Player {
     int ANNInputSize;
     int ANNOutputSize;
 
-    // VectorXf *output;
     vectorF *output;
 
     explicit Player();
@@ -156,13 +170,13 @@ class Player {
     void setAlive(bool alive);
 
     //initial values
-    void setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter);  //inicial values
+    void setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter, float* checkMoveCos, float* checkMoveSin);  //inicial values
     void setPosition();                                                                       //initial position
     int checkPosition();
 
     //draw
     void drawPlayer();                                  //draws player
-    void drawVisionLines(double currentAngle, int id);  //draw vision lines
+    void drawVisionLines(float currentAngle, int id);  //draw vision lines
 
     //vision
     void updateVision();  //updates vision info

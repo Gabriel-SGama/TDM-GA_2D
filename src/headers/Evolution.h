@@ -8,8 +8,8 @@ using namespace Eigen;
 const cv::Point initialPos[] = {cv::Point(LENGTH - 300, HEIGHT - 250), cv::Point(LENGTH - 400, 150), cv::Point(0, 150)};
 
 //----------------EVOLUTION VALUES----------------
-#define POP_SIZE 18
-const int TOURNAMENT_K = 3;
+#define POP_SIZE 16
+const int TOURNAMENT_K = 2;
 typedef struct scoreData_t {
 //----------------BEST SCORES----------------
     float BLAS;

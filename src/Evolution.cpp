@@ -131,7 +131,15 @@ void Evolution::game() {
 #pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++) {
         lightAssaultTraining[i].game();
+        lightAssaultTraining[i].resetAllPlayers(false);
+        lightAssaultTraining[i].game();
+    
         snipersTraining[i].game();
+        snipersTraining[i].resetAllPlayers(false);
+        snipersTraining[i].game();
+    
+        assaultsTraining[i].game();
+        assaultsTraining[i].resetAllPlayers(false);
         assaultsTraining[i].game();
     }
 

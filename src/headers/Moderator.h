@@ -46,6 +46,9 @@ class Moderator {
 
     int turn;
 
+    float* checkMoveCos; //angles for move check for players
+    float* checkMoveSin; //angles for move check for players
+
    public:
     //----------------BEST PLAYERS----------------
     dataOfBestPlayers_t *bestLightAssault;

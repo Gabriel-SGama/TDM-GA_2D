@@ -83,53 +83,38 @@ int main() {
     */
 
     evolution = new Evolution;
-    scoreData_t scoreData;
-    plot = new Plot;
-    std::thread th(copyModerator);
+    // scoreData_t scoreData;
+    // plot = new Plot;
+    
+    // std::thread th(copyModerator);
 
     while (1) {
-        mtx.lock();
+        // mtx.lock();
         //----------------EVOLUTION----------------
         evolution->game();
         evolution->tournamentAll();
 
-        std::cout << "-------------GEN " << gen << " -------------" << std::endl;
-        std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
-        std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
-        std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
+        // std::cout << "-------------GEN " << gen << " -------------" << std::endl;
+        // std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
+        // std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
+        // std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
 
-        scoreData = evolution->setBestIndvs();
+        evolution->setBestIndvs();
+        // scoreData = evolution->setBestIndvs();
 
         if (!(gen % 20)) {
             evolution->genocideAll();
-            std::cout << "-------------genocide-------------" << std::endl;
+            // std::cout << "-------------genocide-------------" << std::endl;
         }
 
         evolution->reset();
 
-        // if(gen == 50){
-        //     evolution->saveANNAll("matrix50.txt");
-        // }
-        // if(gen == 100){
-        //     evolution->saveANNAll("matrix100.txt");
-        // }
-        // if(gen == 150){
-        //     evolution->saveANNAll("matrix150.txt");
-        // }
-        // if(gen == 200){
-        //     evolution->saveANNAll("matrix200.txt");
-        // }
-        // if(gen == 250){
-        //     evolution->saveANNAll("matrix250.txt");
-        // }
-        // if(gen == 300){
-        //     evolution->saveANNAll("matrix300.txt");
-        // }
+        if(!(gen % 50))
+            evolution->saveANNAll(("matrix" + std::to_string(gen) + ".txt").c_str());
+        
+        // mtx.unlock();
 
-
-        mtx.unlock();
-
-        plot->addData(scoreData);
+        // plot->addData(scoreData);
         std::this_thread::sleep_for(1ms); //time to change threads
 
         gen++;

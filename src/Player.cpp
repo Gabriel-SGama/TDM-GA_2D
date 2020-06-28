@@ -12,6 +12,7 @@ Player::Player() {
 
     raysDist = nullptr;
     raysID = nullptr;
+    touchRayID = nullptr;
 
     screen = nullptr;
 
@@ -29,20 +30,23 @@ bool Player::isAlive() {
     return alive;
 }
 
-void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter) {
+void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter, float* checkMoveCos, float* checkMoveSin) {
     //----------------VISION----------------
     separationAngle = visionAngle / numberOfRays;
     angleCorrection = visionAngle / numberOfRays - separationAngle;
 
     separationAngle += angleCorrection;
 
+    this->checkMoveCos = checkMoveCos;
+    this->checkMoveSin = checkMoveSin;
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
+    touchRayID = new int[NUMBER_OF_TOUCH_SENSORS];
 
     //----------------ANN----------------
-    // vision + position + life + direction + shot interval + playerTypeDynamic + speedLimit 
-    // + angulaSpeedLimit + vision dist + other players position + memory
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + 1 + (NUMBER_OF_PLAYERS * 2 - 2) + MEMORY_SIZE;
+    // vision + position + life + direction + shot interval + playerTypeDynamic + 
+    // number of touch sensors + other players position + memory
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + 1 + NUMBER_OF_TOUCH_SENSORS +(NUMBER_OF_PLAYERS * 2 - 2) + MEMORY_SIZE;
 
     //angle + front speed + shot + memory + playerTypeChange
     ANNOutputSize = 1 + 1 + 1 + 1 + MEMORY_SIZE;
@@ -92,7 +96,7 @@ void Player::drawPlayer() {
     bool change = false;
 
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
-    
+
     playerStatus += (*output)[INDEX_PLAYER_TYPE_CHANGE] * 0.1;
 
     if(playerStatus > PLAYER_STATUS_INTERVAL)
@@ -169,7 +173,24 @@ void Player::drawPlayer() {
 }
 
 void Player::updateVision() {
-    double currentAngle;
+    float currentAngle;
+
+    cv::Point pt;
+    
+    for (int i = 0; i < NUMBER_OF_TOUCH_SENSORS; i++) {
+        pt.x = center.x + cos(TOUCH_ANGLE_INTERVAL * i) * TOUCH_SENSOR_DIST;
+        pt.y = center.y + sin(TOUCH_ANGLE_INTERVAL * i) * TOUCH_SENSOR_DIST;
+        touchRayID[i] = screen->colorToId(screen->getColor(pt));
+
+        if(pt.x > LENGTH || pt.x < 0 || pt.y > HEIGHT || pt.y < 0)
+            touchRayID[i] = OBSTACLE;
+        else
+            touchRayID[i] = screen->colorToId(screen->getColor(pt));
+        
+        if(touchRayID[i] != NOTHING)
+            cv::line(screen->getMap(), center, pt, screen->idToRay(touchRayID[i]));
+    }
+    
 
     currentAngle = direction - visionAngle / 2;
     for (int i = 0; i < numberOfRays; i++) {
@@ -178,7 +199,7 @@ void Player::updateVision() {
     }
 }
 
-void Player::drawVisionLines(double currentAngle, int id) {
+void Player::drawVisionLines(float currentAngle, int id) {
     cv::Point pt;
     cv::Point finalPt;
     cv::Point offset;
@@ -189,7 +210,6 @@ void Player::drawVisionLines(double currentAngle, int id) {
 
     const float cosCA = cos(currentAngle);
     const float sinCA = sin(currentAngle);
-
 
     offset.x = _RADIUS_TOTAL_DISTANCE * cosCA;
     offset.y = _RADIUS_TOTAL_DISTANCE * sinCA;
@@ -219,7 +239,44 @@ int Player::checkMove(cv::Point offset) {
 
     float angle = atan2(offset.y, offset.x);
 
-    for (float i = angle - M_PI_2; i < M_PI_2 + angle; i += 0.1) {
+    // int startIndex = angle/(2.0*M_PI) * NUMBER_OF_ANGLES_INTERVAL;
+
+    // if(startIndex > NUMBER_OF_ANGLES_TO_CHECK / 2){
+    //     for (int angleCount = 0, angleIndex = startIndex - NUMBER_OF_ANGLES_TO_CHECK / 2; angleCount < NUMBER_OF_ANGLES_TO_CHECK; angleCount++, angleIndex++) {
+    //         pt.x = checkMoveCos[angleIndex] * _RADIUS_TOTAL_DISTANCE;
+    //         pt.y = checkMoveSin[angleIndex] * _RADIUS_TOTAL_DISTANCE;
+
+    //         pt += center + offset;
+
+    //         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
+    //             return 0;
+   
+        
+    //     }
+    // }else{
+    //     int negativeIndex = NUMBER_OF_ANGLES_TO_CHECK / 2 - startIndex;
+
+    //     for (int angleCount = NUMBER_OF_ANGLES_INTERVAL - 1; angleCount > count; angleCount++)
+    //     {
+    //         /* code */
+    //     }
+        
+
+    //     for (int angleCount = 0, angleIndex = startIndex - NUMBER_OF_ANGLES_TO_CHECK / 2; angleCount < NUMBER_OF_ANGLES_TO_CHECK; angleCount++, angleIndex++) {
+    //         pt.x = checkMoveCos[angleIndex] * _RADIUS_TOTAL_DISTANCE;
+    //         pt.y = checkMoveSin[angleIndex] * _RADIUS_TOTAL_DISTANCE;
+
+    //         pt += center + offset;
+
+    //         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
+    //             return 0;
+   
+        
+    //     }
+    // }
+    
+
+    for (float i = angle - M_PI_2; i < M_PI_2 + angle; i += 0.15) {
         pt.x = cos(i) * _RADIUS_TOTAL_DISTANCE;
         pt.y = sin(i) * _RADIUS_TOTAL_DISTANCE;
 
@@ -325,19 +382,8 @@ void Player::setComunInput() {
         else
             (*input).vector[i] = ENEMY;
 
-        (*input).vector[i + 1] = raysDist[j] / 10.0;
+        (*input).vector[i + 1] = raysDist[j] / 50.0;
     }
-
-    // for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++) {
-    //     if (raysID[j] == playerType)
-    //         (*input)[i] = ALLY / 50.0;
-    //     else if (raysID[j] == NOTHING || raysID[j] == OBSTACLE)
-    //         (*input)[i] = raysID[j] / 50.0;
-    //     else
-    //         (*input)[i] = ENEMY / 50.0;
-
-    //     (*input)[i + 1] = raysDist[j] / visionDist;
-    // }
 
     //----------------PLAYERS CENTER----------------
     i = 2 * numberOfRays;
@@ -345,11 +391,8 @@ void Player::setComunInput() {
         if (j == (playerID % NUMBER_OF_PLAYERS))
             continue;
 
-        // (*input)[i] = playersCenter[j]->x / 50.0;
-        // (*input)[i + 1] = playersCenter[j]->y / 50.0;
-
-        (*input).vector[i] = playersCenter[j]->x / 50.0;
-        (*input).vector[i + 1] = playersCenter[j]->y / 50.0;
+        (*input).vector[i] = playersCenter[j]->x / 200.0;
+        (*input).vector[i + 1] = playersCenter[j]->y / 200.0;
 
         i += 2;
     }
@@ -357,20 +400,23 @@ void Player::setComunInput() {
     i = 2 * numberOfRays + 2 * (NUMBER_OF_PLAYERS - 1);
     // i = 2 * numberOfRays;
 
-    (*input).vector[i] = center.x / 50.0;
-    (*input).vector[i + 1] = center.y / 50.0;
+    (*input).vector[i] = center.x / 200.0;
+    (*input).vector[i + 1] = center.y / 200.0;
     (*input).vector[i + 2] = direction;
     (*input).vector[i + 3] = life;
     (*input).vector[i + 4] = timeShot;
     (*input).vector[i + 5] = playerStatus;
 
-    // (*input)[i] = center.x / LENGTH;
-    // (*input)[i + 1] = center.y / LENGTH;
-    // (*input)[i + 2] = direction / (2.0*M_PI);
-    // (*input)[i + 3] = life / 100.0;
-    // (*input)[i + 4] = 1.0 * timeShot / shotInterval;
+    i += 6;
 
-    i += 8;
+    for (j = 0; j < NUMBER_OF_TOUCH_SENSORS; j++, i++) {
+        if (touchRayID[j] == playerType)
+            (*input).vector[i] = ALLY;
+        else if (touchRayID[j] == NOTHING || touchRayID[j] == OBSTACLE)
+            (*input).vector[i] = touchRayID[j];
+        else
+            (*input).vector[i] = ENEMY;
+    }
 
     //----------------MEMORY----------------
     for (j = 0; j < MEMORY_SIZE; i++, j++) {
@@ -392,6 +438,7 @@ void Player::reset(int life, bool resetScore) {
      
     //----------------RESET PLAYER TYPE----------------
     if(playerType == SNIPER) {
+        playerStatus = playerStatusS;
         damage = SNIPER_DAMAGE;
         visionDist = SNIPER_VISION_DIST;
 
@@ -405,6 +452,7 @@ void Player::reset(int life, bool resetScore) {
         numberOfRays = SNIPER_NUMBER_OF_RAYS;
     
     } else if(lastPlayerType == ASSAULT){
+        playerStatus = playerStatusA;
         damage = ASSAULT_DAMAGE;
         visionDist = ASSAULT_VISION_DIST;
 
@@ -418,6 +466,7 @@ void Player::reset(int life, bool resetScore) {
         numberOfRays = ASSAULT_NUMBER_OF_RAYS;
 
     } else {
+        playerStatus = playerStatusLA;
         damage = LIGHT_ASSAULT_DAMAGE;
         visionDist = LIGHT_ASSAULT_VISION_DIST;
 
@@ -435,11 +484,6 @@ void Player::reset(int life, bool resetScore) {
     angleCorrection = visionAngle / numberOfRays - separationAngle;
 
     separationAngle += angleCorrection;
-
-    //----------------RESET PLAYER TYPE INPUT VALUES----------------
-    int posiStart = 2 * numberOfRays + 2 * (NUMBER_OF_PLAYERS - 1);
-
-    (*input).vector[posiStart + 5] = playerStatus;
 
     setPosition();
     drawPlayer();
