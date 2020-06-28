@@ -46,7 +46,7 @@ void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCe
     //----------------ANN----------------
     // vision + position + life + direction + shot interval + playerTypeDynamic + 
     // number of touch sensors + other players position + memory
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + 1 + NUMBER_OF_TOUCH_SENSORS +(NUMBER_OF_PLAYERS * 2 - 2) + MEMORY_SIZE;
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + 1 + NUMBER_OF_TOUCH_SENSORS + (NUMBER_OF_PLAYERS * 2 - 2) + MEMORY_SIZE;
 
     //angle + front speed + shot + memory + playerTypeChange
     ANNOutputSize = 1 + 1 + 1 + 1 + MEMORY_SIZE;
@@ -97,7 +97,7 @@ void Player::drawPlayer() {
 
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
 
-    playerStatus += (*output)[INDEX_PLAYER_TYPE_CHANGE] * 0.1;
+    playerStatus += (*output)[INDEX_PLAYER_TYPE_CHANGE] * 0.5;
 
     if(playerStatus > PLAYER_STATUS_INTERVAL)
         playerStatus = PLAYER_STATUS_INTERVAL;
@@ -107,6 +107,9 @@ void Player::drawPlayer() {
     if(playerStatus >= playerStatusS){
         if(lastPlayerType != SNIPER){
             change = true;
+
+            life = ((float) life/ASSAULT_HEALTH) * SNIPER_HEALTH;
+
             lastPlayerType = SNIPER;
             damage = SNIPER_DAMAGE;
             visionDist = SNIPER_VISION_DIST;
@@ -125,6 +128,11 @@ void Player::drawPlayer() {
     
     }else if(playerStatus >= playerStatusA){
         if(lastPlayerType != ASSAULT){
+            if(lastPlayerType == SNIPER)
+                life = ((float) life/SNIPER_HEALTH) * ASSAULT_HEALTH;
+            else
+                life = ((float) life/LIGHT_ASSAULT_HEALTH) * ASSAULT_HEALTH;
+
             change = true;
             lastPlayerType = ASSAULT;
             damage = ASSAULT_DAMAGE;
@@ -145,6 +153,7 @@ void Player::drawPlayer() {
     }else {
         if(lastPlayerType != LIGHT_ASSAULT){
             change = true;
+            life = ((float) life/ASSAULT_HEALTH) * LIGHT_ASSAULT_HEALTH;
             lastPlayerType = LIGHT_ASSAULT;
             damage = LIGHT_ASSAULT_DAMAGE;
             visionDist = LIGHT_ASSAULT_VISION_DIST;
@@ -158,6 +167,7 @@ void Player::drawPlayer() {
             visionAngle = LIGHT_ASSAULT_VISION_ANGLE;
             numberOfRays = LIGHT_ASSAULT_NUMBER_OF_RAYS;
         }
+
         cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 3);
     }
 
@@ -362,7 +372,7 @@ void Player::setAlive(bool alive) {
     this->alive = alive;
 
     if (!alive) {
-        score -= 4;
+        score -= 12;
         
         center.x = 0;
         center.y = 0;

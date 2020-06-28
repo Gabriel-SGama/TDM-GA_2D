@@ -28,10 +28,7 @@ void Screen::matToMatrix() {
 }
 
 cv::Scalar Screen::getColor(cv::Point pt) {
-    //cv::Vec3b color;
     cv::Scalar color;
-
-    //std::cout << pt << std::endl;
 
     if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0)
         return cv::Scalar(BACKGROUND_COLOR);
@@ -239,14 +236,6 @@ void Screen::createObstacle() {
 
     pt2.x = 450;
     pt2.y = 500 + _OBSTACLE_LENGTH;
-
-    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
-
-    pt1.x = 520;
-    pt1.y = 150;
-
-    pt2.x = 520 + _OBSTACLE_LENGTH;
-    pt2.y = 450;
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 

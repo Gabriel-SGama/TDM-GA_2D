@@ -10,8 +10,8 @@
 // #define SNIPER_SHOT_INTERVAL 10
 
 //----------------SNIPER VALUES----------------
-#define SNIPER_HEALTH 3
-#define SNIPER_DAMAGE 2
+#define SNIPER_HEALTH 9
+#define SNIPER_DAMAGE 6
 #define SNIPER_NUMBER_OF_RAYS 10
 #define SNIPER_SPEED_LIMIT 5.0
 #define SNIPER_VISION_DIST 250

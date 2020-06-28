@@ -83,38 +83,69 @@ int main() {
     */
 
     evolution = new Evolution;
-    // scoreData_t scoreData;
-    // plot = new Plot;
+    scoreData_t scoreData;
+    plot = new Plot;
     
-    // std::thread th(copyModerator);
+    std::thread th(copyModerator);
+
+    // evolution->readANNAll("matrix150.txt");
+    // Moderator *bestIndvsCopy = new Moderator;
+
+    // bestIndvsCopy->setScreen(new Screen);
+    // bestIndvsCopy->screen->setScreenParam("best indvs", LENGTH + 67, 0);
+    // bestIndvsCopy->setAllPlayersValues();
+
+    // ANN *bestLightAssaultMatrix = new ANN;
+    // ANN *bestSniperMatrix = new ANN;
+    // ANN *bestAssaultMatrix = new ANN;
+
+    // LightAssault *lightAssaults = evolution->bestTeams->getLightAssaults();
+    // Sniper *snipers = evolution->bestTeams->getSnipers();
+    // Assault *assaults = evolution->bestTeams->getAssaults();
+
+    // bestLightAssaultMatrix->setANNParameters(lightAssaults->ANNInputSize, lightAssaults->ANNOutputSize);
+    // bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
+    // bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
+
+    // //----------------BEST PLAYER MATCH----------------
+    // bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
+    // bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
+    // bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
+
+    // bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
+    // bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
+
+    // bestIndvsCopy->gameOfBest();
+    // bestIndvsCopy->resetAllPlayers(true);
+    // return 0;
 
     while (1) {
-        // mtx.lock();
         //----------------EVOLUTION----------------
+        mtx.lock();
+
         evolution->game();
         evolution->tournamentAll();
 
-        // std::cout << "-------------GEN " << gen << " -------------" << std::endl;
-        // std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
-        // std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
-        // std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
+        std::cout << "-------------GEN " << gen << " -------------" << std::endl;
+        std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
+        std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
+        std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
 
-        evolution->setBestIndvs();
-        // scoreData = evolution->setBestIndvs();
+        scoreData = evolution->setBestIndvs();
 
         if (!(gen % 20)) {
             evolution->genocideAll();
-            // std::cout << "-------------genocide-------------" << std::endl;
+            std::cout << "-------------genocide-------------" << std::endl;
         }
 
         evolution->reset();
 
-        if(!(gen % 50))
-            evolution->saveANNAll(("matrix" + std::to_string(gen) + ".txt").c_str());
+        // if(!(gen % 50))
+        //     evolution->saveANNAll(("matrix" + std::to_string(gen) + ".txt").c_str());
         
-        // mtx.unlock();
+        mtx.unlock();
 
-        // plot->addData(scoreData);
+        plot->addData(scoreData);
         std::this_thread::sleep_for(1ms); //time to change threads
 
         gen++;
