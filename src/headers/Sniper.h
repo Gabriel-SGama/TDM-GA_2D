@@ -26,7 +26,6 @@ class Sniper;
 
 class Sniper : public Player {
    private:
-    /* data */
    public:
     Sniper();
     ~Sniper();

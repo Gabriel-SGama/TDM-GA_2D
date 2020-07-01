@@ -83,7 +83,7 @@ class Player {
 
     int playerType;  //type of player
     int playerID;    //number of player
-    int life;        //current life
+    float life;        //current life
     int damage;  //player damage
 
     int shotInterval;
@@ -193,7 +193,7 @@ class Player {
     void setComunInput();
 
     //reset
-    void reset(int life, bool resetScore);
+    void reset(float life, bool resetScore);
 };
 
 #include "Light_Assault.h"

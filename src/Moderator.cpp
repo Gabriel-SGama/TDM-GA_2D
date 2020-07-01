@@ -40,7 +40,7 @@ Moderator::Moderator() {
 
     checkMoveCos = new float[NUMBER_OF_ANGLES_INTERVAL];
     checkMoveSin = new float[NUMBER_OF_ANGLES_INTERVAL];
-    
+
     float angle = 0;
 
     for (int i = 0; i < NUMBER_OF_ANGLES_INTERVAL; i++) {
@@ -48,7 +48,6 @@ Moderator::Moderator() {
         checkMoveSin[i] = sin(angle);
         angle += ANGLE_INTERVAL;
     }
-        
 }
 
 Moderator::~Moderator() {
@@ -91,6 +90,10 @@ void Moderator::setAllPlayersValues() {
     setPlayersValues(playerNumber, lightAssaults, LACenter);
     setPlayersValues(playerNumber, snipers, SCenter);
     setPlayersValues(playerNumber, assaults, ACenter);
+
+    allocGPUPtr();
+    allocGPUMem();
+    sendMatrixMemToGPU();
 }
 
 void Moderator::setPlayersValues(int &playerNumber, Player *players, cv::Point **centerPtr) {
@@ -159,7 +162,7 @@ void Moderator::shotPlayer(Player *shooter, enemyInfo_t enemyInfo) {
             shooter->updateScore(shooter->getDamage());
         else
             shooter->updateScore(-2.5 * shooter->getDamage());
-        
+
         //----------------SNIPER----------------
     } else if (enemyInfo.playerType == SNIPER && findPlayer(shooter, snipers, enemyInfo.posiAprox)) {
         if (shooter->getPlayerType() != SNIPER)
@@ -193,7 +196,7 @@ int Moderator::findPlayer(Player *shooter, Player *players, cv::Point enemyPoint
             if (players[i].getLife() <= 0) {
                 //friend fire doesnt count to score
                 if (shooter->getPlayerType() == players[i].getPlayerType())
-                    players[i].updateScore(4);
+                    players[i].updateScore(12);
                 else if (shooter->getPlayerType() == LIGHT_ASSAULT)
                     lightAssaultScore += 1;
                 else if (shooter->getPlayerType() == SNIPER)
@@ -303,15 +306,19 @@ void Moderator::resetAllPlayers(bool resetScore) {
     screen->createObstacle();
 
     //----------------RESET SCORE----------------
-    if (resetScore) {
-        bestLightAssault->score = INICIAL_SCORE;
-        bestSniper->score = INICIAL_SCORE;
-        bestAssault->score = INICIAL_SCORE;
-    }
+    // std::cout << bestLightAssault->score << std::endl;
+    // std::cout << bestSniper->score << std::endl;
+    // std::cout << bestAssault->score << std::endl;
 
-    lightAssaultScore = 0;
-    sniperScore = 0;
-    assaultScore = 0;
+    bestLightAssault->score = INICIAL_SCORE;
+    bestSniper->score = INICIAL_SCORE;
+    bestAssault->score = INICIAL_SCORE;
+
+    if (resetScore) {
+        lightAssaultScore = 0;
+        sniperScore = 0;
+        assaultScore = 0;
+    }
 
     //----------------RESET PLAYERS----------------
     resetPlayers(lightAssaults, LIGHT_ASSAULT_HEALTH, resetScore);
@@ -333,6 +340,8 @@ void Moderator::setAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnipe
 
     if (bestAssaults != nullptr)
         setWeights(bestAssaults, assaults);
+
+    sendMatrixMemToGPU();
 }
 
 void Moderator::setWeights(Player *bestPlayers, Player *players) {
@@ -349,6 +358,8 @@ void Moderator::copyAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnip
 
     if (bestAssaults != nullptr)
         copyWeights(bestAssaults, assaults);
+    
+    sendMatrixMemToGPU();
 }
 
 void Moderator::copyWeights(Player *bestPlayers, Player *players) {
@@ -363,21 +374,22 @@ void Moderator::copyWeights(Player *bestPlayers, Player *players) {
 
         for (j = 0; j < layerSize + 1; j++)
             newMatrixArray[j] = matrixArray[j];
-
     }
 }
 
-void Moderator::setAllWeightsOneMatrix(MatrixF *inocentMatrix, MatrixF *traitorMatrix, MatrixF *detectiveMatrix) {
+void Moderator::setAllWeightsOneMatrix(MatrixF *lightAssaultMatrix, MatrixF *snioerMatrix, MatrixF *assaultMatrix) {
     int i;
 
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-        lightAssaults[i].ann->setMatrix(inocentMatrix);
+        lightAssaults[i].ann->setMatrix(lightAssaultMatrix);
 
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-        snipers[i].ann->setMatrix(traitorMatrix);
+        snipers[i].ann->setMatrix(snioerMatrix);
 
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-        assaults[i].ann->setMatrix(detectiveMatrix);
+        assaults[i].ann->setMatrix(assaultMatrix);
+
+    sendMatrixMemToGPU();
 }
 
 void Moderator::game() {
@@ -386,7 +398,8 @@ void Moderator::game() {
         updateAllPlayersVision();
 
         defineAllPlayersInput();
-        multiplyAllPlayers();
+        // multiplyAllPlayers();
+        multplyGPU();
 
         conflictsAllPlayers();
         checkAllPlayersLife();
@@ -402,7 +415,8 @@ void Moderator::gameOfBest() {
         updateAllPlayersVision();
 
         defineAllPlayersInput();
-        multiplyAllPlayers();
+        // multiplyAllPlayers();
+        multplyGPU();
 
         conflictsAllPlayers();
         screen->updateMap();
@@ -411,4 +425,192 @@ void Moderator::gameOfBest() {
         moveAllPlayers();
     }
     calculateScore();
+}
+
+void Moderator::allocGPUPtr() {
+    int playerIdx;
+    int layerIdx;
+
+    //----------------MATRIX----------------
+    d_laM = new float **[NUMBER_OF_PLAYERS];
+    d_sM = new float **[NUMBER_OF_PLAYERS];
+    d_aM = new float **[NUMBER_OF_PLAYERS];
+
+    //----------------LAYERS----------------
+    d_laL = new float **[NUMBER_OF_PLAYERS];
+    d_sL = new float **[NUMBER_OF_PLAYERS];
+    d_aL = new float **[NUMBER_OF_PLAYERS];
+
+    for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
+        //----------------MATRIXS----------------
+        d_laM[playerIdx] = new float *[layerSize + 1];
+        d_sM[playerIdx] = new float *[layerSize + 1];
+        d_aM[playerIdx] = new float *[layerSize + 1];
+
+        //----------------LAYERS----------------
+        d_laL[playerIdx] = new float *[layerSize + 2];
+        d_sL[playerIdx] = new float *[layerSize + 2];
+        d_aL[playerIdx] = new float *[layerSize + 2];
+    }
+}
+
+void Moderator::allocGPUMem() {
+    int playerIdx;
+    int layerIdx;
+
+    std::vector<int> aux;
+
+    aux.push_back(lightAssaults->ANNInputSize);
+
+    for (layerIdx = 0; layerIdx < layerSize; layerIdx++) {
+        aux.push_back(layers[layerIdx]);
+    }
+
+    aux.push_back(lightAssaults->ANNOutputSize);
+
+    for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
+        //----------------INPUT LAYER----------------
+        cudaMalloc((void **)&d_laL[playerIdx][0], aux[0] * sizeof(float));
+        cudaMalloc((void **)&d_sL[playerIdx][0], aux[0] * sizeof(float));
+        cudaMalloc((void **)&d_aL[playerIdx][0], aux[0] * sizeof(float));
+
+        //----------------LAYERS & MATRIXS----------------
+        for (layerIdx = 0; layerIdx < layerSize + 1; layerIdx++) {
+            cudaMalloc((void **)&d_laM[playerIdx][layerIdx], aux[layerIdx + 1] * aux[layerIdx] * sizeof(float));
+            cudaMalloc((void **)&d_sM[playerIdx][layerIdx], aux[layerIdx + 1] * aux[layerIdx] * sizeof(float));
+            cudaMalloc((void **)&d_aM[playerIdx][layerIdx], aux[layerIdx + 1] * aux[layerIdx] * sizeof(float));
+
+            cudaMalloc((void **)&d_laL[playerIdx][layerIdx + 1], aux[layerIdx + 1] * sizeof(float));
+            cudaMalloc((void **)&d_sL[playerIdx][layerIdx + 1], aux[layerIdx + 1] * sizeof(float));
+            cudaMalloc((void **)&d_aL[playerIdx][layerIdx + 1], aux[layerIdx + 1] * sizeof(float));
+        }
+    }
+}
+
+void Moderator::sendMatrixMemToGPU() {
+    int playerIdx;
+    int layerIdx;
+
+    MatrixF* laMptr;
+    MatrixF* sMptr;
+    MatrixF* aMptr;
+
+    for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
+        //----------------MATRIXS----------------
+        laMptr = lightAssaults[playerIdx].ann->getMatrixPtr();
+        sMptr = snipers[playerIdx].ann->getMatrixPtr();
+        aMptr = assaults[playerIdx].ann->getMatrixPtr();
+
+        for (layerIdx = 0; layerIdx < layerSize + 1; layerIdx++) {
+            cudaMemcpyAsync(d_laM[playerIdx][layerIdx], laMptr[layerIdx].matrix, laMptr[layerIdx].memSize, cudaMemcpyHostToDevice);
+            cudaMemcpyAsync(d_sM[playerIdx][layerIdx], sMptr[layerIdx].matrix, sMptr[layerIdx].memSize, cudaMemcpyHostToDevice);
+            cudaMemcpyAsync(d_aM[playerIdx][layerIdx], aMptr[layerIdx].matrix, aMptr[layerIdx].memSize, cudaMemcpyHostToDevice);
+        }
+    }
+
+    cudaDeviceSynchronize();
+}
+
+void Moderator::sendInputMemToGPU() {
+    int playerIdx;
+
+    vectorF* laIptr;
+    vectorF* sIptr;
+    vectorF* aIptr;
+
+    for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
+        //----------------INPUT----------------
+        laIptr = lightAssaults[playerIdx].ann->getInputPtr();
+        sIptr = snipers[playerIdx].ann->getInputPtr();
+        aIptr = assaults[playerIdx].ann->getInputPtr();
+
+        cudaMemcpyAsync(d_laL[playerIdx][0], laIptr[0].vector, laIptr[0].memSize, cudaMemcpyHostToDevice);
+        cudaMemcpyAsync(d_sL[playerIdx][0], sIptr[0].vector, sIptr[0].memSize, cudaMemcpyHostToDevice);
+        cudaMemcpyAsync(d_aL[playerIdx][0], aIptr[0].vector, aIptr[0].memSize, cudaMemcpyHostToDevice);
+    }
+
+    cudaDeviceSynchronize();
+}
+
+void Moderator::sendOutputMemToCPU() {
+    int playerIdx;
+
+    vectorF* laOptr;
+    vectorF* sOptr;
+    vectorF* aOptr;
+
+
+    for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
+        laOptr = lightAssaults[playerIdx].output;
+        sOptr = snipers[playerIdx].output;
+        aOptr = assaults[playerIdx].output;
+        
+        //----------------OUTPUT----------------
+        cudaMemcpyAsync(laOptr->vector, d_laL[playerIdx][layerSize+1], laOptr->memSize, cudaMemcpyDeviceToHost);
+        cudaMemcpyAsync(sOptr->vector, d_sL[playerIdx][layerSize+1], sOptr->memSize, cudaMemcpyDeviceToHost);
+        cudaMemcpyAsync(aOptr->vector, d_aL[playerIdx][layerSize+1], aOptr->memSize, cudaMemcpyDeviceToHost);
+    }
+
+    cudaDeviceSynchronize();
+}
+
+void Moderator::multplyGPU(){
+
+    int playerIdx;
+    int layerIdx;
+
+    MatrixF* laMptr = lightAssaults->ann->getMatrixPtr();
+    MatrixF* sMptr = snipers->ann->getMatrixPtr();
+    MatrixF* aMptr = assaults->ann->getMatrixPtr();
+
+    for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
+        lightAssaults[playerIdx].setComunInput();
+        snipers[playerIdx].setComunInput();
+        assaults[playerIdx].setComunInput();
+    }
+
+    sendInputMemToGPU();
+
+    for(layerIdx = 0; layerIdx < layerSize + 1; layerIdx++){
+        for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
+            
+            CUDA::matrixMultiplication(d_laM[playerIdx][layerIdx], d_laL[playerIdx][layerIdx], d_laL[playerIdx][layerIdx+1],
+                                        laMptr[layerSize].lines, laMptr[layerSize].coluns);
+            
+            CUDA::matrixMultiplication(d_sM[playerIdx][layerIdx], d_sL[playerIdx][layerIdx], d_sL[playerIdx][layerIdx+1],
+                                        sMptr[layerSize].lines, sMptr[layerSize].coluns);
+            
+            CUDA::matrixMultiplication(d_aM[playerIdx][layerIdx], d_aL[playerIdx][layerIdx], d_aL[playerIdx][layerIdx+1],
+                                        aMptr[layerSize].lines, aMptr[layerSize].coluns);
+
+            cudaDeviceSynchronize();
+        }
+        
+    }
+    
+    sendOutputMemToCPU();
+}
+
+void Moderator::freeGPUMem() {
+    
+    int playerIdx;
+    int layerIdx;
+
+    for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
+        //----------------INPUT LAYER----------------
+        cudaFree(d_laL[playerIdx][0]);
+        cudaFree(d_sL[playerIdx][0]);
+        cudaFree(d_aL[playerIdx][0]);
+
+        //----------------LAYERS & MATRIXS----------------
+        for (layerIdx = 0; layerIdx < layerSize + 1; layerIdx++) {
+            cudaFree(d_laM[playerIdx][layerIdx]);
+            cudaFree(d_sM[playerIdx][layerIdx]);
+            cudaFree(d_aM[playerIdx][layerIdx]);
+           
+            cudaFree(d_laL[playerIdx][layerIdx + 1]);
+            cudaFree(d_sL[playerIdx][layerIdx + 1]);
+            cudaFree(d_aL[playerIdx][layerIdx + 1]);
+        }
+    }
 }

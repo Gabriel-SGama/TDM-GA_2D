@@ -10,6 +10,7 @@ class vectorF {
     float *vector;
 
     int size;
+    int memSize;
 
     vectorF();
     vectorF(int size);
@@ -29,6 +30,7 @@ class MatrixF {
 
     int lines;
     int coluns;
+    int memSize;
 
 
     //----------------CREATION----------------

@@ -127,25 +127,50 @@ void Evolution::setPlayersPtr() {
 void Evolution::game() {
     int i;
 
+    int posIndex = rand() % 3;
+
     //----------------GAME----------------
+// #pragma omp parallel for
+//     for (i = 0; i < POP_SIZE; i++) {
+//         lightAssaultTraining[i].game();
+//         lightAssaultTraining[i].setInicialPosAll(initialPos, posIndex);
+//         lightAssaultTraining[i].resetAllPlayers(false);
+//     }
+    
+// #pragma omp parallel for
+//     for (i = 0; i < POP_SIZE; i++) {
+//         snipersTraining[i].game();
+//         snipersTraining[i].setInicialPosAll(initialPos, posIndex);
+//         snipersTraining[i].resetAllPlayers(false);
+//     }    
+    
+// #pragma omp parallel for
+//     for (i = 0; i < POP_SIZE; i++) {
+//         assaultsTraining[i].game();
+//         assaultsTraining[i].setInicialPosAll(initialPos, posIndex);
+//         assaultsTraining[i].resetAllPlayers(false);
+//     }
+
+// #pragma omp parallel for
+//     for (i = 0; i < POP_SIZE; i++) {
+//         lightAssaultTraining[i].game();
+//         snipersTraining[i].game();
+//         assaultsTraining[i].game();
+//     }
+
+//less time wasted for inequal jobs
 #pragma omp parallel for
-    for (i = 0; i < POP_SIZE; i++) {
+    for (i = 0; i < POP_SIZE; i++)
         lightAssaultTraining[i].game();
-        lightAssaultTraining[i].resetAllPlayers(false);
-    
-        snipersTraining[i].game();
-        snipersTraining[i].resetAllPlayers(false);
-    
-        assaultsTraining[i].game();
-        assaultsTraining[i].resetAllPlayers(false);
-    }
 
 #pragma omp parallel for
-    for (i = 0; i < POP_SIZE; i++) {
-        lightAssaultTraining[i].game();
+    for (i = 0; i < POP_SIZE; i++)
         snipersTraining[i].game();
+
+
+#pragma omp parallel for
+    for (i = 0; i < POP_SIZE; i++)
         assaultsTraining[i].game();
-    }
 
 
     //----------------SELECT BEST TEAMS----------------
@@ -408,6 +433,7 @@ scoreData_t Evolution::setBestIndvs() {
     float MSS = 0;
     float MAS = 0;
 
+    //TODO: MEDIUN ERROR
     //----------------SET BEST INDV PLAYERS----------------
     for (int i = 0; i < POP_SIZE; i++) {
         MLAS += lightAssaultTraining[i].bestLightAssault->score;
@@ -434,9 +460,9 @@ scoreData_t Evolution::setBestIndvs() {
     MSS /= (float)TOTAL_NUMBER_OF_PLAYERS;
     MAS /= (float)TOTAL_NUMBER_OF_PLAYERS;
 
-    // std::cout << "best light assault score: " << BLAS << std::endl;
-    // std::cout << "best sniper score: " << BSS << std::endl;
-    // std::cout << "best assault score: " << BAS << std::endl;
+    std::cout << "best light assault score: " << BLAS << std::endl;
+    std::cout << "best sniper score: " << BSS << std::endl;
+    std::cout << "best assault score: " << BAS << std::endl;
 
     // std::cout << "mediun light assault score: " << MLAS << std::endl;
     // std::cout << "mediun sniper score: " << MSS << std::endl;
@@ -452,6 +478,7 @@ scoreData_t Evolution::setBestIndvs() {
 
 void Evolution::saveANNAll(const char* fileName){
     std::ofstream fileObj(fileName);
+    
     saveANN(bestLightAssaultANN, &fileObj);
     saveANN(bestSniperANN, &fileObj);
     saveANN(bestAssaultANN, &fileObj);

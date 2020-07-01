@@ -437,7 +437,7 @@ void Player::setComunInput() {
         timeShot--;
 }
 
-void Player::reset(int life, bool resetScore) {
+void Player::reset(float life, bool resetScore) {
     if (resetScore)
         score = 0;
 

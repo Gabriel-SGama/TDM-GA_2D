@@ -9,6 +9,7 @@ MatrixF::MatrixF() {
 MatrixF::MatrixF(int lines, int coluns, float limits) {
     this->lines = 0;
     this->coluns = 0;
+    memSize = 0;
     createMatrix(lines, coluns, limits);
 }
 
@@ -18,14 +19,16 @@ void MatrixF::createMatrix(int lines, int coluns, float limits) {
 
     this->lines = lines;
     this->coluns = coluns;
+    
+    memSize = lines*coluns*sizeof(float);
 
     this->matrix = new float[lines * coluns];
 
     if (limits > 0) {
-        int actualLimit = limits * 1000;
+        int actualLimit = limits * 1000000;
 
         for (int i = 0; i < lines * coluns; i++) {
-            this->matrix[i] = ((rand() % (int)(2 * actualLimit)) - actualLimit) / 1000.0;
+            this->matrix[i] = ((rand() % (int)(2 * actualLimit)) - actualLimit) / 1000000.0;
         }
 
     } else {
@@ -145,6 +148,8 @@ void MatrixF::writeMatrixToFile(std::ofstream* fileObj){
 
     int lineOffset = 0;
 
+    fileObj->precision(7);
+
     for (line = 0; line < this->lines; line++) {
         
         for (colun = 0; colun < this->coluns; colun++) {
@@ -161,6 +166,7 @@ void MatrixF::readMatrixFromFile(std::istream* fileObj){
     int colun;
 
     int lineOffset = 0;
+    fileObj->precision(7);
 
     for (line = 0; line < this->lines; line++) {
         
@@ -176,10 +182,13 @@ void MatrixF::readMatrixFromFile(std::istream* fileObj){
 vectorF::vectorF() {
     size = 0;
     vector = nullptr;
+    memSize = 0;
 }
 
 vectorF::vectorF(int size) {
     this->size = 0;
+    memSize = 0;
+
     createVector(size);
 }
 
@@ -200,6 +209,7 @@ void vectorF::createVector(int size) {
         delete[] this->vector;
 
     this->size = size;
+    memSize = size*sizeof(float);
 
     vector = new float[size];
     for (int i = 0; i < size; i++) {

@@ -1,5 +1,7 @@
 #pragma once
+
 #include <eigen3/Eigen/Dense>
+#include "cudaStuff.cuh"
 
 #define DURATION 500
 
@@ -48,6 +50,16 @@ class Moderator {
 
     float* checkMoveCos; //angles for move check for players
     float* checkMoveSin; //angles for move check for players
+
+    //players matrix ptr to GPU memory
+    float*** d_laM;
+    float*** d_sM;
+    float*** d_aM;
+
+    //players layer's input and outputs
+    float*** d_laL;
+    float*** d_sL;
+    float*** d_aL;
 
    public:
     //----------------BEST PLAYERS----------------
@@ -134,9 +146,20 @@ class Moderator {
     void copyAllWeights(LightAssault *lightAssaults, Sniper *snipers, Assault *assaults);
     void copyWeights(Player *bestPlayer, Player *players);
 
-    // void setAllWeightsOneMatrix(MatrixXf *inocentMatrix, MatrixXf *sniperMatrix, MatrixXf *detectiveMatrix);
-    void setAllWeightsOneMatrix(MatrixF *inocentMatrix, MatrixF *sniperMatrix, MatrixF *detectiveMatrix);
+    void setAllWeightsOneMatrix(MatrixF *lightAssaultMatrix, MatrixF *sniperMatrix, MatrixF *assaultMatrix);
 
+    //----------------GAME----------------
     void game();
     void gameOfBest();
+
+    //----------------CUDA----------------
+    void allocGPUPtr();
+    void allocGPUMem();
+    void sendMatrixMemToGPU();
+    void sendInputMemToGPU();
+    void sendOutputMemToCPU();
+
+    void multplyGPU();
+
+    void freeGPUMem();
 };
