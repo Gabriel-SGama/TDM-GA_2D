@@ -72,6 +72,13 @@ class Moderator {
     float sniperScore;
     float assaultScore;
 
+    //----------------PLAYERS SCORE SUM----------------
+
+    float lightAssaultScoreSum;
+    float sniperScoreSum;
+    float assaultScoreSum;
+
+
     cv::Point **playersCenter;
 
     Moderator();

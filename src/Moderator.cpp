@@ -10,6 +10,10 @@ Moderator::Moderator() {
     sniperScore = 0;
     assaultScore = 0;
 
+    lightAssaultScoreSum = 0;
+    sniperScoreSum = 0;
+    assaultScoreSum = 0;
+
     //----------------ALLOCS ALL PLAYERS MEMORY----------------
     lightAssaults = new LightAssault[NUMBER_OF_PLAYERS];
     snipers = new Sniper[NUMBER_OF_PLAYERS];
@@ -92,8 +96,8 @@ void Moderator::setAllPlayersValues() {
     setPlayersValues(playerNumber, assaults, ACenter);
 
     allocGPUPtr();
-    allocGPUMem();
-    sendMatrixMemToGPU();
+    // allocGPUMem();
+    // sendMatrixMemToGPU();
 }
 
 void Moderator::setPlayersValues(int &playerNumber, Player *players, cv::Point **centerPtr) {
@@ -270,6 +274,7 @@ void Moderator::calculateScore() {
     //----------------LIGHT ASSAULT SCORE----------------
     for (i = 0; i < NUMBER_OF_PLAYERS; i++) {
         indvScore = lightAssaults[i].getScore();
+        lightAssaultScoreSum += indvScore;
 
         if (indvScore > bestLightAssault->score) {
             bestLightAssault->score = indvScore;
@@ -281,6 +286,7 @@ void Moderator::calculateScore() {
     //----------------SNIPER SCORE----------------
     for (i = 0; i < NUMBER_OF_PLAYERS; i++) {
         indvScore = snipers[i].getScore();
+        sniperScoreSum += indvScore;
 
         if (indvScore > bestSniper->score) {
             bestSniper->score = indvScore;
@@ -292,6 +298,7 @@ void Moderator::calculateScore() {
     //----------------ASSAULT SCORE----------------
     for (i = 0; i < NUMBER_OF_PLAYERS; i++) {
         indvScore = assaults[i].getScore();
+        assaultScoreSum += indvScore;
 
         if (indvScore > bestAssault->score) {
             bestAssault->score = indvScore;
@@ -313,6 +320,10 @@ void Moderator::resetAllPlayers(bool resetScore) {
     bestLightAssault->score = INICIAL_SCORE;
     bestSniper->score = INICIAL_SCORE;
     bestAssault->score = INICIAL_SCORE;
+
+    lightAssaultScoreSum = 0;
+    sniperScoreSum = 0;
+    assaultScoreSum = 0;
 
     if (resetScore) {
         lightAssaultScore = 0;
@@ -341,7 +352,7 @@ void Moderator::setAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnipe
     if (bestAssaults != nullptr)
         setWeights(bestAssaults, assaults);
 
-    sendMatrixMemToGPU();
+    // sendMatrixMemToGPU();
 }
 
 void Moderator::setWeights(Player *bestPlayers, Player *players) {
@@ -359,7 +370,7 @@ void Moderator::copyAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnip
     if (bestAssaults != nullptr)
         copyWeights(bestAssaults, assaults);
     
-    sendMatrixMemToGPU();
+    // sendMatrixMemToGPU();
 }
 
 void Moderator::copyWeights(Player *bestPlayers, Player *players) {
@@ -389,7 +400,7 @@ void Moderator::setAllWeightsOneMatrix(MatrixF *lightAssaultMatrix, MatrixF *sni
     for (i = 0; i < NUMBER_OF_PLAYERS; i++)
         assaults[i].ann->setMatrix(assaultMatrix);
 
-    sendMatrixMemToGPU();
+    // sendMatrixMemToGPU();
 }
 
 void Moderator::game() {
@@ -398,8 +409,8 @@ void Moderator::game() {
         updateAllPlayersVision();
 
         defineAllPlayersInput();
-        // multiplyAllPlayers();
-        multplyGPU();
+        multiplyAllPlayers();
+        // multplyGPU();
 
         conflictsAllPlayers();
         checkAllPlayersLife();
@@ -415,8 +426,8 @@ void Moderator::gameOfBest() {
         updateAllPlayersVision();
 
         defineAllPlayersInput();
-        // multiplyAllPlayers();
-        multplyGPU();
+        multiplyAllPlayers();
+        // multplyGPU();
 
         conflictsAllPlayers();
         screen->updateMap();
@@ -539,7 +550,6 @@ void Moderator::sendOutputMemToCPU() {
     vectorF* sOptr;
     vectorF* aOptr;
 
-
     for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
         laOptr = lightAssaults[playerIdx].output;
         sOptr = snipers[playerIdx].output;
@@ -563,12 +573,6 @@ void Moderator::multplyGPU(){
     MatrixF* sMptr = snipers->ann->getMatrixPtr();
     MatrixF* aMptr = assaults->ann->getMatrixPtr();
 
-    for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
-        lightAssaults[playerIdx].setComunInput();
-        snipers[playerIdx].setComunInput();
-        assaults[playerIdx].setComunInput();
-    }
-
     sendInputMemToGPU();
 
     for(layerIdx = 0; layerIdx < layerSize + 1; layerIdx++){
@@ -582,9 +586,8 @@ void Moderator::multplyGPU(){
             
             CUDA::matrixMultiplication(d_aM[playerIdx][layerIdx], d_aL[playerIdx][layerIdx], d_aL[playerIdx][layerIdx+1],
                                         aMptr[layerSize].lines, aMptr[layerSize].coluns);
-
         }
-        
+
         cudaDeviceSynchronize();
     }
     

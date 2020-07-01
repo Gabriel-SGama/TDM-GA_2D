@@ -44,7 +44,7 @@ void Plot::plotData() {
     const float scaleY = GRAPH_HEIGHT / dif;
     const float scaleX = (float)GRAPH_WIDTH / (data.size() - 1);
 
-    const float offset = (max - min) * 0.1;
+    const float offset = (max - min) * 0.1 - min;
 
     for (int i = 1; i < data.size() - 1; i++) {
         //----------------BEST----------------

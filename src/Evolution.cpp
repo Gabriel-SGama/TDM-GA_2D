@@ -436,9 +436,9 @@ scoreData_t Evolution::setBestIndvs() {
     //TODO: MEDIUN ERROR
     //----------------SET BEST INDV PLAYERS----------------
     for (int i = 0; i < POP_SIZE; i++) {
-        MLAS += lightAssaultTraining[i].bestLightAssault->score;
-        MSS += snipersTraining[i].bestSniper->score;
-        MAS += assaultsTraining[i].bestAssault->score;
+        MLAS += lightAssaultTraining[i].lightAssaultScoreSum;
+        MSS += snipersTraining[i].sniperScoreSum;
+        MAS += assaultsTraining[i].assaultScoreSum;
 
         if (lightAssaultTraining[i].bestLightAssault->score > BLAS) {
             BLAS = lightAssaultTraining[i].bestLightAssault->score;
@@ -464,9 +464,9 @@ scoreData_t Evolution::setBestIndvs() {
     std::cout << "best sniper score: " << BSS << std::endl;
     std::cout << "best assault score: " << BAS << std::endl;
 
-    // std::cout << "mediun light assault score: " << MLAS << std::endl;
-    // std::cout << "mediun sniper score: " << MSS << std::endl;
-    // std::cout << "mediun assault score: " << MAS << std::endl;
+    std::cout << "mediun light assault score: " << MLAS << std::endl;
+    std::cout << "mediun sniper score: " << MSS << std::endl;
+    std::cout << "mediun assault score: " << MAS << std::endl;
 
     //----------------SET WEIGHTS----------------
     bestLightAssaultANN->copyWheights(lightAssaultTraining[BLAI].bestLightAssault->player->ann->getMatrixPtr());
