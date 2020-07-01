@@ -119,11 +119,24 @@ int main() {
     // bestIndvsCopy->resetAllPlayers(true);
     // return 0;
 
+
+    // std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+    // std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
+    // std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+
+    std::chrono::steady_clock::time_point begin;
+    std::chrono::steady_clock::time_point end;
+
     while (1) {
         //----------------EVOLUTION----------------
         mtx.lock();
 
+        begin = std::chrono::steady_clock::now();
         evolution->game();
+        end = std::chrono::steady_clock::now();
+        std::cout << "time: " <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() / 1000.0 << "s" << std::endl;
         evolution->tournamentAll();
 
         std::cout << "-------------GEN " << gen << " -------------" << std::endl;

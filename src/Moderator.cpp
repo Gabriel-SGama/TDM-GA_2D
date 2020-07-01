@@ -583,9 +583,9 @@ void Moderator::multplyGPU(){
             CUDA::matrixMultiplication(d_aM[playerIdx][layerIdx], d_aL[playerIdx][layerIdx], d_aL[playerIdx][layerIdx+1],
                                         aMptr[layerSize].lines, aMptr[layerSize].coluns);
 
-            cudaDeviceSynchronize();
         }
         
+        cudaDeviceSynchronize();
     }
     
     sendOutputMemToCPU();
