@@ -247,46 +247,42 @@ void Player::drawVisionLines(float currentAngle, int id) {
 int Player::checkMove(cv::Point offset) {
     cv::Point pt;
 
-    float angle = atan2(offset.y, offset.x);
+    // float angle = atan2(offset.y, offset.x);
 
-    // int startIndex = angle/(2.0*M_PI) * NUMBER_OF_ANGLES_INTERVAL;
-
-    // if(startIndex > NUMBER_OF_ANGLES_TO_CHECK / 2){
-    //     for (int angleCount = 0, angleIndex = startIndex - NUMBER_OF_ANGLES_TO_CHECK / 2; angleCount < NUMBER_OF_ANGLES_TO_CHECK; angleCount++, angleIndex++) {
-    //         pt.x = checkMoveCos[angleIndex] * _RADIUS_TOTAL_DISTANCE;
-    //         pt.y = checkMoveSin[angleIndex] * _RADIUS_TOTAL_DISTANCE;
-
-    //         pt += center + offset;
-
-    //         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
-    //             return 0;
-   
-        
-    //     }
-    // }else{
-    //     int negativeIndex = NUMBER_OF_ANGLES_TO_CHECK / 2 - startIndex;
-
-    //     for (int angleCount = NUMBER_OF_ANGLES_INTERVAL - 1; angleCount > count; angleCount++)
-    //     {
-    //         /* code */
-    //     }
-        
-
-    //     for (int angleCount = 0, angleIndex = startIndex - NUMBER_OF_ANGLES_TO_CHECK / 2; angleCount < NUMBER_OF_ANGLES_TO_CHECK; angleCount++, angleIndex++) {
-    //         pt.x = checkMoveCos[angleIndex] * _RADIUS_TOTAL_DISTANCE;
-    //         pt.y = checkMoveSin[angleIndex] * _RADIUS_TOTAL_DISTANCE;
-
-    //         pt += center + offset;
-
-    //         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
-    //             return 0;
-   
-        
-    //     }
-    // }
+    // const float angle = (direction < 0) ? direction + 2 * M_PI : direction;
+    // const int startIndex = angle/(2.0*M_PI) * NUMBER_OF_ANGLES_INTERVAL;
     
+    // int angleIndex;
 
-    for (float i = angle - M_PI_2; i < M_PI_2 + angle; i += 0.15) {
+    // if(startIndex >= (NUMBER_OF_ANGLES_TO_CHECK / 2)){
+    //     for (angleIndex = startIndex - (NUMBER_OF_ANGLES_TO_CHECK / 2); angleIndex < startIndex + (NUMBER_OF_ANGLES_TO_CHECK / 2); angleIndex++) {
+    //         pt.x = checkMoveCos[angleIndex % NUMBER_OF_ANGLES_INTERVAL];
+    //         pt.y = checkMoveSin[angleIndex % NUMBER_OF_ANGLES_INTERVAL];
+
+    //         pt += center + offset;
+
+    //         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
+    //             return 0;
+
+    //         // cv::circle(screen->getMap(), pt, 1, cv::Scalar(0, 1, 255), cv::FILLED);
+
+    //     }
+    // } else {
+    //     for (angleIndex = NUMBER_OF_ANGLES_INTERVAL + startIndex - (NUMBER_OF_ANGLES_TO_CHECK / 2); angleIndex < NUMBER_OF_ANGLES_INTERVAL - startIndex + (NUMBER_OF_ANGLES_TO_CHECK / 2); angleIndex++) {
+    //         pt.x = checkMoveCos[angleIndex % NUMBER_OF_ANGLES_INTERVAL];
+    //         pt.y = checkMoveSin[angleIndex % NUMBER_OF_ANGLES_INTERVAL];
+
+    //         pt += center + offset;
+
+    //         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
+    //             return 0;
+            
+    //         // cv::circle(screen->getMap(), pt, 1, cv::Scalar(0, 1, 255), cv::FILLED);
+    //     }
+        
+    // }
+
+    for (float i = direction - M_PI_2; i < M_PI_2 + direction; i += 0.15) {
         pt.x = cos(i) * _RADIUS_TOTAL_DISTANCE;
         pt.y = sin(i) * _RADIUS_TOTAL_DISTANCE;
 

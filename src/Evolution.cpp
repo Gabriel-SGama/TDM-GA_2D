@@ -159,16 +159,16 @@ void Evolution::game() {
 //     }
 
 //less time wasted for inequal jobs
-#pragma omp parallel for
+//#pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
         lightAssaultTraining[i].game();
 
-#pragma omp parallel for
+//#pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
         snipersTraining[i].game();
 
 
-#pragma omp parallel for
+//#pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
         assaultsTraining[i].game();
 
@@ -460,13 +460,13 @@ scoreData_t Evolution::setBestIndvs() {
     MSS /= (float)TOTAL_NUMBER_OF_PLAYERS;
     MAS /= (float)TOTAL_NUMBER_OF_PLAYERS;
 
-    std::cout << "best light assault score: " << BLAS << std::endl;
-    std::cout << "best sniper score: " << BSS << std::endl;
-    std::cout << "best assault score: " << BAS << std::endl;
+    // std::cout << "best light assault score: " << BLAS << std::endl;
+    // std::cout << "best sniper score: " << BSS << std::endl;
+    // std::cout << "best assault score: " << BAS << std::endl;
 
-    std::cout << "mediun light assault score: " << MLAS << std::endl;
-    std::cout << "mediun sniper score: " << MSS << std::endl;
-    std::cout << "mediun assault score: " << MAS << std::endl;
+    // std::cout << "mediun light assault score: " << MLAS << std::endl;
+    // std::cout << "mediun sniper score: " << MSS << std::endl;
+    // std::cout << "mediun assault score: " << MAS << std::endl;
 
     //----------------SET WEIGHTS----------------
     bestLightAssaultANN->copyWheights(lightAssaultTraining[BLAI].bestLightAssault->player->ann->getMatrixPtr());

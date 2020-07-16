@@ -84,9 +84,9 @@ int main() {
 
     evolution = new Evolution;
     scoreData_t scoreData;
-    plot = new Plot;
+    // plot = new Plot;
     
-    std::thread th(copyModerator);
+    // std::thread th(copyModerator);
 
     // evolution->readANNAll("matrix150.txt");
     // Moderator *bestIndvsCopy = new Moderator;
@@ -129,6 +129,8 @@ int main() {
     std::chrono::steady_clock::time_point begin;
     std::chrono::steady_clock::time_point end;
 
+    long double totalTime = 0;
+    
     while (1) {
         //----------------EVOLUTION----------------
         mtx.lock();
@@ -136,7 +138,11 @@ int main() {
         begin = std::chrono::steady_clock::now();
         evolution->game();
         end = std::chrono::steady_clock::now();
+        totalTime += std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+
         std::cout << "time: " <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() / 1000.0 << "s" << std::endl;
+        std::cout << "med time: " <<  totalTime / (gen*1000.0) << "s" << std::endl;
+        
         evolution->tournamentAll();
 
         std::cout << "-------------GEN " << gen << " -------------" << std::endl;
@@ -158,8 +164,8 @@ int main() {
         
         mtx.unlock();
 
-        plot->addData(scoreData);
-        std::this_thread::sleep_for(1ms); //time to change threads
+        // plot->addData(scoreData);
+        // std::this_thread::sleep_for(1ms); //time to change threads
 
         gen++;
     }

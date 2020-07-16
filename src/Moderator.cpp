@@ -48,8 +48,8 @@ Moderator::Moderator() {
     float angle = 0;
 
     for (int i = 0; i < NUMBER_OF_ANGLES_INTERVAL; i++) {
-        checkMoveCos[i] = cos(angle);
-        checkMoveSin[i] = sin(angle);
+        checkMoveCos[i] = cos(angle) + _RADIUS_TOTAL_DISTANCE;
+        checkMoveSin[i] = sin(angle) + _RADIUS_TOTAL_DISTANCE;
         angle += ANGLE_INTERVAL;
     }
 }
@@ -248,6 +248,7 @@ void Moderator::multiplyAllPlayers() {
 }
 
 void Moderator::multiplyPlayers(Player *players) {
+    #pragma omp parallel for
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
         if (players[i].isAlive())
             players[i].ann->multiply();
@@ -430,10 +431,11 @@ void Moderator::gameOfBest() {
         // multplyGPU();
 
         conflictsAllPlayers();
-        screen->updateMap();
+        // screen->updateMap();
         checkAllPlayersLife();
 
         moveAllPlayers();
+        screen->updateMap();
     }
     calculateScore();
 }

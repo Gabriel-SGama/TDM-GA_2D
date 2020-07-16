@@ -27,9 +27,9 @@ const float playerStatusA =  playerStatusInterval;
 const float playerStatusS = 2*playerStatusInterval;
 
 //----------------PLAYERS VISION----------------
-const float ANGLE_INTERVAL = 0.1;
+const float ANGLE_INTERVAL = 0.15;
 const int NUMBER_OF_ANGLES_INTERVAL = 2 * M_PI / ANGLE_INTERVAL;
-const int NUMBER_OF_ANGLES_TO_CHECK = NUMBER_OF_ANGLES_INTERVAL / 4;
+const int NUMBER_OF_ANGLES_TO_CHECK = NUMBER_OF_ANGLES_INTERVAL / 2;
 
 //----------------PLAYERS PARAMTERS----------------
 #define RADIUS 10
