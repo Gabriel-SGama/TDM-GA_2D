@@ -422,7 +422,7 @@ void Player::reset(float life, bool resetScore) {
         visionAngle = SNIPER_VISION_ANGLE;
         numberOfRays = SNIPER_NUMBER_OF_RAYS;
     
-    } else if(lastPlayerType == ASSAULT){
+    } else if(playerType == ASSAULT){
         playerStatus = playerStatusA;
         damage = ASSAULT_DAMAGE;
         visionDist = ASSAULT_VISION_DIST;
