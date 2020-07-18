@@ -17,7 +17,7 @@
 using namespace Eigen;
 
 //----------------ANN LAYERS----------------
-const std::vector<int> layers({25});
+const std::vector<int> layers({35});
 const int layerSize = 1;
 
 class ANN {

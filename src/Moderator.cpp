@@ -108,9 +108,9 @@ void Moderator::setPlayersValues(int &playerNumber, Player *players, cv::Point *
 void Moderator::drawAllPlayers() {
     screen->resetImage();
 
-    cv::rectangle(screen->getMap(), cv::Point(0, 150), cv::Point(300, 300), cv::Scalar(0, 1, 0), 1);
-    cv::rectangle(screen->getMap(), cv::Point(LENGTH - 300, HEIGHT - 150), cv::Point(LENGTH, HEIGHT), cv::Scalar(0, 0, 1), 1);
-    cv::rectangle(screen->getMap(), cv::Point(LENGTH - 400, 150), cv::Point(LENGTH - 100, 300), cv::Scalar(0, 1, 0), 1);
+    // cv::rectangle(screen->getMap(), cv::Point(0, 150), cv::Point(300, 300), cv::Scalar(0, 1, 0), 1);
+    // cv::rectangle(screen->getMap(), cv::Point(LENGTH - 300, HEIGHT - 150), cv::Point(LENGTH, HEIGHT), cv::Scalar(0, 0, 1), 1);
+    // cv::rectangle(screen->getMap(), cv::Point(LENGTH - 400, 150), cv::Point(LENGTH - 100, 300), cv::Scalar(0, 1, 0), 1);
 
     screen->createObstacle();
 
@@ -321,15 +321,15 @@ void Moderator::resetAllPlayers(bool resetScore) {
     bestLightAssault->score = INICIAL_SCORE;
     bestSniper->score = INICIAL_SCORE;
     bestAssault->score = INICIAL_SCORE;
-
-    lightAssaultScoreSum = 0;
-    sniperScoreSum = 0;
-    assaultScoreSum = 0;
-
+    
     if (resetScore) {
         lightAssaultScore = 0;
         sniperScore = 0;
         assaultScore = 0;
+        
+        lightAssaultScoreSum = 0;
+        sniperScoreSum = 0;
+        assaultScoreSum = 0;
     }
 
     //----------------RESET PLAYERS----------------
@@ -578,6 +578,7 @@ void Moderator::multplyGPU(){
     sendInputMemToGPU();
 
     for(layerIdx = 0; layerIdx < layerSize + 1; layerIdx++){
+        #pragma omp parallel for
         for (playerIdx = 0; playerIdx < NUMBER_OF_PLAYERS; playerIdx++) {
             
             CUDA::matrixMultiplication(d_laM[playerIdx][layerIdx], d_laL[playerIdx][layerIdx], d_laL[playerIdx][layerIdx+1],

@@ -46,7 +46,7 @@ void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCe
     //----------------ANN----------------
     // vision + position + life + direction + shot interval + playerTypeDynamic + 
     // number of touch sensors + other players position + memory
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + 1 + NUMBER_OF_TOUCH_SENSORS + (NUMBER_OF_PLAYERS * 2 - 2) + MEMORY_SIZE;
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + 1 + NUMBER_OF_TOUCH_SENSORS /*+ (NUMBER_OF_PLAYERS * 2 - 2)*/ + MEMORY_SIZE;
 
     //angle + front speed + shot + memory + playerTypeChange
     ANNOutputSize = 1 + 1 + 1 + 1 + MEMORY_SIZE;
@@ -97,7 +97,7 @@ void Player::drawPlayer() {
 
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
 
-    playerStatus += (*output)[INDEX_PLAYER_TYPE_CHANGE] * 0.5;
+    playerStatus += (*output)[INDEX_PLAYER_TYPE_CHANGE];
 
     if(playerStatus > PLAYER_STATUS_INTERVAL)
         playerStatus = PLAYER_STATUS_INTERVAL;
@@ -179,7 +179,6 @@ void Player::drawPlayer() {
     }
 
     // cv::putText(screen->getMap(), playerIDStr, center + aux, cv::FONT_HERSHEY_SIMPLEX, 0.35, cv::Scalar(0, 0, 0), 2);
-    
 }
 
 void Player::updateVision() {
@@ -187,11 +186,14 @@ void Player::updateVision() {
 
     cv::Point pt;
     
+    currentAngle = direction;
     for (int i = 0; i < NUMBER_OF_TOUCH_SENSORS; i++) {
-        pt.x = center.x + cos(TOUCH_ANGLE_INTERVAL * i) * TOUCH_SENSOR_DIST;
-        pt.y = center.y + sin(TOUCH_ANGLE_INTERVAL * i) * TOUCH_SENSOR_DIST;
+        pt.x = center.x + cos(currentAngle) * TOUCH_SENSOR_DIST;
+        pt.y = center.y + sin(currentAngle) * TOUCH_SENSOR_DIST;
         touchRayID[i] = screen->colorToId(screen->getColor(pt));
-
+        
+        currentAngle += TOUCH_ANGLE_INTERVAL;
+        
         if(pt.x > LENGTH || pt.x < 0 || pt.y > HEIGHT || pt.y < 0)
             touchRayID[i] = OBSTACLE;
         else
@@ -200,7 +202,6 @@ void Player::updateVision() {
         if(touchRayID[i] != NOTHING)
             cv::line(screen->getMap(), center, pt, screen->idToRay(touchRayID[i]));
     }
-    
 
     currentAngle = direction - visionAngle / 2;
     for (int i = 0; i < numberOfRays; i++) {
@@ -247,41 +248,6 @@ void Player::drawVisionLines(float currentAngle, int id) {
 int Player::checkMove(cv::Point offset) {
     cv::Point pt;
 
-    // float angle = atan2(offset.y, offset.x);
-
-    // const float angle = (direction < 0) ? direction + 2 * M_PI : direction;
-    // const int startIndex = angle/(2.0*M_PI) * NUMBER_OF_ANGLES_INTERVAL;
-    
-    // int angleIndex;
-
-    // if(startIndex >= (NUMBER_OF_ANGLES_TO_CHECK / 2)){
-    //     for (angleIndex = startIndex - (NUMBER_OF_ANGLES_TO_CHECK / 2); angleIndex < startIndex + (NUMBER_OF_ANGLES_TO_CHECK / 2); angleIndex++) {
-    //         pt.x = checkMoveCos[angleIndex % NUMBER_OF_ANGLES_INTERVAL];
-    //         pt.y = checkMoveSin[angleIndex % NUMBER_OF_ANGLES_INTERVAL];
-
-    //         pt += center + offset;
-
-    //         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
-    //             return 0;
-
-    //         // cv::circle(screen->getMap(), pt, 1, cv::Scalar(0, 1, 255), cv::FILLED);
-
-    //     }
-    // } else {
-    //     for (angleIndex = NUMBER_OF_ANGLES_INTERVAL + startIndex - (NUMBER_OF_ANGLES_TO_CHECK / 2); angleIndex < NUMBER_OF_ANGLES_INTERVAL - startIndex + (NUMBER_OF_ANGLES_TO_CHECK / 2); angleIndex++) {
-    //         pt.x = checkMoveCos[angleIndex % NUMBER_OF_ANGLES_INTERVAL];
-    //         pt.y = checkMoveSin[angleIndex % NUMBER_OF_ANGLES_INTERVAL];
-
-    //         pt += center + offset;
-
-    //         if (pt.x >= LENGTH || pt.x < 0 || pt.y >= HEIGHT || pt.y < 0 || screen->colorToId(screen->getColor(pt)) != NOTHING)
-    //             return 0;
-            
-    //         // cv::circle(screen->getMap(), pt, 1, cv::Scalar(0, 1, 255), cv::FILLED);
-    //     }
-        
-    // }
-
     for (float i = direction - M_PI_2; i < M_PI_2 + direction; i += 0.15) {
         pt.x = cos(i) * _RADIUS_TOTAL_DISTANCE;
         pt.y = sin(i) * _RADIUS_TOTAL_DISTANCE;
@@ -293,7 +259,6 @@ int Player::checkMove(cv::Point offset) {
 
         //cv::circle(screen->getMap(), pt, 1, cv::Scalar(0, 1, 255), cv::FILLED);
     }
-
     return 1;
 }
 
@@ -392,19 +357,19 @@ void Player::setComunInput() {
     }
 
     //----------------PLAYERS CENTER----------------
-    i = 2 * numberOfRays;
-    for (j = 0; j < NUMBER_OF_PLAYERS; j++) {
-        if (j == (playerID % NUMBER_OF_PLAYERS))
-            continue;
-
-        (*input).vector[i] = playersCenter[j]->x / 200.0;
-        (*input).vector[i + 1] = playersCenter[j]->y / 200.0;
-
-        i += 2;
-    }
-    // i--;
-    i = 2 * numberOfRays + 2 * (NUMBER_OF_PLAYERS - 1);
     // i = 2 * numberOfRays;
+    // for (j = 0; j < NUMBER_OF_PLAYERS; j++) {
+    //     if (j == (playerID % NUMBER_OF_PLAYERS))
+    //         continue;
+
+    //     (*input).vector[i] = playersCenter[j]->x / 200.0;
+    //     (*input).vector[i + 1] = playersCenter[j]->y / 200.0;
+
+    //     i += 2;
+    // }
+    // i--;
+    // i = 2 * numberOfRays + 2 * (NUMBER_OF_PLAYERS - 1);
+    i = 2 * numberOfRays;
 
     (*input).vector[i] = center.x / 200.0;
     (*input).vector[i + 1] = center.y / 200.0;

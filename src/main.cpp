@@ -84,41 +84,41 @@ int main() {
 
     evolution = new Evolution;
     scoreData_t scoreData;
-    // plot = new Plot;
+    plot = new Plot;
     
-    // std::thread th(copyModerator);
+    std::thread th(copyModerator);
+    /*
+    evolution->readANNAll("firstTry/matrix100.txt");
+    Moderator *bestIndvsCopy = new Moderator;
 
-    // evolution->readANNAll("matrix150.txt");
-    // Moderator *bestIndvsCopy = new Moderator;
+    bestIndvsCopy->setScreen(new Screen);
+    bestIndvsCopy->screen->setScreenParam("best indvs", LENGTH + 67, 0);
+    bestIndvsCopy->setAllPlayersValues();
 
-    // bestIndvsCopy->setScreen(new Screen);
-    // bestIndvsCopy->screen->setScreenParam("best indvs", LENGTH + 67, 0);
-    // bestIndvsCopy->setAllPlayersValues();
+    ANN *bestLightAssaultMatrix = new ANN;
+    ANN *bestSniperMatrix = new ANN;
+    ANN *bestAssaultMatrix = new ANN;
 
-    // ANN *bestLightAssaultMatrix = new ANN;
-    // ANN *bestSniperMatrix = new ANN;
-    // ANN *bestAssaultMatrix = new ANN;
+    LightAssault *lightAssaults = evolution->bestTeams->getLightAssaults();
+    Sniper *snipers = evolution->bestTeams->getSnipers();
+    Assault *assaults = evolution->bestTeams->getAssaults();
 
-    // LightAssault *lightAssaults = evolution->bestTeams->getLightAssaults();
-    // Sniper *snipers = evolution->bestTeams->getSnipers();
-    // Assault *assaults = evolution->bestTeams->getAssaults();
+    bestLightAssaultMatrix->setANNParameters(lightAssaults->ANNInputSize, lightAssaults->ANNOutputSize);
+    bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
+    bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
 
-    // bestLightAssaultMatrix->setANNParameters(lightAssaults->ANNInputSize, lightAssaults->ANNOutputSize);
-    // bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
-    // bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
+    //----------------BEST PLAYER MATCH----------------
+    bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
+    bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
+    bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
 
-    // //----------------BEST PLAYER MATCH----------------
-    // bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
-    // bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
-    // bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
+    bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
+    bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
 
-    // bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
-    // bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix->getMatrixPtr(), bestSniperMatrix->getMatrixPtr(), bestAssaultMatrix->getMatrixPtr());
-
-    // bestIndvsCopy->gameOfBest();
-    // bestIndvsCopy->resetAllPlayers(true);
-    // return 0;
-
+    bestIndvsCopy->gameOfBest();
+    bestIndvsCopy->resetAllPlayers(true);
+    return 0;
+    //*/
 
     // std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
@@ -159,13 +159,13 @@ int main() {
 
         evolution->reset();
 
-        // if(!(gen % 50))
-        //     evolution->saveANNAll(("matrix" + std::to_string(gen) + ".txt").c_str());
-        
+        // if((gen % 50) < 3)
+        //     evolution->saveANNAll(("firstTry/matrix" + std::to_string(gen) + ".txt").c_str());
+
         mtx.unlock();
 
-        // plot->addData(scoreData);
-        // std::this_thread::sleep_for(1ms); //time to change threads
+        plot->addData(scoreData);
+        std::this_thread::sleep_for(1ms); //time to change threads
 
         gen++;
     }

@@ -20,7 +20,7 @@ class Player;
 #define ENEMY -3
 
 //----------------PLAYER STATUS----------------
-#define PLAYER_STATUS_INTERVAL 5
+#define PLAYER_STATUS_INTERVAL 10
 const float playerStatusInterval = PLAYER_STATUS_INTERVAL/3.0;
 const float playerStatusLA = 0;
 const float playerStatusA =  playerStatusInterval;
@@ -41,7 +41,7 @@ const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 //----------------TOUCH SENSORS----------------
 
 const int TOUCH_SENSOR_DIST = 20;
-const float TOUCH_ANGLE_INTERVAL = M_PI / 4.0;
+const float TOUCH_ANGLE_INTERVAL = M_PI / 3.5;
 const int NUMBER_OF_TOUCH_SENSORS = 2 * M_PI / TOUCH_ANGLE_INTERVAL;
 
 //----------------COLORS----------------

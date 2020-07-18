@@ -164,9 +164,10 @@ void Screen::createObstacle() {
     pt2.y = pt1.y + _OBSTACLE_LENGTH;
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
-*/
+//*/
 
     //----------------MAP FOR MULTI PLAYER TYPES----------------
+    ///*
     pt1.x = 100;
     pt1.y = 0;
 
@@ -254,7 +255,7 @@ void Screen::createObstacle() {
     pt2.y = 400 + _OBSTACLE_LENGTH;
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
-
+    //*/
     //----------------LIMITS----------------
     pt1.x = 0;
     pt1.y = OFFSET_LIMIT;

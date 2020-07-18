@@ -136,7 +136,7 @@ void Evolution::game() {
 //         lightAssaultTraining[i].setInicialPosAll(initialPos, posIndex);
 //         lightAssaultTraining[i].resetAllPlayers(false);
 //     }
-    
+
 // #pragma omp parallel for
 //     for (i = 0; i < POP_SIZE; i++) {
 //         snipersTraining[i].game();
@@ -159,16 +159,16 @@ void Evolution::game() {
 //     }
 
 //less time wasted for inequal jobs
-//#pragma omp parallel for
+// #pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
         lightAssaultTraining[i].game();
 
-//#pragma omp parallel for
+// #pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
         snipersTraining[i].game();
 
 
-//#pragma omp parallel for
+// #pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
         assaultsTraining[i].game();
 
@@ -322,6 +322,7 @@ void Evolution::tournament(Player **players, ANN *childs) {
             matrixArrayBest2 = players[secondBestIndex]->ann->getMatrixPtr();
 
             crossover(matrixArray, matrixArrayBest1, matrixArrayBest2);
+            mutation(matrixArray);
         }
 
         //changes ptr
