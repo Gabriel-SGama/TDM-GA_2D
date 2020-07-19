@@ -74,21 +74,13 @@ int main() {
 
     srand(time(0));
 
-    /*
-    if (!screen->getMap().isContinuous())
-    {
-        std::cout << "Is not continuous, need to change code" << std::endl;
-        return -1;
-    }
-    */
-
     evolution = new Evolution;
     scoreData_t scoreData;
     plot = new Plot;
     
     std::thread th(copyModerator);
     /*
-    evolution->readANNAll("firstTry/matrix100.txt");
+    evolution->readANNAll("firstTry/matrix1.txt");
     Moderator *bestIndvsCopy = new Moderator;
 
     bestIndvsCopy->setScreen(new Screen);
@@ -131,8 +123,14 @@ int main() {
 
     long double totalTime = 0;
     
+    // Screen test;
+    // test.setScreenParam("test", 0, 0);
+    // test.createObstacle();
+    // test.updateMap();
     while (1) {
+        // test.updateMap();
         //----------------EVOLUTION----------------
+        ///*
         mtx.lock();
 
         begin = std::chrono::steady_clock::now();
@@ -168,6 +166,8 @@ int main() {
         std::this_thread::sleep_for(1ms); //time to change threads
 
         gen++;
+        //*/
+       
     }
 
     return 0;

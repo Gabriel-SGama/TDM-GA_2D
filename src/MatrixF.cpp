@@ -151,7 +151,7 @@ void MatrixF::writeMatrixToFile(std::ofstream* fileObj){
     fileObj->precision(7);
 
     for (line = 0; line < this->lines; line++) {
-        
+
         for (colun = 0; colun < this->coluns; colun++) {
             (*fileObj) << matrix[lineOffset + colun] << " ";
         }
@@ -166,10 +166,11 @@ void MatrixF::readMatrixFromFile(std::istream* fileObj){
     int colun;
 
     int lineOffset = 0;
+
     fileObj->precision(7);
 
     for (line = 0; line < this->lines; line++) {
-        
+
         for (colun = 0; colun < this->coluns; colun++) {
             (*fileObj) >> matrix[lineOffset + colun];
         }
@@ -177,7 +178,6 @@ void MatrixF::readMatrixFromFile(std::istream* fileObj){
         lineOffset += this->coluns;
     }
 }
-
 
 vectorF::vectorF() {
     size = 0;

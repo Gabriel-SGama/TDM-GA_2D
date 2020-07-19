@@ -6,8 +6,8 @@ class Screen;
 //screen dimensions
 #define LENGTH 900
 #define HEIGHT 800
-#define LIMIT_SIZE 5
-#define OFFSET_LIMIT 2.5
+#define LIMIT_SIZE 2
+const int OFFSET_LIMIT = LIMIT_SIZE; 
 
 #include "Player.h"
 
@@ -50,6 +50,13 @@ class Screen {
     cv::Mat getMap();
 
     uchar **getMatrix();
+
+    //----------------PRIMITIVE FUNCTIONS----------------
+    void drawRect(cv::Point pt1, cv::Point pt2, const cv::Scalar color);
+    void drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color);
+    void drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color, const int size);
+    void drawCircle(cv::Point center, const int radius, const cv::Scalar color);
+
 };
 
 #endif

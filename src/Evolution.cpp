@@ -486,11 +486,11 @@ void Evolution::saveANNAll(const char* fileName){
     fileObj.close();
 }
 
-void Evolution::saveANN(ANN* bestMatrix, std::ofstream* fileObj) {
+void Evolution::saveANN(ANN* bestANN, std::ofstream* fileObj) {
 
     MatrixF *matrixPtr;
 
-    matrixPtr = bestMatrix->getMatrixPtr();
+    matrixPtr = bestANN->getMatrixPtr();
 
     for (int i = 0; i < layerSize + 1; i++) {
         matrixPtr[i].writeMatrixToFile(fileObj);
@@ -505,10 +505,10 @@ void Evolution::readANNAll(const char* fileName){
     readANN(bestAssaultANN, &fileObj);
 }
 
-void Evolution::readANN(ANN* bestMatrix, std::ifstream* fileObj){
+void Evolution::readANN(ANN* bestANN, std::ifstream* fileObj){
     MatrixF *matrixPtr;
 
-    matrixPtr = bestMatrix->getMatrixPtr();
+    matrixPtr = bestANN->getMatrixPtr();
 
     for (int i = 0; i < layerSize + 1; i++) {
         matrixPtr[i].readMatrixFromFile(fileObj);
