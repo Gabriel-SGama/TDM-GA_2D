@@ -7,6 +7,13 @@ Screen::Screen() {
     cols = map.cols * map.channels();
 
     matToMatrix();
+
+    resetMatrix = new uchar*[rows];
+    for (int i = 0; i < rows; i++) {
+        resetMatrix[i] = new uchar[cols];
+    }
+    
+    createObstacle();
 }
 
 Screen::~Screen(){
@@ -91,7 +98,11 @@ cv::Scalar Screen::idToRay(int rayId) {
 }
 
 void Screen::resetImage() {
-    map.setTo(BACKGROUND_COLOR);
+    // map.setTo(BACKGROUND_COLOR);
+
+    for (int i = 0; i < rows; i++) {
+        memcpy(imgMatrix[i], resetMatrix[i], sizeof(uchar)*cols);
+    }
 }
 
 void Screen::updateMap() {
@@ -262,65 +273,49 @@ void Screen::createObstacle() {
     //*/
 
     //----------------LIMITS----------------
-    // pt1.x = 200;
-    // pt1.y = 200;
-
-    // pt2.x = 200;
-    // pt2.y = 400;
-
-    // drawLine(pt1, pt2, OBSTACLE_COLOR, 4);
-
-    // pt1.x = 300;
-    // pt1.y = 200;
-
-    // pt2.x = 600;
-    // pt2.y = 200;
-
-    // drawLine(pt1, pt2, OBSTACLE_COLOR, 10);
-
-    pt1.x = 300;
-    pt1.y = 200;
-
-    drawCircle(pt1, 10, OBSTACLE_COLOR);
-
 
     pt1.x = 0;
-    pt1.y = LIMIT_SIZE;
+    pt1.y = 0;
 
     pt2.x = LENGTH;
     pt2.y = LIMIT_SIZE;
 
-    drawLine(pt1, pt2, OBSTACLE_COLOR, LIMIT_SIZE);
+    drawRect(pt1, pt2, OBSTACLE_COLOR);
     // cv::line(map, pt1, pt2, OBSTACLE_COLOR, 1);
 
     pt1.x = 0;
-    pt1.y = HEIGHT - LIMIT_SIZE;
+    pt1.y = HEIGHT;
 
-    pt2.x = LENGTH;
-    pt2.y = HEIGHT - LIMIT_SIZE;
+    pt2.x = LENGTH - 1;
+    pt2.y = HEIGHT - LIMIT_SIZE - 1;
 
-    drawLine(pt1, pt2, OBSTACLE_COLOR, LIMIT_SIZE);
+    drawRect(pt1, pt2, OBSTACLE_COLOR);
     // cv::line(map, pt1, pt2, OBSTACLE_COLOR, 1);
 
-    pt1.x = LIMIT_SIZE - 1;
-    pt1.y = LIMIT_SIZE;
+    pt1.x = 0;
+    pt1.y = 0;
 
-    pt2.x = LIMIT_SIZE - 1;
-    pt2.y = HEIGHT - LIMIT_SIZE;
+    pt2.x = LIMIT_SIZE;
+    pt2.y = HEIGHT - 1;
 
-    drawLine(pt1, pt2, OBSTACLE_COLOR, LIMIT_SIZE);
+    drawRect(pt1, pt2, OBSTACLE_COLOR);
     // cv::line(map, pt1, pt2, OBSTACLE_COLOR, 1);
 
-    pt1.x = LENGTH - LIMIT_SIZE - 1;
-    pt1.y = LIMIT_SIZE;
+    pt1.x = LENGTH;
+    pt1.y = 0;
 
     pt2.x = LENGTH - LIMIT_SIZE - 1;
-    pt2.y = HEIGHT - LIMIT_SIZE;
+    pt2.y = HEIGHT - 1;
 
-    drawLine(pt1, pt2, OBSTACLE_COLOR, LIMIT_SIZE);
+    drawRect(pt1, pt2, OBSTACLE_COLOR);
     // cv::line(map, pt1, pt2, OBSTACLE_COLOR, 1);
-}
+   
+    for (int i = 0; i < rows; i++) {
+        memcpy(resetMatrix[i], imgMatrix[i], sizeof(uchar)*cols);
+    }
+    
 
+}
 
 void Screen::drawRect(cv::Point pt1, cv::Point pt2, const cv::Scalar color){
     int line;
@@ -390,20 +385,13 @@ void Screen::drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color){
         sinA =  sin(angle);
         cosA =  cos(angle);
     }
-
-    cv::Point circlePt;
-    cv::Point offset;
-
-    offset.x = cosA;
-    offset.y = sinA;
-
     
     for (int i = 0; i < size; i++) {
         line = sinA*i + pt1.y;
         colun = cosA*i + pt1.x;
         if(line < 0 || line > HEIGHT - 1 || colun < 0 || colun > LENGTH - 1)
             break;
-            
+
         colun *= 3;
 
         imgMatrix[line][colun] = color[0];
@@ -417,7 +405,6 @@ void Screen::drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color, cons
     int colun;
 
     float angle;
-    // int size = cv::norm(pt2 - pt1);
 
     float sinA;
     float cosA;
@@ -460,8 +447,8 @@ void Screen::drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color, cons
     int j;
 
     for (float i = -M_PI_2 - angle; i < M_PI_2 - angle; i += 0.1) {
-        circlePt.x = -cos(i) * thiknees;
-        circlePt.y = sin(i) * thiknees;
+        circlePt.x = -round(cos(i) * thiknees);
+        circlePt.y = round(sin(i) * thiknees);
         line = pt1.y + circlePt.y + offset.y;
         colun = 3*(pt1.x + circlePt.x + offset.x);
         
@@ -481,8 +468,6 @@ void Screen::drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color, cons
             imgMatrix[line][colun + 2] = color[2];
         }
     }
-
-   
 }
 
 void Screen::drawCircle(cv::Point center, const int radius, const cv::Scalar color){
@@ -493,12 +478,45 @@ void Screen::drawCircle(cv::Point center, const int radius, const cv::Scalar col
     int line;
     int colun;
 
-    for (float angle = -M_PI_2; angle < M_PI_2; angle += 0.1) {
+    for (float angle = 0; angle < M_PI_2 / 2.0; angle += 0.09) {
         circlePt.x = round(radius * cos(angle));
         circlePt.y = round(radius * sin(angle));
         
+        line = center.y + circlePt.y;
         for (i = 3*(-circlePt.x + center.x); i <= 3*(circlePt.x + center.x); i += 3) {
-            line = center.y + circlePt.y;
+
+            if(line < 0 || line > HEIGHT - 1 || colun < 0 || colun > 3*LENGTH - 1)
+                break;
+
+            imgMatrix[line][i] = color.val[0];
+            imgMatrix[line][i + 1] = color.val[1];
+            imgMatrix[line][i + 2] = color.val[2];
+        }
+
+        line = center.y - circlePt.y;
+        for (i = 3*(-circlePt.x + center.x); i <= 3*(circlePt.x + center.x); i += 3) {
+
+            if(line < 0 || line > HEIGHT - 1 || colun < 0 || colun > 3*LENGTH - 1)
+                break;
+
+            imgMatrix[line][i] = color.val[0];
+            imgMatrix[line][i + 1] = color.val[1];
+            imgMatrix[line][i + 2] = color.val[2];
+        }
+
+        line = center.y + circlePt.x;
+        for (i = 3*(-circlePt.y + center.x); i <= 3*(circlePt.y + center.x); i += 3) {
+
+            if(line < 0 || line > HEIGHT - 1 || colun < 0 || colun > 3*LENGTH - 1)
+                break;
+
+            imgMatrix[line][i] = color.val[0];
+            imgMatrix[line][i + 1] = color.val[1];
+            imgMatrix[line][i + 2] = color.val[2];
+        }
+
+        line = center.y - circlePt.x;
+        for (i = 3*(-circlePt.y + center.x); i <= 3*(circlePt.y + center.x); i += 3) {
 
             if(line < 0 || line > HEIGHT - 1 || colun < 0 || colun > 3*LENGTH - 1)
                 break;
@@ -508,5 +526,4 @@ void Screen::drawCircle(cv::Point center, const int radius, const cv::Scalar col
             imgMatrix[line][i + 2] = color.val[2];
         }
     }
-    
 }

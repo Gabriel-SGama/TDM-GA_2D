@@ -112,7 +112,7 @@ void Moderator::drawAllPlayers() {
     // cv::rectangle(screen->getMap(), cv::Point(LENGTH - 300, HEIGHT - 150), cv::Point(LENGTH, HEIGHT), cv::Scalar(0, 0, 1), 1);
     // cv::rectangle(screen->getMap(), cv::Point(LENGTH - 400, 150), cv::Point(LENGTH - 100, 300), cv::Scalar(0, 1, 0), 1);
 
-    screen->createObstacle();
+    // screen->createObstacle();
 
     drawPlayers(lightAssaults);
     drawPlayers(snipers);

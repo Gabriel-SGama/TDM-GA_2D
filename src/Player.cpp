@@ -124,7 +124,7 @@ void Player::drawPlayer() {
             visionAngle = SNIPER_VISION_ANGLE;
             numberOfRays = SNIPER_NUMBER_OF_RAYS;
         }
-        screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 3);
+        screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 2);
         // cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 3);
     
     }else if(playerStatus >= playerStatusA){
@@ -149,7 +149,7 @@ void Player::drawPlayer() {
             numberOfRays = ASSAULT_NUMBER_OF_RAYS;
         }
         
-        screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 3);
+        screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 2);
         // cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 3);
 
     }else {
@@ -170,7 +170,7 @@ void Player::drawPlayer() {
             numberOfRays = LIGHT_ASSAULT_NUMBER_OF_RAYS;
         }
 
-        screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 3);
+        screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 2);
         // cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 3);
     }
 
@@ -229,13 +229,15 @@ void Player::drawVisionLines(float currentAngle, int id) {
     offset.x = _RADIUS_TOTAL_DISTANCE * cosCA;
     offset.y = _RADIUS_TOTAL_DISTANCE * sinCA;
 
+    offset += center;
+
     for (i = 0; i < visionDist; i++) {
         pt.x = i * cosCA;
         pt.y = i * sinCA;
 
-        finalPt = pt + center + offset;
+        pt += offset;
 
-        raysID[id] = screen->colorToId(screen->getColor(finalPt));
+        raysID[id] = screen->colorToId(screen->getColor(pt));
 
         if (raysID[id] != NOTHING)
             break;
@@ -246,7 +248,7 @@ void Player::drawVisionLines(float currentAngle, int id) {
     if (raysID[id] != NOTHING) {
         color = screen->idToRay(raysID[id]);
         // cv::line(screen->getMap(), center + offset, finalPt, color);
-        screen->drawLine(center+offset, finalPt, color);
+        screen->drawLine(offset, pt, color);
     }
 }
 

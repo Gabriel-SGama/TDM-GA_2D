@@ -4,7 +4,7 @@
 class Screen;
 
 //screen dimensions
-#define LENGTH 900
+#define LENGTH 801
 #define HEIGHT 800
 #define LIMIT_SIZE 2
 const int OFFSET_LIMIT = LIMIT_SIZE; 
@@ -22,6 +22,7 @@ class Screen {
     cv::Mat map;  //ópecv image
 
     uchar **imgMatrix;  //matrix to faster randon access
+    uchar **resetMatrix;  //matrix to faster randon access
 
     //map parameters
     int rows;

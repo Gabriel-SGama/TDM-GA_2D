@@ -80,7 +80,7 @@ int main() {
     
     std::thread th(copyModerator);
     /*
-    evolution->readANNAll("firstTry/matrix1.txt");
+    evolution->readANNAll("firstTry/matrix3.txt");
     Moderator *bestIndvsCopy = new Moderator;
 
     bestIndvsCopy->setScreen(new Screen);
@@ -157,8 +157,8 @@ int main() {
 
         evolution->reset();
 
-        // if((gen % 50) < 3)
-        //     evolution->saveANNAll(("firstTry/matrix" + std::to_string(gen) + ".txt").c_str());
+        if((gen % 20) < 3)
+            evolution->saveANNAll(("firstTry/matrix" + std::to_string(gen) + ".txt").c_str());
 
         mtx.unlock();
 
