@@ -13,10 +13,15 @@ class vectorF {
     int memSize;
 
     vectorF();
-    vectorF(int size);
+    vectorF(int size, float limits = 0);
     ~vectorF();
 
-    void createVector(int size);
+    void print();
+    void createVector(int size, float limits = 0);
+    
+    //----------------SAVES VECTOR ON FILE----------------
+    void writeVectorToFile(std::ofstream* fileObj);
+    void readVectorFromFile(std::istream* fileObj);
 
     //----------------OVERLOADS----------------
     void operator=(const vectorF &vec);

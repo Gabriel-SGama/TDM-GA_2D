@@ -253,10 +253,9 @@ void Evolution::tournament(Player **players, ANN *childs) {
     Player *best1;
     Player *best2;
 
-    MatrixF *matrixArray;
-    MatrixF *matrixArrayBest1;
-    MatrixF *matrixArrayBest2;
-
+    ANN *currentANN;
+    ANN *ANNBest1;
+    ANN *ANNBest2;
 
     //----------------GET TOP 2 && WORST----------------
     for (i = 0; i < TOTAL_NUMBER_OF_PLAYERS; i++) {
@@ -283,7 +282,7 @@ void Evolution::tournament(Player **players, ANN *childs) {
         if (i == bestIndex || i == secondBestIndex || i == worstIndex)
             continue;
 
-        matrixArray = childs[i].getMatrixPtr();
+        currentANN = &childs[i];
 
         father1 = players[rand() % TOTAL_NUMBER_OF_PLAYERS];
 
@@ -303,34 +302,34 @@ void Evolution::tournament(Player **players, ANN *childs) {
         }
         best2 = father1;
 
-        matrixArrayBest1 = best1->ann->getMatrixPtr();
-        matrixArrayBest2 = best2->ann->getMatrixPtr();
+        ANNBest1 = best1->ann;
+        ANNBest2 = best2->ann;
 
-        crossover(matrixArray, matrixArrayBest1, matrixArrayBest2);
-        mutation(matrixArray);
+        crossover(currentANN, ANNBest1, ANNBest2);
+        mutation(currentANN);
     }
 
     //----------------SET MATRIX----------------
-#pragma omp parallel for
     for (i = 0; i < TOTAL_NUMBER_OF_PLAYERS; i++) {
         if (i == bestIndex || i == secondBestIndex)
             continue;
 
         if (i == worstIndex) {
-            matrixArray = childs[worstIndex].getMatrixPtr();
-            matrixArrayBest1 = players[bestIndex]->ann->getMatrixPtr();
-            matrixArrayBest2 = players[secondBestIndex]->ann->getMatrixPtr();
+            currentANN = &childs[worstIndex];
+            ANNBest1 = players[bestIndex]->ann;
+            ANNBest2 = players[secondBestIndex]->ann;
 
-            crossover(matrixArray, matrixArrayBest1, matrixArrayBest2);
-            mutation(matrixArray);
+            crossover(currentANN, ANNBest1, ANNBest2);
+            mutation(currentANN);
         }
 
         //changes ptr
+        childs[i].setBias(players[i]->ann->setBias(childs[i].getBiasPtr()));
         childs[i].setMatrix(players[i]->ann->setMatrix(childs[i].getMatrixPtr()));
     }
 }
 
-void Evolution::crossover(MatrixF *resultMatrix, MatrixF *matrix1, MatrixF *matrix2) {
+void Evolution::crossover(ANN *resultANN, ANN *ANN1, ANN *ANN2) {
     int crossChance = 5;  // 0.1% * crossChance
 
     int layer;
@@ -338,7 +337,30 @@ void Evolution::crossover(MatrixF *resultMatrix, MatrixF *matrix1, MatrixF *matr
     int side;
     int totalSize;
 
+    vectorF *resultBias = resultANN->getBiasPtr();
+    vectorF *bias1 = ANN1->getBiasPtr();
+    vectorF *bias2 = ANN2->getBiasPtr();
+
+    MatrixF *resultMatrix = resultANN->getMatrixPtr();
+    MatrixF *matrix1 = ANN1->getMatrixPtr();
+    MatrixF *matrix2 = ANN2->getMatrixPtr();
+
     for (layer = 0; layer < layerSize + 1; layer++) {
+        totalSize = bias1->size;
+        side = 0;
+
+        for (posi = 0; posi < totalSize; posi++) {
+            if (side == 1){
+                resultBias[layer].vector[posi] = bias2[layer].vector[posi];
+                    if (rand() % 1000 < crossChance)
+                        side = 0;
+            } else {
+                resultBias[layer].vector[posi] = bias1[layer].vector[posi];
+                if (rand() % 1000 < crossChance)
+                    side = 1;
+            }
+        }
+
         totalSize = matrix1[layer].lines * matrix1[layer].coluns;
         side = 0;
 
@@ -356,14 +378,25 @@ void Evolution::crossover(MatrixF *resultMatrix, MatrixF *matrix1, MatrixF *matr
     }
 }
 
-void Evolution::mutation(MatrixF *matrixArray) {
+void Evolution::mutation(ANN *ANN) {
     int quant;
     int maxMut;
 
     int posi;
     int maxPosi;
 
+    vectorF* biasArray = ANN->getBiasPtr();
+    MatrixF* matrixArray = ANN->getMatrixPtr();
+
     for (int i = 0; i < layerSize + 1; i++) {
+        maxMut = rand() % 6 + 2;  // 5-30
+        maxPosi = biasArray[i].size;
+        
+        for (quant = 0; quant < maxMut; quant++) {
+            posi = rand() % maxPosi;
+            biasArray[i].vector[posi] += (rand() % (2 * 750) - 750) / 1000.0;
+        }
+        
         maxMut = rand() % 25 + 5;  // 5-30
         maxPosi = matrixArray[i].lines * matrixArray[i].coluns;
         
@@ -389,6 +422,7 @@ void quickSort(Player **players, int low, int high) {
 
         if (i <= j) {
             //swap
+            players[j]->ann->setBias(players[i]->ann->setBias(players[j]->ann->getBiasPtr()));
             players[j]->ann->setMatrix(players[i]->ann->setMatrix(players[j]->ann->getMatrixPtr()));
 
             temp = players[j]->getScore();
@@ -470,9 +504,13 @@ scoreData_t Evolution::setBestIndvs() {
     // std::cout << "mediun assault score: " << MAS << std::endl;
 
     //----------------SET WEIGHTS----------------
-    bestLightAssaultANN->copyWheights(lightAssaultTraining[BLAI].bestLightAssault->player->ann->getMatrixPtr());
-    bestSniperANN->copyWheights(snipersTraining[BSI].bestSniper->player->ann->getMatrixPtr());
-    bestAssaultANN->copyWheights(assaultsTraining[BAI].bestAssault->player->ann->getMatrixPtr());
+    Player *BLA = lightAssaultTraining[BLAI].bestLightAssault->player;
+    Player *BS = snipersTraining[BSI].bestSniper->player;
+    Player *BA = assaultsTraining[BAI].bestAssault->player;
+
+    bestLightAssaultANN->copyWheights(BLA->ann->getMatrixPtr(), BLA->ann->getBiasPtr());
+    bestSniperANN->copyWheights(BS->ann->getMatrixPtr(), BS->ann->getBiasPtr());
+    bestAssaultANN->copyWheights(BA->ann->getMatrixPtr(), BA->ann->getBiasPtr());
 
     return {BLAS, BSS, BAS, MLAS, MSS, MAS};
 }
@@ -488,11 +526,14 @@ void Evolution::saveANNAll(const char* fileName){
 
 void Evolution::saveANN(ANN* bestANN, std::ofstream* fileObj) {
 
+    vectorF *biasPtr;
     MatrixF *matrixPtr;
 
+    biasPtr = bestANN->getBiasPtr();
     matrixPtr = bestANN->getMatrixPtr();
 
     for (int i = 0; i < layerSize + 1; i++) {
+        biasPtr[i].writeVectorToFile(fileObj);
         matrixPtr[i].writeMatrixToFile(fileObj);
     }
 }
@@ -506,11 +547,14 @@ void Evolution::readANNAll(const char* fileName){
 }
 
 void Evolution::readANN(ANN* bestANN, std::ifstream* fileObj){
+    vectorF *biasPtr;
     MatrixF *matrixPtr;
 
+    biasPtr = bestANN->getBiasPtr();
     matrixPtr = bestANN->getMatrixPtr();
 
     for (int i = 0; i < layerSize + 1; i++) {
+        biasPtr[i].readVectorFromFile(fileObj);
         matrixPtr[i].readMatrixFromFile(fileObj);
     }
 }

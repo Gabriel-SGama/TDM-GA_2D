@@ -95,7 +95,7 @@ void Moderator::setAllPlayersValues() {
     setPlayersValues(playerNumber, snipers, SCenter);
     setPlayersValues(playerNumber, assaults, ACenter);
 
-    allocGPUPtr();
+    // allocGPUPtr();
     // allocGPUMem();
     // sendMatrixMemToGPU();
 }
@@ -357,8 +357,10 @@ void Moderator::setAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnipe
 }
 
 void Moderator::setWeights(Player *bestPlayers, Player *players) {
-    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
+    for (int i = 0; i < NUMBER_OF_PLAYERS; i++){
+        players[i].ann->setBias(bestPlayers[i].ann->getBiasPtr());
         players[i].ann->setMatrix(bestPlayers[i].ann->getMatrixPtr());
+    }
 }
 
 void Moderator::copyAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnipers, Assault *bestAssaults) {
@@ -377,29 +379,42 @@ void Moderator::copyAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnip
 void Moderator::copyWeights(Player *bestPlayers, Player *players) {
     int j;
 
+    vectorF *newBiasArray;
+    vectorF *biasArray;
+
     MatrixF *newMatrixArray;
     MatrixF *matrixArray;
 
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
+        newBiasArray = players[i].ann->getBiasPtr();
+        biasArray = bestPlayers[i].ann->getBiasPtr();
         newMatrixArray = players[i].ann->getMatrixPtr();
         matrixArray = bestPlayers[i].ann->getMatrixPtr();
 
-        for (j = 0; j < layerSize + 1; j++)
+        for (j = 0; j < layerSize + 1; j++){
             newMatrixArray[j] = matrixArray[j];
+            newBiasArray[j] = biasArray[j];
+        }
     }
 }
 
-void Moderator::setAllWeightsOneMatrix(MatrixF *lightAssaultMatrix, MatrixF *snioerMatrix, MatrixF *assaultMatrix) {
+void Moderator::setAllWeightsOneMatrix(ANN *lightAssaultANN, ANN *sniperANN, ANN *assaultANN) {
     int i;
 
-    for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-        lightAssaults[i].ann->setMatrix(lightAssaultMatrix);
+    for (i = 0; i < NUMBER_OF_PLAYERS; i++){
+        lightAssaults[i].ann->setBias(lightAssaultANN->getBiasPtr());
+        lightAssaults[i].ann->setMatrix(lightAssaultANN->getMatrixPtr());
+    }
+            
+    for (i = 0; i < NUMBER_OF_PLAYERS; i++){
+        snipers[i].ann->setBias(sniperANN->getBiasPtr());
+        snipers[i].ann->setMatrix(sniperANN->getMatrixPtr());
+    }
 
-    for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-        snipers[i].ann->setMatrix(snioerMatrix);
-
-    for (i = 0; i < NUMBER_OF_PLAYERS; i++)
-        assaults[i].ann->setMatrix(assaultMatrix);
+    for (i = 0; i < NUMBER_OF_PLAYERS; i++){
+        assaults[i].ann->setBias(assaultANN->getBiasPtr());
+        assaults[i].ann->setMatrix(assaultANN->getMatrixPtr());
+    }
 
     // sendMatrixMemToGPU();
 }
@@ -439,7 +454,7 @@ void Moderator::gameOfBest() {
     }
     calculateScore();
 }
-
+/*
 void Moderator::allocGPUPtr() {
     int playerIdx;
     int layerIdx;
@@ -620,3 +635,4 @@ void Moderator::freeGPUMem() {
         }
     }
 }
+*/

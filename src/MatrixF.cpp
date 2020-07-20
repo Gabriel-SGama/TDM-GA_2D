@@ -25,10 +25,10 @@ void MatrixF::createMatrix(int lines, int coluns, float limits) {
     this->matrix = new float[lines * coluns];
 
     if (limits > 0) {
-        int actualLimit = limits * 1000000;
+        int actualLimit = limits * 10000;
 
         for (int i = 0; i < lines * coluns; i++) {
-            this->matrix[i] = ((rand() % (int)(2 * actualLimit)) - actualLimit) / 1000000.0;
+            this->matrix[i] = ((rand() % (int)(2 * actualLimit)) - actualLimit) / 10000.0;
         }
 
     } else {
@@ -185,11 +185,11 @@ vectorF::vectorF() {
     memSize = 0;
 }
 
-vectorF::vectorF(int size) {
+vectorF::vectorF(int size, float limits) {
     this->size = 0;
     memSize = 0;
 
-    createVector(size);
+    createVector(size, limits);
 }
 
 vectorF::~vectorF() {
@@ -204,7 +204,7 @@ void vectorF::operator=(const vectorF &vec) {
     std::memcpy(this->vector, vec.vector, vec.size * sizeof(float));
 }
 
-void vectorF::createVector(int size) {
+void vectorF::createVector(int size, float limits) {
     if (this->size != 0)
         delete[] this->vector;
 
@@ -212,11 +212,52 @@ void vectorF::createVector(int size) {
     memSize = size*sizeof(float);
 
     vector = new float[size];
-    for (int i = 0; i < size; i++) {
-        vector[i] = 1;
+
+    if (limits > 0) {
+        int actualLimit = limits * 10000;
+
+        for (int i = 0; i < size; i++) {
+            this->vector[i] = ((rand() % (int)(2 * actualLimit)) - actualLimit) / 10000.0;
+        }
+
+    } else {
+        for (int i = 0; i < size; i++) {
+            this->vector[i] = 1;
+        }
     }
 }
 
 float vectorF::operator[](const int &index){
     return this->vector[index];
+}
+
+void vectorF::print(){
+    for (int i = 0; i < size; i++) {
+        std::cout << vector[i] << " ";
+    }
+    std::cout << std::endl;
+}
+
+void vectorF::writeVectorToFile(std::ofstream* fileObj){
+    int i;
+    int colun;
+
+    fileObj->precision(7);
+
+    for (i = 0; i < this->size; i++) {
+        (*fileObj) << vector[i] << " ";
+    }
+
+    (*fileObj) << "\n";
+}
+
+void vectorF::readVectorFromFile(std::istream* fileObj){
+     int i;
+    int colun;
+
+    fileObj->precision(7);
+
+    for (i = 0; i < this->size; i++) {
+        (*fileObj) >> vector[i];
+    }
 }

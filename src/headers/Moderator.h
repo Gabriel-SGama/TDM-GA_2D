@@ -1,7 +1,7 @@
 #pragma once
 
 #include <eigen3/Eigen/Dense>
-#include "cudaStuff.cuh"
+// #include "cudaStuff.cuh"
 
 #define DURATION 500
 
@@ -52,14 +52,14 @@ class Moderator {
     float* checkMoveSin; //angles for move check for players
 
     //players matrix ptr to GPU memory
-    float*** d_laM;
-    float*** d_sM;
-    float*** d_aM;
+    // float*** d_laM;
+    // float*** d_sM;
+    // float*** d_aM;
 
     //players layer's input and outputs
-    float*** d_laL;
-    float*** d_sL;
-    float*** d_aL;
+    // float*** d_laL;
+    // float*** d_sL;
+    // float*** d_aL;
 
    public:
     //----------------BEST PLAYERS----------------
@@ -153,20 +153,20 @@ class Moderator {
     void copyAllWeights(LightAssault *lightAssaults, Sniper *snipers, Assault *assaults);
     void copyWeights(Player *bestPlayer, Player *players);
 
-    void setAllWeightsOneMatrix(MatrixF *lightAssaultMatrix, MatrixF *sniperMatrix, MatrixF *assaultMatrix);
+    void setAllWeightsOneMatrix(ANN *lightAssaultANN, ANN *sniperANN, ANN *assaultANN);
 
     //----------------GAME----------------
     void game();
     void gameOfBest();
 
     //----------------CUDA----------------
-    void allocGPUPtr();
-    void allocGPUMem();
-    void sendMatrixMemToGPU();
-    void sendInputMemToGPU();
-    void sendOutputMemToCPU();
+    // void allocGPUPtr();
+    // void allocGPUMem();
+    // void sendMatrixMemToGPU();
+    // void sendInputMemToGPU();
+    // void sendOutputMemToCPU();
 
-    void multplyGPU();
+    // void multplyGPU();
 
-    void freeGPUMem();
+    // void freeGPUMem();
 };

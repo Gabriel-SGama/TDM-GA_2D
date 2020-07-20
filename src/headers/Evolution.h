@@ -72,8 +72,8 @@ class Evolution {
     void tournamentAll();
     void tournament(Player **players, ANN *childs);
 
-    void crossover(MatrixF *resultMatrix, MatrixF *matrix1, MatrixF *matrix2);
-    void mutation(MatrixF *matrixArray);
+    void crossover(ANN *resultANN, ANN *ANN1, ANN *ANN2);
+    void mutation(ANN *ANN);
 
     void genocideAll();
     void genocide(Player **players);
