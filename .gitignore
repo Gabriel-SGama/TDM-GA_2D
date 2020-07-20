@@ -2,7 +2,7 @@
 *.vscode
 *.txt
 *.png
-
+*.firstTry/
 # Prerequisites
 *.d
 
