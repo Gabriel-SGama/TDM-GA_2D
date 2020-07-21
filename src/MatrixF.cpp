@@ -76,8 +76,7 @@ void MatrixF::operator=(const MatrixF &matrix) {
         this->createMatrix(matrix.lines, matrix.coluns);
     }
 
-    int totalSize = this->lines * this->coluns;
-    int memorySize = totalSize * sizeof(float);
+    int memorySize = this->lines * this->coluns * sizeof(float);
 
     std::memcpy(this->matrix, matrix.matrix, memorySize);
 }
@@ -148,7 +147,7 @@ void MatrixF::writeMatrixToFile(std::ofstream* fileObj){
 
     int lineOffset = 0;
 
-    fileObj->precision(7);
+    fileObj->precision(5);
 
     for (line = 0; line < this->lines; line++) {
 
@@ -167,7 +166,7 @@ void MatrixF::readMatrixFromFile(std::istream* fileObj){
 
     int lineOffset = 0;
 
-    fileObj->precision(7);
+    fileObj->precision(5);
 
     for (line = 0; line < this->lines; line++) {
 
@@ -201,18 +200,21 @@ void vectorF::operator=(const vectorF &vec) {
     if (this->size == 0)
         this->createVector(vec.size);
 
-    std::memcpy(this->vector, vec.vector, vec.size * sizeof(float));
+    std::memcpy(this->vector, vec.vector, vec.memSize);
 }
 
 void vectorF::createVector(int size, float limits) {
-    if (this->size != 0)
+    if (this->size != size && this->size != 0){
         delete[] this->vector;
+        this->size = 0;
+    }
+
+    if(this->size == 0)
+        vector = new float[size];
 
     this->size = size;
     memSize = size*sizeof(float);
-
-    vector = new float[size];
-
+     
     if (limits > 0) {
         int actualLimit = limits * 10000;
 
@@ -240,9 +242,8 @@ void vectorF::print(){
 
 void vectorF::writeVectorToFile(std::ofstream* fileObj){
     int i;
-    int colun;
 
-    fileObj->precision(7);
+    fileObj->precision(5);
 
     for (i = 0; i < this->size; i++) {
         (*fileObj) << vector[i] << " ";
@@ -252,10 +253,9 @@ void vectorF::writeVectorToFile(std::ofstream* fileObj){
 }
 
 void vectorF::readVectorFromFile(std::istream* fileObj){
-     int i;
-    int colun;
+    int i;
 
-    fileObj->precision(7);
+    fileObj->precision(5);
 
     for (i = 0; i < this->size; i++) {
         (*fileObj) >> vector[i];

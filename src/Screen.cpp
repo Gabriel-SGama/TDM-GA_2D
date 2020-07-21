@@ -476,16 +476,19 @@ void Screen::drawCircle(cv::Point center, const int radius, const cv::Scalar col
 
     int i;
     int line;
-    int colun;
+
+    int limit = 0;
 
     for (float angle = 0; angle < M_PI_2 / 2.0; angle += 0.09) {
         circlePt.x = round(radius * cos(angle));
         circlePt.y = round(radius * sin(angle));
         
         line = center.y + circlePt.y;
-        for (i = 3*(-circlePt.x + center.x); i <= 3*(circlePt.x + center.x); i += 3) {
+        limit = 3*(circlePt.x + center.x);
 
-            if(line < 0 || line > HEIGHT - 1 || colun < 0 || colun > 3*LENGTH - 1)
+        for (i = 3*(-circlePt.x + center.x); i <= limit; i += 3) {
+
+            if(line < 0 || line > HEIGHT - 1 || i < 0 || i > 3*LENGTH - 1)
                 break;
 
             imgMatrix[line][i] = color.val[0];
@@ -494,9 +497,11 @@ void Screen::drawCircle(cv::Point center, const int radius, const cv::Scalar col
         }
 
         line = center.y - circlePt.y;
-        for (i = 3*(-circlePt.x + center.x); i <= 3*(circlePt.x + center.x); i += 3) {
+        limit = 3*(circlePt.x + center.x);
 
-            if(line < 0 || line > HEIGHT - 1 || colun < 0 || colun > 3*LENGTH - 1)
+        for (i = 3*(-circlePt.x + center.x); i <= limit; i += 3) {
+
+            if(line < 0 || line > HEIGHT - 1 || i < 0 || i > 3*LENGTH - 1)
                 break;
 
             imgMatrix[line][i] = color.val[0];
@@ -505,9 +510,11 @@ void Screen::drawCircle(cv::Point center, const int radius, const cv::Scalar col
         }
 
         line = center.y + circlePt.x;
-        for (i = 3*(-circlePt.y + center.x); i <= 3*(circlePt.y + center.x); i += 3) {
+        limit = 3*(circlePt.y + center.x);
+        
+        for (i = 3*(-circlePt.y + center.x); i <= limit; i += 3) {
 
-            if(line < 0 || line > HEIGHT - 1 || colun < 0 || colun > 3*LENGTH - 1)
+            if(line < 0 || line > HEIGHT - 1 || i < 0 || i > 3*LENGTH - 1)
                 break;
 
             imgMatrix[line][i] = color.val[0];
@@ -516,9 +523,11 @@ void Screen::drawCircle(cv::Point center, const int radius, const cv::Scalar col
         }
 
         line = center.y - circlePt.x;
-        for (i = 3*(-circlePt.y + center.x); i <= 3*(circlePt.y + center.x); i += 3) {
+        limit = 3*(circlePt.y + center.x);
+        
+        for (i = 3*(-circlePt.y + center.x); i <= limit; i += 3) {
 
-            if(line < 0 || line > HEIGHT - 1 || colun < 0 || colun > 3*LENGTH - 1)
+            if(line < 0 || line > HEIGHT - 1 || i < 0 || i > 3*LENGTH - 1)
                 break;
 
             imgMatrix[line][i] = color.val[0];

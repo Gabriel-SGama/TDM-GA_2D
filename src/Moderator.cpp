@@ -388,12 +388,13 @@ void Moderator::copyWeights(Player *bestPlayers, Player *players) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
         newBiasArray = players[i].ann->getBiasPtr();
         biasArray = bestPlayers[i].ann->getBiasPtr();
+
         newMatrixArray = players[i].ann->getMatrixPtr();
         matrixArray = bestPlayers[i].ann->getMatrixPtr();
 
         for (j = 0; j < layerSize + 1; j++){
-            newMatrixArray[j] = matrixArray[j];
             newBiasArray[j] = biasArray[j];
+            newMatrixArray[j] = matrixArray[j];
         }
     }
 }

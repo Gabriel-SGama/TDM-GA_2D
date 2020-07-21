@@ -40,9 +40,9 @@ const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
 //----------------TOUCH SENSORS----------------
 
-const int TOUCH_SENSOR_DIST = 20;
-const float TOUCH_ANGLE_INTERVAL = M_PI / 3.5;
-const int NUMBER_OF_TOUCH_SENSORS = 2 * M_PI / TOUCH_ANGLE_INTERVAL;
+const int TOUCH_SENSOR_DIST = 25;
+const int NUMBER_OF_TOUCH_SENSORS = 10;
+const float TOUCH_ANGLE_INTERVAL = 2.0*M_PI / NUMBER_OF_TOUCH_SENSORS;
 
 //----------------COLORS----------------
 const cv::Scalar LIGHT_ASSAULT_COLOR = cv::Scalar(0, 255, 0);  //green

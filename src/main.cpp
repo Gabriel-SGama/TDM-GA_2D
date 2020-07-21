@@ -47,7 +47,10 @@ void copyModerator() {
 
         mtx.unlock();
 
+        std::cout << "start game of best team" << std::endl;
         copyModerator->gameOfBest();
+        std::cout << "end game of best team" << std::endl;
+
         copyModerator->resetAllPlayers(true);
         plot->plotData();
 
@@ -61,10 +64,14 @@ void copyModerator() {
         bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix, bestSniperMatrix, bestAssaultMatrix);
         mtx.unlock();
 
+        std::cout << "start game of best indv" << std::endl;
         bestIndvsCopy->gameOfBest();
+        std::cout << "end game of best indv" << std::endl;
         bestIndvsCopy->resetAllPlayers(true);
 
         //----------------PLOT----------------
+        
+        std::cout << "plot" << std::endl;
         plot->plotData();
     }
 }
@@ -134,34 +141,43 @@ int main() {
         mtx.lock();
 
         begin = std::chrono::steady_clock::now();
+        std::cout << "start game" << std::endl;
         evolution->game();
+        std::cout << "end game" << std::endl;
         end = std::chrono::steady_clock::now();
         totalTime += std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 
         std::cout << "time: " <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() / 1000.0 << "s" << std::endl;
         std::cout << "med time: " <<  totalTime / (gen*1000.0) << "s" << std::endl;
         
+        std::cout << "start tournament" << std::endl;
         evolution->tournamentAll();
+        std::cout << "end tournament" << std::endl;
 
         std::cout << "-------------GEN " << gen << " -------------" << std::endl;
         std::cout << "best light assault team score: " << evolution->bestLightAssaultTeamScore << std::endl;
         std::cout << "best sniper team score: " << evolution->bestSniperTeamScore << std::endl;
         std::cout << "best assault team score: " << evolution->bestAssaultTeamScore << std::endl;
 
+        std::cout << "getScore data" << std::endl;
         scoreData = evolution->setBestIndvs();
 
         if (!(gen % 20)) {
-            evolution->genocideAll();
             std::cout << "-------------genocide-------------" << std::endl;
+            evolution->genocideAll();
         }
 
+        std::cout << "reset" << std::endl;
         evolution->reset();
 
-        if((gen % 20) < 3)
-            evolution->saveANNAll(("firstTry/matrix" + std::to_string(gen) + ".txt").c_str());
+        if((gen % 20) < 3){
+            std::cout << "-------------write to file-------------" << std::endl;
+            evolution->saveANNAll(("try2/matrix" + std::to_string(gen) + ".txt").c_str());
+        }
 
         mtx.unlock();
 
+        std::cout << "add data" << std::endl;
         plot->addData(scoreData);
         std::this_thread::sleep_for(1ms); //time to change threads
 
