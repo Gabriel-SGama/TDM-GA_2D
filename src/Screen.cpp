@@ -8,11 +8,10 @@ Screen::Screen() {
 
     matToMatrix();
 
-    resetMatrix = new uchar*[rows];
-    for (int i = 0; i < rows; i++) {
-        resetMatrix[i] = new uchar[cols];
-    }
-    
+    // resetMatrix = new uchar*[rows];
+    // for (int i = 0; i < rows; i++) {
+    //     resetMatrix[i] = new uchar[cols];
+    // }    
     createObstacle();
 }
 
@@ -35,6 +34,11 @@ void Screen::matToMatrix() {
 
     for (int i = 0; i < rows; i++) {
         imgMatrix[i] = map.ptr(i);
+        // imgMatrix[i] = new uchar[cols];
+        // for (int j = 0; j < cols; j++) {
+        //     imgMatrix[i][j] = 255;
+        // }
+        // std::memcpy(imgMatrix[i], map.ptr(i), sizeof(uchar)*cols);
     }
 }
 
@@ -98,14 +102,20 @@ cv::Scalar Screen::idToRay(int rayId) {
 }
 
 void Screen::resetImage() {
-    // map.setTo(BACKGROUND_COLOR);
+    map.setTo(BACKGROUND_COLOR);
 
-    for (int i = 0; i < rows; i++) {
-        memcpy(imgMatrix[i], resetMatrix[i], sizeof(uchar)*cols);
-    }
+    // for (int i = 0; i < rows; i++) {
+    //     memcpy(imgMatrix[i], resetMatrix[i], sizeof(uchar)*cols);
+    // }
 }
 
 void Screen::updateMap() {
+    // uchar* imgMatrixPtr;
+
+    // for (int i = 0; i < rows; i++) {
+    //     std::memcpy(map.ptr(i), imgMatrix[i], sizeof(uchar)*cols);
+    // }
+
     cv::imshow(windowName, map);
     cv::waitKey(30);
 }
@@ -189,7 +199,8 @@ void Screen::createObstacle() {
     pt2.x = pt1.x + _OBSTACLE_LENGTH;
     pt2.y = 125;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
 
     pt1.x = pt2.x;
     pt1.y = 125 - _OBSTACLE_LENGTH;
@@ -197,7 +208,8 @@ void Screen::createObstacle() {
     pt2.x = 250;
     pt2.y = 125;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
 
     pt1.x = 0;
     pt1.y = 250;
@@ -205,7 +217,8 @@ void Screen::createObstacle() {
     pt2.x = 130;
     pt2.y = 250 +_OBSTACLE_LENGTH;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
 
     pt1.x = 250;
     pt1.y = 220;
@@ -213,7 +226,8 @@ void Screen::createObstacle() {
     pt2.x = 250 + _OBSTACLE_LENGTH;
     pt2.y = 350;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
 
     pt1.x = 100;
     pt1.y = 410;
@@ -221,7 +235,8 @@ void Screen::createObstacle() {
     pt2.x = 250;
     pt2.y = 410 + _OBSTACLE_LENGTH;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
 
     pt1.x = 165;
     pt1.y = 410;
@@ -229,7 +244,8 @@ void Screen::createObstacle() {
     pt2.x = 165 + _OBSTACLE_LENGTH;
     pt2.y = 550;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
 
     pt1.x = 0;
     pt1.y = 650;
@@ -237,7 +253,8 @@ void Screen::createObstacle() {
     pt2.x = 150;
     pt2.y = 650 + _OBSTACLE_LENGTH;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
 
     pt1.x = 380;
     pt1.y = HEIGHT - 1;
@@ -245,7 +262,8 @@ void Screen::createObstacle() {
     pt2.x = 380 + _OBSTACLE_LENGTH;
     pt2.y = 600;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
 
     pt1.x = 300;
     pt1.y = 500;
@@ -253,7 +271,8 @@ void Screen::createObstacle() {
     pt2.x = 450;
     pt2.y = 500 + _OBSTACLE_LENGTH;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
 
     pt1.x = 400;
     pt1.y = 0;
@@ -261,15 +280,17 @@ void Screen::createObstacle() {
     pt2.x = 400 + _OBSTACLE_LENGTH;
     pt2.y = 150;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
 
     pt1.x = 650;
     pt1.y = 400;
 
-    pt2.x = 800;
+    pt2.x = LENGTH - 1;
     pt2.y = 400 + _OBSTACLE_LENGTH;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
     //*/
 
     //----------------LIMITS----------------
@@ -278,45 +299,44 @@ void Screen::createObstacle() {
     pt1.y = 0;
 
     pt2.x = LENGTH;
-    pt2.y = LIMIT_SIZE;
+    pt2.y = 0;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
-    // cv::line(map, pt1, pt2, OBSTACLE_COLOR, 1);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::line(map, pt1, pt2, OBSTACLE_COLOR, 5);
 
     pt1.x = 0;
     pt1.y = HEIGHT;
 
     pt2.x = LENGTH - 1;
-    pt2.y = HEIGHT - LIMIT_SIZE - 1;
+    pt2.y = HEIGHT;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
-    // cv::line(map, pt1, pt2, OBSTACLE_COLOR, 1);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::line(map, pt1, pt2, OBSTACLE_COLOR, 5);
 
     pt1.x = 0;
     pt1.y = 0;
 
-    pt2.x = LIMIT_SIZE;
+    pt2.x = 0;
     pt2.y = HEIGHT - 1;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
-    // cv::line(map, pt1, pt2, OBSTACLE_COLOR, 1);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::line(map, pt1, pt2, OBSTACLE_COLOR, 5);
 
-    pt1.x = LENGTH;
+    pt1.x = LENGTH - 1;
     pt1.y = 0;
 
-    pt2.x = LENGTH - LIMIT_SIZE - 1;
+    pt2.x = LENGTH - 1;
     pt2.y = HEIGHT - 1;
 
-    drawRect(pt1, pt2, OBSTACLE_COLOR);
-    // cv::line(map, pt1, pt2, OBSTACLE_COLOR, 1);
+    // drawRect(pt1, pt2, OBSTACLE_COLOR);
+    cv::line(map, pt1, pt2, OBSTACLE_COLOR, 5);
    
-    for (int i = 0; i < rows; i++) {
-        memcpy(resetMatrix[i], imgMatrix[i], sizeof(uchar)*cols);
-    }
-    
-
+    // for (int i = 0; i < rows; i++) {
+    //     memcpy(resetMatrix[i], imgMatrix[i], sizeof(uchar)*cols);
+    // }
 }
 
+/*
 void Screen::drawRect(cv::Point pt1, cv::Point pt2, const cv::Scalar color){
     int line;
     int colun;
@@ -536,3 +556,4 @@ void Screen::drawCircle(cv::Point center, const int radius, const cv::Scalar col
         }
     }
 }
+*/

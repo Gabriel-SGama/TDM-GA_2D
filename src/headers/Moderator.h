@@ -3,7 +3,7 @@
 #include <eigen3/Eigen/Dense>
 // #include "cudaStuff.cuh"
 
-#define DURATION 500
+#define DURATION 450
 
 //----------------REWARD VALUES----------------
 #define LIGHT_ASSAULT_SHOT_REWARD 1
@@ -18,7 +18,6 @@ class Moderator;
 #include "Light_Assault.h"
 #include "Sniper.h"
 #include "Assault.h"
-
 
 const int NUMBER_OF_TOTAL_PLAYERS = 3 * NUMBER_OF_PLAYERS;
 

@@ -112,7 +112,7 @@ void Moderator::drawAllPlayers() {
     // cv::rectangle(screen->getMap(), cv::Point(LENGTH - 300, HEIGHT - 150), cv::Point(LENGTH, HEIGHT), cv::Scalar(0, 0, 1), 1);
     // cv::rectangle(screen->getMap(), cv::Point(LENGTH - 400, 150), cv::Point(LENGTH - 100, 300), cv::Scalar(0, 1, 0), 1);
 
-    // screen->createObstacle();
+    screen->createObstacle();
 
     drawPlayers(lightAssaults);
     drawPlayers(snipers);
@@ -192,7 +192,7 @@ int Moderator::findPlayer(Player *shooter, Player *players, cv::Point enemyPoint
             continue;
 
         distance = cv::norm(players[i].getCenter() - enemyPoint);
-
+        
         //----------------FOUND PLAYER----------------
         if (distance <= RADIUS + 1) {
             players[i].takeDamage(shooter->getDamage());
@@ -358,7 +358,7 @@ void Moderator::setAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnipe
 
 void Moderator::setWeights(Player *bestPlayers, Player *players) {
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++){
-        players[i].ann->setBias(bestPlayers[i].ann->getBiasPtr());
+        // players[i].ann->setBias(bestPlayers[i].ann->getBiasPtr());
         players[i].ann->setMatrix(bestPlayers[i].ann->getMatrixPtr());
     }
 }
@@ -379,21 +379,21 @@ void Moderator::copyAllWeights(LightAssault *bestLightAssaults, Sniper *bestSnip
 void Moderator::copyWeights(Player *bestPlayers, Player *players) {
     int j;
 
-    vectorF *newBiasArray;
-    vectorF *biasArray;
+    // vectorF *newBiasArray;
+    // vectorF *biasArray;
 
     MatrixF *newMatrixArray;
     MatrixF *matrixArray;
 
     for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-        newBiasArray = players[i].ann->getBiasPtr();
-        biasArray = bestPlayers[i].ann->getBiasPtr();
+        // newBiasArray = players[i].ann->getBiasPtr();
+        // biasArray = bestPlayers[i].ann->getBiasPtr();
 
         newMatrixArray = players[i].ann->getMatrixPtr();
         matrixArray = bestPlayers[i].ann->getMatrixPtr();
 
         for (j = 0; j < layerSize + 1; j++){
-            newBiasArray[j] = biasArray[j];
+            // newBiasArray[j] = biasArray[j];
             newMatrixArray[j] = matrixArray[j];
         }
     }
@@ -403,17 +403,17 @@ void Moderator::setAllWeightsOneMatrix(ANN *lightAssaultANN, ANN *sniperANN, ANN
     int i;
 
     for (i = 0; i < NUMBER_OF_PLAYERS; i++){
-        lightAssaults[i].ann->setBias(lightAssaultANN->getBiasPtr());
+        // lightAssaults[i].ann->setBias(lightAssaultANN->getBiasPtr());
         lightAssaults[i].ann->setMatrix(lightAssaultANN->getMatrixPtr());
     }
             
     for (i = 0; i < NUMBER_OF_PLAYERS; i++){
-        snipers[i].ann->setBias(sniperANN->getBiasPtr());
+        // snipers[i].ann->setBias(sniperANN->getBiasPtr());
         snipers[i].ann->setMatrix(sniperANN->getMatrixPtr());
     }
 
     for (i = 0; i < NUMBER_OF_PLAYERS; i++){
-        assaults[i].ann->setBias(assaultANN->getBiasPtr());
+        // assaults[i].ann->setBias(assaultANN->getBiasPtr());
         assaults[i].ann->setMatrix(assaultANN->getMatrixPtr());
     }
 

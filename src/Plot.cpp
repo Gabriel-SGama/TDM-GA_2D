@@ -4,10 +4,11 @@ Plot::Plot() {
     max = -10;
     min = 10;
 
-    graph = cv::Mat(GRAPH_HEIGHT, GRAPH_WIDTH, CV_8UC3, cv::Scalar(0, 0, 0));
     cv::namedWindow("graph");
     cv::moveWindow("graph", 0, 1000);
-
+    
+    graph = cv::Mat(GRAPH_HEIGHT, GRAPH_WIDTH, CV_8UC3, cv::Scalar(0, 0, 0));
+   
     cv::imshow("graph", graph);
     cv::waitKey(1);
     
@@ -39,6 +40,9 @@ void Plot::addData(scoreData_t info) {
 
 void Plot::plotData() {
     graph.setTo(cv::Scalar(0, 0, 0));
+    
+    if(data.size() == 0)
+        return;
 
     const float dif = (max - min) * 1.2;
     const float scaleY = GRAPH_HEIGHT / dif;
@@ -95,4 +99,5 @@ void Plot::plotData() {
     }
 
     cv::imshow("graph", graph);
+    cv::waitKey(1);
 }

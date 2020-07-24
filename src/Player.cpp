@@ -95,8 +95,8 @@ int Player::checkPosition() {
 void Player::drawPlayer() {
     bool change = false;
 
-    // cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
-    screen->drawCircle(center, RADIUS, playerColor);
+    cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
+    // screen->drawCircle(center, RADIUS, playerColor);
 
     playerStatus += (*output)[INDEX_PLAYER_TYPE_CHANGE];
 
@@ -124,8 +124,8 @@ void Player::drawPlayer() {
             visionAngle = SNIPER_VISION_ANGLE;
             numberOfRays = SNIPER_NUMBER_OF_RAYS;
         }
-        screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 2);
-        // cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 3);
+        // screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 2);
+        cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 3);
     
     }else if(playerStatus >= playerStatusA){
         if(lastPlayerType != ASSAULT){
@@ -149,8 +149,8 @@ void Player::drawPlayer() {
             numberOfRays = ASSAULT_NUMBER_OF_RAYS;
         }
         
-        screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 2);
-        // cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 3);
+        // screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 2);
+        cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 3);
 
     }else {
         if(lastPlayerType != LIGHT_ASSAULT){
@@ -170,8 +170,8 @@ void Player::drawPlayer() {
             numberOfRays = LIGHT_ASSAULT_NUMBER_OF_RAYS;
         }
 
-        screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 2);
-        // cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 3);
+        // screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 2);
+        cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 3);
     }
 
     if(change){
@@ -203,8 +203,8 @@ void Player::updateVision() {
             touchRayID[i] = screen->colorToId(screen->getColor(pt));
         
         if(touchRayID[i] != NOTHING)
-            // cv::line(screen->getMap(), center, pt, screen->idToRay(touchRayID[i]));
-            screen->drawLine(center, pt, screen->idToRay(touchRayID[i]));
+            cv::line(screen->getMap(), center, pt, screen->idToRay(touchRayID[i]));
+            // screen->drawLine(center, pt, screen->idToRay(touchRayID[i]));
     }
 
     currentAngle = direction - visionAngle / 2;
@@ -216,7 +216,6 @@ void Player::updateVision() {
 
 void Player::drawVisionLines(float currentAngle, int id) {
     cv::Point pt;
-    cv::Point finalPt;
     cv::Point offset;
 
     cv::Scalar color;
@@ -247,8 +246,8 @@ void Player::drawVisionLines(float currentAngle, int id) {
 
     if (raysID[id] != NOTHING) {
         color = screen->idToRay(raysID[id]);
-        // cv::line(screen->getMap(), center + offset, finalPt, color);
-        screen->drawLine(offset, pt, color);
+        cv::line(screen->getMap(), offset, pt, color);
+        // screen->drawLine(offset, pt, color);
     }
 }
 
@@ -326,10 +325,10 @@ enemyInfo_t Player::killPlayer() {
 
     enemyPoint = finalPt;
 
-    screen->drawLine(center, enemyPoint, cv::Scalar(0,0,0));
-    screen->drawCircle(enemyPoint, 2, cv::Scalar(0,0,0));
-    // cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0), 1);
-    // cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
+    // screen->drawLine(center, enemyPoint, cv::Scalar(0,0,0));
+    // screen->drawCircle(enemyPoint, 2, cv::Scalar(0,0,0));
+    cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0), 1);
+    cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
 
     return {enemyPoint, id};
 }

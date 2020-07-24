@@ -53,10 +53,10 @@ class Screen {
     uchar **getMatrix();
 
     //----------------PRIMITIVE FUNCTIONS----------------
-    void drawRect(cv::Point pt1, cv::Point pt2, const cv::Scalar color);
-    void drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color);
-    void drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color, const int size);
-    void drawCircle(cv::Point center, const int radius, const cv::Scalar color);
+    // void drawRect(cv::Point pt1, cv::Point pt2, const cv::Scalar color);
+    // void drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color);
+    // void drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color, const int size);
+    // void drawCircle(cv::Point center, const int radius, const cv::Scalar color);
 
 };
 

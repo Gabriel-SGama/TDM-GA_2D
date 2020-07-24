@@ -19,12 +19,12 @@ void ANN::setANNParameters(int inputSize, int outputSize) {
 
     aux.push_back(outputSize);
 
-    bias = new vectorF[layerSize + 1];
+    // bias = new vectorF[layerSize + 1];
     intermediunOut = new vectorF[layerSize + 2];
     matrixArray = new MatrixF[layerSize + 1];
 
     for (i = 0; i < layerSize + 1; i++){
-        bias[i].createVector(aux[i+1], RAND_LIMIT);
+        // bias[i].createVector(aux[i+1], RAND_LIMIT);
         matrixArray[i].createMatrix(aux[i + 1], aux[i], RAND_LIMIT);
     }
 
@@ -34,9 +34,13 @@ void ANN::setANNParameters(int inputSize, int outputSize) {
 
 void ANN::reset() {
     for (int i = 0; i < layerSize + 1; i++) {
-        bias[i].createVector(aux[i+1], RAND_LIMIT);
+        // bias[i].createVector(aux[i+1], RAND_LIMIT);
         matrixArray[i].createMatrix(aux[i+1], aux[i], RAND_LIMIT);
     }
+}
+
+float sigmoid(float z){
+    return 1/(1 + exp(-z));
 }
 
 void ANN::multiply() {
@@ -47,7 +51,8 @@ void ANN::multiply() {
         intermediunOut[i] = matrixArray[i-1] * intermediunOut[i-1];
 
         for (j = 0; j < intermediunOut[i].size; j++) {
-            intermediunOut[i].vector[j] = tanh(intermediunOut[i][j] + bias[i-1][j]);
+            // intermediunOut[i].vector[j] = tanh(intermediunOut[i][j] + bias[i-1][j]);
+            intermediunOut[i].vector[j] = tanh(intermediunOut[i][j]);
         }
     }
 }
@@ -60,17 +65,23 @@ MatrixF *ANN::setMatrix(MatrixF *matrixArray) {
     return temp;
 }
 
-vectorF* ANN::setBias(vectorF *bias){
-    vectorF *temp;
-    temp = this->bias;
-    this->bias = bias;
+// vectorF* ANN::setBias(vectorF *bias){
+//     vectorF *temp;
+//     temp = this->bias;
+//     this->bias = bias;
 
-    return temp;
-}
+//     return temp;
+// }
 
-void ANN::copyWheights(MatrixF *matrixArray, vectorF* bias) {
+// void ANN::copyWheights(MatrixF *matrixArray, vectorF* bias) {
+//     for (int i = 0; i < layerSize + 1; i++){
+//         this->bias[i] = bias[i];
+//         this->matrixArray[i] = matrixArray[i];
+//     }
+// }
+
+void ANN::copyWheights(MatrixF *matrixArray) {
     for (int i = 0; i < layerSize + 1; i++){
-        this->bias[i] = bias[i];
         this->matrixArray[i] = matrixArray[i];
     }
 }

@@ -25,7 +25,7 @@ class ANN {
     std::vector<int> aux;  //size of each layer
 
     vectorF *intermediunOut;
-    vectorF *bias;
+    // vectorF *bias;
     MatrixF *matrixArray;
 
    public:
@@ -38,12 +38,13 @@ class ANN {
 
     inline vectorF *getOutputPtr() { return &intermediunOut[layerSize + 1]; }
     inline vectorF *getInputPtr() { return &intermediunOut[0]; }
-    inline vectorF *getBiasPtr() { return bias; }
+    // inline vectorF *getBiasPtr() { return bias; }
     inline MatrixF *getMatrixPtr() { return matrixArray; }
 
     MatrixF *setMatrix(MatrixF *matrixArray);
-    vectorF *setBias(vectorF *bias);
+    // vectorF *setBias(vectorF *bias);
 
-    void copyWheights(MatrixF *matrixArray, vectorF* bias);
+    // void copyWheights(MatrixF *matrixArray, vectorF* bias);
+    void copyWheights(MatrixF *matrixArray);
 
 };
