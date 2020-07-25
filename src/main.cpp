@@ -56,13 +56,13 @@ void copyModerator() {
 
         //----------------BEST PLAYER MATCH----------------
         mtx.lock();
-        // bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr(), evolution->bestLightAssaultANN->getBiasPtr());
-        // bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr(), evolution->bestSniperANN->getBiasPtr());
-        // bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr(), evolution->bestAssaultANN->getBiasPtr());
+        bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr(), evolution->bestLightAssaultANN->getBiasPtr());
+        bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr(), evolution->bestSniperANN->getBiasPtr());
+        bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr(), evolution->bestAssaultANN->getBiasPtr());
 
-        bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
-        bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
-        bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
+        // bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
+        // bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
+        // bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
 
 
         bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
@@ -91,9 +91,9 @@ int main() {
 
     plot = new Plot;
 
-    // std::thread th(copyModerator);
-    //*
-    evolution->readANNAll("try3/matrix1000.txt");
+    std::thread th(copyModerator);
+    /*
+    evolution->readANNAll("try4/matrix1000.txt");
     Moderator *bestIndvsCopy = new Moderator;
 
     bestIndvsCopy->setScreen(new Screen);
@@ -175,7 +175,7 @@ int main() {
         evolution->reset();
 
         if((gen % 20) < 3){
-            evolution->saveANNAll(("try3/matrix" + std::to_string(gen) + ".txt").c_str());
+            evolution->saveANNAll(("try4/matrix" + std::to_string(gen) + ".txt").c_str());
         }
 
         plot->addData(scoreData);
@@ -185,7 +185,6 @@ int main() {
         std::this_thread::sleep_for(1ms); //time to change threads
         gen++;
         //*/
-       
     }
 
     return 0;

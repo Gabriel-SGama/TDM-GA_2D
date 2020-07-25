@@ -3,7 +3,7 @@
 #include <eigen3/Eigen/Dense>
 // #include "cudaStuff.cuh"
 
-#define DURATION 450
+#define DURATION 500
 
 //----------------REWARD VALUES----------------
 #define LIGHT_ASSAULT_SHOT_REWARD 1
