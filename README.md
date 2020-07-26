@@ -12,7 +12,7 @@ To compile and run this program you will need opencv for c++. It can be installe
 https://docs.opencv.org/trunk/d7/d9f/tutorial_linux_install.html
 
 #### How to run:
-After installing the dependecies, you go to the selected directory and run the makefile:
+After installing the dependecies, go to the selected directory and run the makefile:
 
 `make all`
 
