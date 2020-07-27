@@ -72,6 +72,7 @@ class Evolution {
     void tournamentAll();
     void tournament(Player **players, ANN *childs);
 
+    void sintese(ANN *resultANN, ANN *ANN1, ANN *ANN2);
     void crossover(ANN *resultANN, ANN *ANN1, ANN *ANN2);
     void mutation(ANN *ANN);
 

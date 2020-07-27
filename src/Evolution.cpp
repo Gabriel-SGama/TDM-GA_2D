@@ -167,7 +167,6 @@ void Evolution::game() {
     for (i = 0; i < POP_SIZE; i++)
         snipersTraining[i].game();
 
-
 // #pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
         assaultsTraining[i].game();
@@ -318,15 +317,42 @@ void Evolution::tournament(Player **players, ANN *childs) {
             currentANN = &childs[worstIndex];
             ANNBest1 = players[bestIndex]->ann;
             ANNBest2 = players[secondBestIndex]->ann;
-
-            crossover(currentANN, ANNBest1, ANNBest2);
+            // crossover(currentANN, ANNBest1, ANNBest2);
+            sintese(currentANN, ANNBest1, ANNBest2);
             mutation(currentANN);
         }
-
         //changes ptr
         childs[i].setBias(players[i]->ann->setBias(childs[i].getBiasPtr()));
         childs[i].setMatrix(players[i]->ann->setMatrix(childs[i].getMatrixPtr()));
     }
+}
+void Evolution::sintese(ANN *resultANN, ANN *ANN1, ANN *ANN2) {
+
+    int layer;
+    int totalSize;
+    int count;
+
+    vectorF *resultBias = resultANN->getBiasPtr();
+    vectorF *bias1 = ANN1->getBiasPtr();
+    vectorF *bias2 = ANN2->getBiasPtr();
+
+    MatrixF *resultMatrix = resultANN->getMatrixPtr();
+    MatrixF *matrix1 = ANN1->getMatrixPtr();
+    MatrixF *matrix2 = ANN2->getMatrixPtr();
+
+    for ( layer = 0; layer < layerSize + 1; layer++) {
+        
+        totalSize = matrix1[layerSize].lines*matrix1[layer].coluns;
+        for (count = 0; count < totalSize; count++) {
+            resultMatrix[layer].matrix[count] = (matrix1[layer].matrix[count] + matrix2[layer].matrix[count]) / 2.0;
+        }
+
+        for (count = 0; count < bias1[layer].size; count++) {
+            resultBias[layer].vector[count] = (bias1[layer][count] + bias2[layer][count]) / 2.0;
+        }
+    }
+    
+    
 }
 
 void Evolution::crossover(ANN *resultANN, ANN *ANN1, ANN *ANN2) {
@@ -389,7 +415,7 @@ void Evolution::mutation(ANN *ANN) {
     MatrixF* matrixArray = ANN->getMatrixPtr();
 
     for (int i = 0; i < layerSize + 1; i++) {
-        maxMut = rand() % 4 + 1;  //
+        maxMut = rand() % 4 + 1;  // 1 - 5
         maxPosi = biasArray[i].size;
         
         for (quant = 0; quant < maxMut; quant++) {
@@ -397,7 +423,7 @@ void Evolution::mutation(ANN *ANN) {
             biasArray[i].vector[posi] += (rand() % (2 * 750) - 750) / 1000.0;
         }
         
-        maxMut = rand() % 25 + 5;  // 5-30
+        maxMut = rand() % 26 + 4;  // 4-27
         maxPosi = matrixArray[i].lines * matrixArray[i].coluns;
         
         for (quant = 0; quant < maxMut; quant++) {
@@ -494,13 +520,13 @@ scoreData_t Evolution::setBestIndvs() {
     MSS /= (float)TOTAL_NUMBER_OF_PLAYERS;
     MAS /= (float)TOTAL_NUMBER_OF_PLAYERS;
 
-    // std::cout << "best light assault score: " << BLAS << std::endl;
-    // std::cout << "best sniper score: " << BSS << std::endl;
-    // std::cout << "best assault score: " << BAS << std::endl;
+    std::cout << "best light assault score: " << BLAS << std::endl;
+    std::cout << "best sniper score: " << BSS << std::endl;
+    std::cout << "best assault score: " << BAS << std::endl;
 
-    // std::cout << "mediun light assault score: " << MLAS << std::endl;
-    // std::cout << "mediun sniper score: " << MSS << std::endl;
-    // std::cout << "mediun assault score: " << MAS << std::endl;
+    std::cout << "mediun light assault score: " << MLAS << std::endl;
+    std::cout << "mediun sniper score: " << MSS << std::endl;
+    std::cout << "mediun assault score: " << MAS << std::endl;
 
     //----------------SET WEIGHTS----------------
     Player *BLA = lightAssaultTraining[BLAI].bestLightAssault->player;
@@ -525,6 +551,11 @@ scoreData_t Evolution::setBestIndvs() {
 void Evolution::saveANNAll(const char* fileName){
     std::ofstream fileObj(fileName);
     
+    if(!fileObj.is_open()){
+        std::cout << "can't save on file " << fileName << std::endl;
+        exit(1);
+    }
+
     saveANN(bestLightAssaultANN, &fileObj);
     saveANN(bestSniperANN, &fileObj);
     saveANN(bestAssaultANN, &fileObj);
@@ -548,6 +579,12 @@ void Evolution::saveANN(ANN* bestANN, std::ofstream* fileObj) {
 void Evolution::readANNAll(const char* fileName){
     std::ifstream fileObj;
     fileObj.open(fileName, std::ios::in);
+    
+    if(!fileObj.is_open()){
+        std::cout << "can't read from file " << fileName << std::endl;
+        exit(1);
+    }
+    
     readANN(bestLightAssaultANN, &fileObj);
     readANN(bestSniperANN, &fileObj);
     readANN(bestAssaultANN, &fileObj);

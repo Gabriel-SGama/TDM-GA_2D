@@ -52,7 +52,7 @@ void ANN::multiply() {
 
         for (j = 0; j < intermediunOut[i].size; j++) {
             intermediunOut[i].vector[j] = tanh(intermediunOut[i][j] + bias[i-1][j]);
-            intermediunOut[i].vector[j] = tanh(intermediunOut[i][j]);
+            // intermediunOut[i].vector[j] = tanh(intermediunOut[i][j]);
         }
     }
 }

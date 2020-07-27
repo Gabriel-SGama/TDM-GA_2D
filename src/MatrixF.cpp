@@ -204,17 +204,13 @@ void vectorF::operator=(const vectorF &vec) {
 }
 
 void vectorF::createVector(int size, float limits) {
-    if (this->size != size && this->size != 0){
+    if (this->size != size || this->size == 0){
         delete[] this->vector;
-        this->size = 0;
+        this->size = size;
+        vector = new float[size];
+        memSize = size*sizeof(float);
     }
 
-    if(this->size == 0)
-        vector = new float[size];
-
-    this->size = size;
-    memSize = size*sizeof(float);
-     
     if (limits > 0) {
         int actualLimit = limits * 10000;
 

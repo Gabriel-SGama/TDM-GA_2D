@@ -8,6 +8,7 @@
 
 using namespace std::chrono_literals;
 
+int gen = 1;
 std::mutex mtx;
 Evolution *evolution;
 Plot *plot;
@@ -52,7 +53,7 @@ void copyModerator() {
         copyModerator->gameOfBest();
 
         copyModerator->resetAllPlayers(true);
-        plot->plotData();
+        plot->plotData(gen);
 
         //----------------BEST PLAYER MATCH----------------
         mtx.lock();
@@ -77,12 +78,11 @@ void copyModerator() {
         //----------------PLOT----------------
         
         std::cout << "plot" << std::endl;
-        plot->plotData();
+        plot->plotData(gen);
     }
 }
 
 int main() {
-    int gen = 1;
 
     srand(time(0));
 
@@ -93,7 +93,7 @@ int main() {
 
     std::thread th(copyModerator);
     /*
-    evolution->readANNAll("try4/matrix1000.txt");
+    evolution->readANNAll("try1/matrixs/1200.txt");
     Moderator *bestIndvsCopy = new Moderator;
 
     bestIndvsCopy->setScreen(new Screen);
@@ -113,16 +113,17 @@ int main() {
     bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
 
     //----------------BEST PLAYER MATCH----------------
-    // bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr(), evolution->bestLightAssaultANN->getBiasPtr());
-    // bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr(), evolution->bestSniperANN->getBiasPtr());
-    // bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr(), evolution->bestAssaultANN->getBiasPtr());
+    bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr(), evolution->bestLightAssaultANN->getBiasPtr());
+    bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr(), evolution->bestSniperANN->getBiasPtr());
+    bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr(), evolution->bestAssaultANN->getBiasPtr());
 
-    bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
-    bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
-    bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
+    // bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
+    // bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
+    // bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
 
     bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
     bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix, bestSniperMatrix, bestAssaultMatrix);
+    bestIndvsCopy->resetAllPlayers(true);
 
     bestIndvsCopy->gameOfBest();
     bestIndvsCopy->resetAllPlayers(true);
@@ -174,8 +175,12 @@ int main() {
 
         evolution->reset();
 
+        if(!(gen % 50)){
+            cv::imwrite("try2/images/" + std::to_string(gen) + "gen.png", plot->getGraph());
+        }
+
         if((gen % 20) < 3){
-            evolution->saveANNAll(("try4/matrix" + std::to_string(gen) + ".txt").c_str());
+            evolution->saveANNAll(("try2/matrixs/" + std::to_string(gen) + ".txt").c_str());
         }
 
         plot->addData(scoreData);

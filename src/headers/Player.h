@@ -20,7 +20,7 @@ class Player;
 #define ENEMY -3
 
 //----------------PLAYER STATUS----------------
-#define PLAYER_STATUS_INTERVAL 10
+#define PLAYER_STATUS_INTERVAL 5
 const float playerStatusInterval = PLAYER_STATUS_INTERVAL/3.0;
 const float playerStatusLA = 0;
 const float playerStatusA =  playerStatusInterval;

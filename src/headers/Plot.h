@@ -18,6 +18,7 @@ public:
     Plot();
     ~Plot();
 
+    cv::Mat getGraph();
     void addData(scoreData_t data);
-    void plotData();
+    void plotData(int gen);
 };

@@ -2,7 +2,7 @@
 
 Plot::Plot() {
     max = -10;
-    min = 10;
+    min = 0;
 
     cv::namedWindow("graph");
     cv::moveWindow("graph", 0, 1000);
@@ -38,17 +38,17 @@ void Plot::addData(scoreData_t info) {
     this->data.push_back(info);
 }
 
-void Plot::plotData() {
+void Plot::plotData(int gen) {
     graph.setTo(cv::Scalar(0, 0, 0));
     
     if(data.size() == 0)
         return;
 
-    const float dif = (max - min) * 1.2;
+    const float dif = (max - min)*1.2;
     const float scaleY = GRAPH_HEIGHT / dif;
     const float scaleX = (float)GRAPH_WIDTH / (data.size() - 1);
 
-    const float offset = (max - min) * 0.1 - min;
+    const float offset = -min*1.2;
 
     for (int i = 1; i < data.size() - 1; i++) {
         //----------------BEST----------------
@@ -98,6 +98,37 @@ void Plot::plotData() {
                  ASSAULT_COLOR);
     }
 
+    //----------------X_AXIS----------------
+    const int numberOfXlabels = 10;
+    const float difXaxis = (float)GRAPH_WIDTH/numberOfXlabels;
+    const float difgen = (float) gen/numberOfXlabels;
+    float currentGen = difgen;
+
+    for (int i = 1; i < numberOfXlabels; i++) {
+        cv::putText(graph, std::to_string((int)round(currentGen)), cv::Point(difXaxis*i,GRAPH_HEIGHT - 5), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(255, 255, 255), 1);
+        currentGen += difgen;
+    }    
+
+    //----------------Y_AXIS----------------
+    const int numberOfYlabels = 5;
+    const int offsetY = 20;
+    const int difYaxis = (float) (GRAPH_HEIGHT - offsetY)/numberOfYlabels;
+    const float difval = (float) dif/numberOfYlabels;
+    float currentval = -offset + offsetY/numberOfYlabels;
+    
+    std::string trimmedString;
+
+    for (int i = 0; i < numberOfYlabels; i++) {
+        trimmedString = std::to_string(currentval).substr(0, std::to_string(currentval).find(".") + 2 + 1);
+        cv::putText(graph, trimmedString, cv::Point(0,GRAPH_HEIGHT - difYaxis*i - offsetY), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(255, 255, 255), 1);
+        currentval += difval;
+    }
+
     cv::imshow("graph", graph);
     cv::waitKey(1);
+}
+
+
+cv::Mat Plot::getGraph(){
+    return graph;
 }
