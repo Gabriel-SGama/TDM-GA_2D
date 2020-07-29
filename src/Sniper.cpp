@@ -2,6 +2,7 @@
 
 Sniper::Sniper()
      : Player() {
+    //----------------PLAYER INICIAL VALUES----------------
     playerType = SNIPER;
     lastPlayerType = SNIPER;
     playerStatus = playerStatusS + playerStatusInterval / 2.0;

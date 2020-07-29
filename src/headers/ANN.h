@@ -8,7 +8,6 @@
 //----------------OUTPUT INDEX----------------
 #define INDEX_DIRECTION 0
 #define INDEX_FRONT_SPEED 1
-// #define INDEX_SIDE_SPEED 2
 #define INDEX_SHOT 2
 #define INDEX_PLAYER_TYPE_CHANGE 3
 
@@ -24,6 +23,7 @@ class ANN {
    private:
     std::vector<int> aux;  //size of each layer
 
+    //----------------ANN----------------
     vectorF *intermediunOut;
     vectorF *bias;
     MatrixF *matrixArray;
@@ -36,6 +36,7 @@ class ANN {
     void reset();
     void multiply();
 
+    //----------------GET & SET----------------
     inline vectorF *getOutputPtr() { return &intermediunOut[layerSize + 1]; }
     inline vectorF *getInputPtr() { return &intermediunOut[0]; }
     inline vectorF *getBiasPtr() { return bias; }
@@ -44,7 +45,7 @@ class ANN {
     MatrixF *setMatrix(MatrixF *matrixArray);
     vectorF *setBias(vectorF *bias);
 
+    //----------------COPY----------------
     void copyWheights(MatrixF *matrixArray, vectorF* bias);
     // void copyWheights(MatrixF *matrixArray);
-
 };

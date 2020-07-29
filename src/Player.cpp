@@ -30,26 +30,24 @@ bool Player::isAlive() {
     return alive;
 }
 
-void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter, float* checkMoveCos, float* checkMoveSin) {
+void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter) {
     //----------------VISION----------------
     separationAngle = visionAngle / numberOfRays;
     angleCorrection = visionAngle / numberOfRays - separationAngle;
 
     separationAngle += angleCorrection;
 
-    this->checkMoveCos = checkMoveCos;
-    this->checkMoveSin = checkMoveSin;
     raysID = new int[numberOfRays];
     raysDist = new int[numberOfRays];
     touchRayID = new int[NUMBER_OF_TOUCH_SENSORS];
 
     //----------------ANN----------------
     // vision + position + life + direction + shot interval + playerTypeDynamic + 
-    // number of touch sensors + other players position + memory
-    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + 1 + NUMBER_OF_TOUCH_SENSORS /*+ (NUMBER_OF_PLAYERS * 2 - 2)*/ + MEMORY_SIZE;
+    // number of touch sensors
+    ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + 1 + NUMBER_OF_TOUCH_SENSORS;
 
-    //angle + front speed + shot + memory + playerTypeChange
-    ANNOutputSize = 1 + 1 + 1 + 1 + MEMORY_SIZE;
+    //angle + front speed + shot + playerTypeChange
+    ANNOutputSize = 1 + 1 + 1 + 1;
 
     ann = new ANN;
     ann->setANNParameters(ANNInputSize, ANNOutputSize);
@@ -69,8 +67,6 @@ void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCe
 
 void Player::setPosition() {
     do {
-        // center.x = rand() % (LENGTH - safeDist);
-        // center.y = rand() % (HEIGHT - safeDist);
         center.x = rand() % (300) + initialPos.x;
         center.y = rand() % (150) + initialPos.y;
 
@@ -96,7 +92,6 @@ void Player::drawPlayer() {
     bool change = false;
 
     cv::circle(screen->getMap(), center, RADIUS, playerColor, cv::FILLED);
-    // screen->drawCircle(center, RADIUS, playerColor);
 
     playerStatus += (*output)[INDEX_PLAYER_TYPE_CHANGE];
 
@@ -105,6 +100,7 @@ void Player::drawPlayer() {
     else if(playerStatus < 0)
         playerStatus = 0;
 
+    //----------------PLAYER TYPE CHANGING----------------
     if(playerStatus >= playerStatusS){
         if(lastPlayerType != SNIPER){
             change = true;
@@ -124,7 +120,6 @@ void Player::drawPlayer() {
             visionAngle = SNIPER_VISION_ANGLE;
             numberOfRays = SNIPER_NUMBER_OF_RAYS;
         }
-        // screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 2);
         cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 3);
     
     }else if(playerStatus >= playerStatusA){
@@ -149,7 +144,6 @@ void Player::drawPlayer() {
             numberOfRays = ASSAULT_NUMBER_OF_RAYS;
         }
         
-        // screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 2);
         cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 3);
 
     }else {
@@ -170,7 +164,6 @@ void Player::drawPlayer() {
             numberOfRays = LIGHT_ASSAULT_NUMBER_OF_RAYS;
         }
 
-        // screen->drawLine(center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 2);
         cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 3);
     }
 
@@ -204,7 +197,6 @@ void Player::updateVision() {
         
         if(touchRayID[i] != NOTHING)
             cv::line(screen->getMap(), center, pt, screen->idToRay(touchRayID[i]));
-            // screen->drawLine(center, pt, screen->idToRay(touchRayID[i]));
     }
 
     currentAngle = direction - visionAngle / 2;
@@ -247,7 +239,6 @@ void Player::drawVisionLines(float currentAngle, int id) {
     if (raysID[id] != NOTHING) {
         color = screen->idToRay(raysID[id]);
         cv::line(screen->getMap(), offset, pt, color);
-        // screen->drawLine(offset, pt, color);
     }
 }
 
@@ -280,9 +271,6 @@ void Player::move() {
     if (frontSpeed < 0)
         frontSpeed = 0;
 
-    // int sideSpeed = speedLimit * output[0][INDEX_SIDE_SPEED];
-
-    // cv::Point offset = cv::Point((int)(frontSpeed * cos(direction) + sideSpeed * cos(direction + M_PI_2)), (int)(frontSpeed * sin(direction) + sideSpeed * sin(direction + M_PI_2)));
     cv::Point offset = cv::Point((int)frontSpeed * cos(direction), (int)frontSpeed * sin(direction));
 
     if (checkMove(offset))
@@ -325,8 +313,6 @@ enemyInfo_t Player::killPlayer() {
 
     enemyPoint = finalPt;
 
-    // screen->drawLine(center, enemyPoint, cv::Scalar(0,0,0));
-    // screen->drawCircle(enemyPoint, 2, cv::Scalar(0,0,0));
     cv::line(screen->getMap(), center, enemyPoint, cv::Scalar(0, 0, 0), 1);
     cv::circle(screen->getMap(), enemyPoint, 2, cv::Scalar(0, 0, 0), cv::FILLED);
 
@@ -364,21 +350,9 @@ void Player::setComunInput() {
         (*input).vector[i + 1] = raysDist[j] / 50.0;
     }
 
-    //----------------PLAYERS CENTER----------------
-    // i = 2 * numberOfRays;
-    // for (j = 0; j < NUMBER_OF_PLAYERS; j++) {
-    //     if (j == (playerID % NUMBER_OF_PLAYERS))
-    //         continue;
-
-    //     (*input).vector[i] = playersCenter[j]->x / 200.0;
-    //     (*input).vector[i + 1] = playersCenter[j]->y / 200.0;
-
-    //     i += 2;
-    // }
-    // i--;
-    // i = 2 * numberOfRays + 2 * (NUMBER_OF_PLAYERS - 1);
     i = 2 * numberOfRays;
 
+    //----------------PLAYER PARAMS----------------
     (*input).vector[i] = center.x / 200.0;
     (*input).vector[i + 1] = center.y / 200.0;
     (*input).vector[i + 2] = direction;
@@ -388,6 +362,7 @@ void Player::setComunInput() {
 
     i += 6;
 
+    //----------------TOUCH SENSORS----------------
     for (j = 0; j < NUMBER_OF_TOUCH_SENSORS; j++, i++) {
         if (touchRayID[j] == playerType)
             (*input).vector[i] = ALLY;
@@ -395,11 +370,6 @@ void Player::setComunInput() {
             (*input).vector[i] = touchRayID[j];
         else
             (*input).vector[i] = ENEMY;
-    }
-
-    //----------------MEMORY----------------
-    for (j = 0; j < MEMORY_SIZE; i++, j++) {
-        (*input).vector[i] = (*output)[j + INDEX_SHOT + 1];
     }
 
     if (timeShot > 0)

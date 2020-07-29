@@ -1,7 +1,6 @@
 #pragma once
 
 #include <eigen3/Eigen/Dense>
-// #include "cudaStuff.cuh"
 
 #define DURATION 500
 
@@ -47,19 +46,6 @@ class Moderator {
 
     int turn;
 
-    float* checkMoveCos; //angles for move check for players
-    float* checkMoveSin; //angles for move check for players
-
-    //players matrix ptr to GPU memory
-    // float*** d_laM;
-    // float*** d_sM;
-    // float*** d_aM;
-
-    //players layer's input and outputs
-    // float*** d_laL;
-    // float*** d_sL;
-    // float*** d_aL;
-
    public:
     //----------------BEST PLAYERS----------------
     dataOfBestPlayers_t *bestLightAssault;
@@ -90,9 +76,7 @@ class Moderator {
     void setPlayerCenterPtr(Player *players, cv::Point** centerPtr);
     inline cv::Point **getPlayersCenterPtr() { return playersCenter; }
 
-
     void setInicialPosAll(const cv::Point *inicialPos, int start);
-
     void setInicialPos(Player *players, cv::Point initialPos);
 
     void setScreen(Screen *screen);
@@ -158,14 +142,4 @@ class Moderator {
     void game();
     void gameOfBest();
 
-    //----------------CUDA----------------
-    // void allocGPUPtr();
-    // void allocGPUMem();
-    // void sendMatrixMemToGPU();
-    // void sendInputMemToGPU();
-    // void sendOutputMemToCPU();
-
-    // void multplyGPU();
-
-    // void freeGPUMem();
 };

@@ -2,6 +2,7 @@
 
 Assault::Assault()
     : Player() {
+    //----------------PLAYER INICIAL VALUES----------------
     playerType = ASSAULT;
     lastPlayerType = ASSAULT;
     playerStatus = playerStatusA + playerStatusInterval / 2.0;

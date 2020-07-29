@@ -130,44 +130,13 @@ void Evolution::game() {
     int posIndex = rand() % 3;
 
     //----------------GAME----------------
-// #pragma omp parallel for
-//     for (i = 0; i < POP_SIZE; i++) {
-//         lightAssaultTraining[i].game();
-//         lightAssaultTraining[i].setInicialPosAll(initialPos, posIndex);
-//         lightAssaultTraining[i].resetAllPlayers(false);
-//     }
 
-// #pragma omp parallel for
-//     for (i = 0; i < POP_SIZE; i++) {
-//         snipersTraining[i].game();
-//         snipersTraining[i].setInicialPosAll(initialPos, posIndex);
-//         snipersTraining[i].resetAllPlayers(false);
-//     }    
-    
-// #pragma omp parallel for
-//     for (i = 0; i < POP_SIZE; i++) {
-//         assaultsTraining[i].game();
-//         assaultsTraining[i].setInicialPosAll(initialPos, posIndex);
-//         assaultsTraining[i].resetAllPlayers(false);
-//     }
-
-// #pragma omp parallel for
-//     for (i = 0; i < POP_SIZE; i++) {
-//         lightAssaultTraining[i].game();
-//         snipersTraining[i].game();
-//         assaultsTraining[i].game();
-//     }
-
-//less time wasted for inequal jobs
-// #pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
         lightAssaultTraining[i].game();
 
-// #pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
         snipersTraining[i].game();
 
-// #pragma omp parallel for
     for (i = 0; i < POP_SIZE; i++)
         assaultsTraining[i].game();
 
@@ -203,7 +172,6 @@ void Evolution::reset() {
     //----------------SET BEST TEAMS----------------
     bestTeams->setAllWeights(bestLightAssaults->getLightAssaults(), bestSnipers->getSnipers(), bestAssaults->getAssaults());
 
-    // cv::Point initialPos[] = {cv::Point(LENGTH - 300, HEIGHT - 250), cv::Point(LENGTH - 400, 150), cv::Point(0, 150)};
     int posIndex = rand() % 3;
 
     //----------------RESET MODERATORS----------------
@@ -317,10 +285,10 @@ void Evolution::tournament(Player **players, ANN *childs) {
             currentANN = &childs[worstIndex];
             ANNBest1 = players[bestIndex]->ann;
             ANNBest2 = players[secondBestIndex]->ann;
-            // crossover(currentANN, ANNBest1, ANNBest2);
             sintese(currentANN, ANNBest1, ANNBest2);
             mutation(currentANN);
         }
+
         //changes ptr
         childs[i].setBias(players[i]->ann->setBias(childs[i].getBiasPtr()));
         childs[i].setMatrix(players[i]->ann->setMatrix(childs[i].getMatrixPtr()));
@@ -540,10 +508,6 @@ scoreData_t Evolution::setBestIndvs() {
     // bestLightAssaultANN->copyWheights(BLA->ann->getMatrixPtr());
     // bestSniperANN->copyWheights(BS->ann->getMatrixPtr());
     // bestAssaultANN->copyWheights(BA->ann->getMatrixPtr());
-        
-    // BLA->reset(LIGHT_ASSAULT_HEALTH,true);
-    // BS->reset(SNIPER_HEALTH,true);
-    // BA->reset(ASSAULT_HEALTH,true);
     
     return {BLAS, BSS, BAS, MLAS, MSS, MAS};
 }

@@ -40,7 +40,6 @@ void copyModerator() {
     bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
     //*/
     while (true) {
-        cv::waitKey(30);
         //----------------BEST TEAM MATCH----------------
         //*
         mtx.lock();
@@ -64,7 +63,6 @@ void copyModerator() {
         // bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
         // bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
         // bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
-
 
         bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
         bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix, bestSniperMatrix, bestAssaultMatrix);
@@ -93,7 +91,8 @@ int main() {
 
     std::thread th(copyModerator);
     /*
-    evolution->readANNAll("try1/matrixs/1200.txt");
+    //----------------ONE GAME----------------
+    evolution->readANNAll("try2/matrixs/5000.txt");
     Moderator *bestIndvsCopy = new Moderator;
 
     bestIndvsCopy->setScreen(new Screen);
@@ -130,23 +129,12 @@ int main() {
     return 0;
     //*/
 
-    // std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-    // std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
-    // std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
-
     std::chrono::steady_clock::time_point begin;
     std::chrono::steady_clock::time_point end;
 
     long double totalTime = 0;
     
-    // Screen test;
-    // test.setScreenParam("test", 0, 0);
-    // test.createObstacle();
-    // test.updateMap();
     while (1) {
-        // test.updateMap();
         //----------------EVOLUTION----------------
         ///*
         mtx.lock();
@@ -175,13 +163,13 @@ int main() {
 
         evolution->reset();
 
-        if(!(gen % 50)){
-            cv::imwrite("try2/images/" + std::to_string(gen) + "gen.png", plot->getGraph());
-        }
+        // if(!(gen % 50)){
+        //     cv::imwrite("try3/images/" + std::to_string(gen) + "gen.png", plot->getGraph());
+        // }
 
-        if((gen % 20) < 3){
-            evolution->saveANNAll(("try2/matrixs/" + std::to_string(gen) + ".txt").c_str());
-        }
+        // if((gen % 20) < 3){
+        //     evolution->saveANNAll(("try3/matrixs/" + std::to_string(gen) + ".txt").c_str());
+        // }
 
         plot->addData(scoreData);
 

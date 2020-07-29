@@ -3,7 +3,7 @@
 
 class Screen;
 
-//screen dimensions
+//----------------SCREEN DIMENSIONS----------------
 #define LENGTH 801
 #define HEIGHT 800
 #define LIMIT_SIZE 2
@@ -19,12 +19,11 @@ const cv::Scalar OBSTACLE_RAY = cv::Scalar(20, 69, 139);        //brown ray
 
 class Screen {
    private:
-    cv::Mat map;  //ópecv image
+    cv::Mat map;  //opencv image
 
     uchar **imgMatrix;  //matrix to faster randon access
     uchar **resetMatrix;  //matrix to faster randon access
 
-    //map parameters
     int rows;
     int cols;
 
@@ -47,16 +46,10 @@ class Screen {
     cv::Scalar colorToRay(cv::Scalar color);  //transforms color to ray color
     cv::Scalar idToRay(int rayId);            //transforms id to ray color
 
-    //gets:
+    //----------------GETS----------------
     cv::Mat getMap();
 
     uchar **getMatrix();
-
-    //----------------PRIMITIVE FUNCTIONS----------------
-    // void drawRect(cv::Point pt1, cv::Point pt2, const cv::Scalar color);
-    // void drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color);
-    // void drawLine(cv::Point pt1, cv::Point pt2, const cv::Scalar color, const int size);
-    // void drawCircle(cv::Point center, const int radius, const cv::Scalar color);
 
 };
 

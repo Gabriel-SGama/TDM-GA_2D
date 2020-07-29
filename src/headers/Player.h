@@ -21,10 +21,10 @@ class Player;
 
 //----------------PLAYER STATUS----------------
 #define PLAYER_STATUS_INTERVAL 5
-const float playerStatusInterval = PLAYER_STATUS_INTERVAL/3.0;
+const float playerStatusInterval = PLAYER_STATUS_INTERVAL / 3.0;
 const float playerStatusLA = 0;
-const float playerStatusA =  playerStatusInterval;
-const float playerStatusS = 2*playerStatusInterval;
+const float playerStatusA = playerStatusInterval;
+const float playerStatusS = 2 * playerStatusInterval;
 
 //----------------PLAYERS VISION----------------
 const float ANGLE_INTERVAL = 0.15;
@@ -42,7 +42,7 @@ const int safeDist = 2 * RADIUS + RADIUS_OFFSET;
 
 const int TOUCH_SENSOR_DIST = 25;
 const int NUMBER_OF_TOUCH_SENSORS = 10;
-const float TOUCH_ANGLE_INTERVAL = 2.0*M_PI / NUMBER_OF_TOUCH_SENSORS;
+const float TOUCH_ANGLE_INTERVAL = 2.0 * M_PI / NUMBER_OF_TOUCH_SENSORS;
 
 //----------------COLORS----------------
 const cv::Scalar LIGHT_ASSAULT_COLOR = cv::Scalar(0, 255, 0);  //green
@@ -72,19 +72,19 @@ typedef struct enemyInfo_t {
 class Player {
    protected:
     cv::Point center;  //position
-    cv::Point movePt;  
+    cv::Point movePt;
 
     cv::Scalar playerColor;  //color
     cv::Scalar playerRay;    //color
 
     std::string playerIDStr;  //id->str
 
-    bool alive;  //player status
+    bool alive;
 
     int playerType;  //type of player
     int playerID;    //number of player
-    float life;        //current life
-    int damage;  //player damage
+    float life;      //current life
+    int damage;      //player damage
 
     int shotInterval;
     int timeShot;
@@ -98,9 +98,6 @@ class Player {
     float score;  //player score
 
     //----------------VISION INFO----------------
-    float* checkMoveCos; //angles for move check for players
-    float* checkMoveSin; //angles for move check for players
-
     int visionDist;
     float visionAngle;
     float direction;
@@ -112,7 +109,7 @@ class Player {
     double angleCorrection;  //corrects rays positions
 
     int lastPlayerType;
-    float playerStatus; //player type changes dynamically
+    float playerStatus;  //player type changes dynamically
 
     Screen *screen;
 
@@ -135,7 +132,7 @@ class Player {
     explicit Player();
     ~Player();
 
-    //gets:
+    //----------------GET & SET----------------
     bool isAlive();
 
     inline int getPlayerID() {
@@ -169,33 +166,33 @@ class Player {
 
     void setAlive(bool alive);
 
-    //initial values
-    void setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter, float* checkMoveCos, float* checkMoveSin);  //inicial values
-    void setPosition();                                                                       //initial position
+    //----------------INICIAL VALUES----------------
+    void setPlayerValues(Screen *screen, int playerID, cv::Point **playersCenter);  //inicial values
+    void setPosition();                                                                                                       //initial position
     int checkPosition();
 
-    //draw
-    void drawPlayer();                                  //draws player
+    //----------------DRAW----------------
+    void drawPlayer();                                 //draws player
     void drawVisionLines(float currentAngle, int id);  //draw vision lines
 
-    //vision
+    //----------------VISION----------------
     void updateVision();  //updates vision info
 
-    //movement
+    //----------------MOVEMENT----------------
     void move();  //move player
     int checkMove(cv::Point offset);
 
-    //conflicts
-    void takeDamage(int damage);            //get shot
-    enemyInfo_t killPlayer();  //shot playe
+    //----------------CONFLICTS----------------
+    void takeDamage(int damage);  //get shot
+    enemyInfo_t killPlayer();     //shot playe
 
-    //ANN:
+    //----------------ANN----------------
     void setComunInput();
 
-    //reset
+    //----------------RESET----------------
     void reset(float life, bool resetScore);
 };
 
+#include "Assault.h"
 #include "Light_Assault.h"
 #include "Sniper.h"
-#include "Assault.h"

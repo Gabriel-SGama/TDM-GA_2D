@@ -5,17 +5,18 @@
 
 using namespace Eigen;
 
+//----------------TEAMS INICIAL POSITIONS----------------
 const cv::Point initialPos[] = {cv::Point(LENGTH - 300, HEIGHT - 250), cv::Point(LENGTH - 400, 150), cv::Point(0, 150)};
 
 //----------------EVOLUTION VALUES----------------
 #define POP_SIZE 15
 const int TOURNAMENT_K = 2;
 typedef struct scoreData_t {
-//----------------BEST SCORES----------------
+    //----------------BEST SCORES----------------
     float BLAS;
     float BSS;
     float BAS;
-//----------------MEDIUN SOCRES----------------
+    //----------------MEDIUN SOCRES----------------
     float MLAS;
     float MSS;
     float MAS;
@@ -46,13 +47,14 @@ class Evolution {
     float bestSniperTeamScore;
     float bestAssaultTeamScore;
 
-    // Moderator *bestIndvs;
     Moderator *bestTeams;
 
+    //----------------BEST TEAMS PLAYERS----------------
     Moderator *bestLightAssaults;
     Moderator *bestSnipers;
     Moderator *bestAssaults;
 
+    //----------------BEST PLAYERS ANN----------------
     ANN *bestLightAssaultANN;
     ANN *bestSniperANN;
     ANN *bestAssaultANN;
@@ -60,15 +62,12 @@ class Evolution {
     Evolution();
     ~Evolution();
 
-    void setParam(Moderator *moderators);
     void createANN(ANN *childs, int inputSize, int outputSize);
     void setPlayersPtr();
 
     void game();
 
-    void eletismAll();
-    void eletism(Player *players, MatrixXf *matrixOfBest);
-    // void eletism(Player *players, MatrixF *matrixOfBest);
+    //----------------LEARNING RELATIONS----------------
     void tournamentAll();
     void tournament(Player **players, ANN *childs);
 
@@ -81,12 +80,12 @@ class Evolution {
 
     scoreData_t setBestIndvs();
 
+    //----------------FILE SYSTEM----------------
     void saveANNAll(const char* fileName);
     void saveANN(ANN* bestMatrix, std::ofstream* fileObj);
 
     void readANNAll(const char* fileName);
     void readANN(ANN* bestMatrix, std::ifstream* fileObj);
-
 
     void reset();
 };

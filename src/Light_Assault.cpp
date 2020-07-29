@@ -2,6 +2,7 @@
 
 LightAssault::LightAssault()
     : Player() {
+    //----------------PLAYER INICIAL VALUES----------------
     playerType = LIGHT_ASSAULT;
     lastPlayerType = LIGHT_ASSAULT;
     playerStatus = playerStatusLA + playerStatusInterval / 2.0;
