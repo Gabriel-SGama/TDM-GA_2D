@@ -28,4 +28,4 @@ steps:
 
   description: test.
   
-  video: https://www.youtube.com/embed/xY0Qm68ImTw
+  video: <iframe width="560" height="315" src="https://www.youtube.com/embed/xY0Qm68ImTw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
