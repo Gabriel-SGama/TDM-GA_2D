@@ -23,5 +23,6 @@ If the compiling worked, run the program:
 The evolution process should start and three screens should show up.
 
 ## Results:
-### Team Death Match with best players
+After envolving for 5000 generations, the result is:
+
 ![](game.gif)
