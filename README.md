@@ -24,8 +24,6 @@ The evolution process should start and three screens should show up.
 
 ## Results:
 steps:
-- title: team death match with best players
-
+- title: team death match with best players.
   description: test.
-  
-  video: <iframe width="560" height="315" src="https://www.youtube.com/embed/xY0Qm68ImTw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  video: https://www.youtube.com/embed/xY0Qm68ImTw
