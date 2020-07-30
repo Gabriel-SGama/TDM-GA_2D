@@ -23,4 +23,4 @@ If the compiling worked, run the program:
 The evolution process should start and three screens should show up.
 
 ## Results:
-![](game.gif)
+![Team Death Match with best players](game.gif)
