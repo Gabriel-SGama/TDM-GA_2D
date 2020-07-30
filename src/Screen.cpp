@@ -11,7 +11,7 @@ Screen::Screen() {
     createObstacle();
 }
 
-Screen::~Screen(){
+Screen::~Screen() {
 }
 
 void Screen::setScreenParam(std::string name, int xPos, int yPos) {
@@ -108,7 +108,7 @@ void Screen::createObstacle() {
     cv::Point pt1;
     cv::Point pt2;
 
-/*
+    /*
     //----------------L----------------
     pt1.x = LENGTH / 5;
     pt1.y = 0;
@@ -193,7 +193,7 @@ void Screen::createObstacle() {
     pt1.y = 250;
 
     pt2.x = 130;
-    pt2.y = 250 +_OBSTACLE_LENGTH;
+    pt2.y = 250 + _OBSTACLE_LENGTH;
 
     cv::rectangle(map, pt1, pt2, OBSTACLE_COLOR, cv::FILLED);
 

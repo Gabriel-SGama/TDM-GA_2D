@@ -391,7 +391,7 @@ void Evolution::mutation(ANN *ANN) {
             biasArray[i].vector[posi] += (rand() % (2 * 750) - 750) / 1000.0;
         }
         
-        maxMut = rand() % 26 + 4;  // 4-27
+        maxMut = rand() % 26 + 4;  // 4-30
         maxPosi = matrixArray[i].lines * matrixArray[i].coluns;
         
         for (quant = 0; quant < maxMut; quant++) {
@@ -504,10 +504,6 @@ scoreData_t Evolution::setBestIndvs() {
     bestLightAssaultANN->copyWheights(BLA->ann->getMatrixPtr(), BLA->ann->getBiasPtr());
     bestSniperANN->copyWheights(BS->ann->getMatrixPtr(), BS->ann->getBiasPtr());
     bestAssaultANN->copyWheights(BA->ann->getMatrixPtr(), BA->ann->getBiasPtr());
-
-    // bestLightAssaultANN->copyWheights(BLA->ann->getMatrixPtr());
-    // bestSniperANN->copyWheights(BS->ann->getMatrixPtr());
-    // bestAssaultANN->copyWheights(BA->ann->getMatrixPtr());
     
     return {BLAS, BSS, BAS, MLAS, MSS, MAS};
 }

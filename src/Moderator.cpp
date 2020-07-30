@@ -297,9 +297,6 @@ void Moderator::resetAllPlayers(bool resetScore) {
     screen->createObstacle();
 
     //----------------RESET SCORE----------------
-    // std::cout << bestLightAssault->score << std::endl;
-    // std::cout << bestSniper->score << std::endl;
-    // std::cout << bestAssault->score << std::endl;
 
     bestLightAssault->score = INICIAL_SCORE;
     bestSniper->score = INICIAL_SCORE;

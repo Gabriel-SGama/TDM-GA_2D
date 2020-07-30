@@ -47,5 +47,4 @@ class ANN {
 
     //----------------COPY----------------
     void copyWheights(MatrixF *matrixArray, vectorF* bias);
-    // void copyWheights(MatrixF *matrixArray);
 };

@@ -42,7 +42,7 @@ void Player::setPlayerValues(Screen *screen, int playerID, cv::Point **playersCe
     touchRayID = new int[NUMBER_OF_TOUCH_SENSORS];
 
     //----------------ANN----------------
-    // vision + position + life + direction + shot interval + playerTypeDynamic + 
+    // vision + position + life + direction + shot interval + playerTypeDynamic +
     // number of touch sensors
     ANNInputSize = numberOfRays * 2 + 2 + 1 + 1 + 1 + 1 + NUMBER_OF_TOUCH_SENSORS;
 
@@ -95,24 +95,24 @@ void Player::drawPlayer() {
 
     playerStatus += (*output)[INDEX_PLAYER_TYPE_CHANGE];
 
-    if(playerStatus > PLAYER_STATUS_INTERVAL)
+    if (playerStatus > PLAYER_STATUS_INTERVAL)
         playerStatus = PLAYER_STATUS_INTERVAL;
-    else if(playerStatus < 0)
+    else if (playerStatus < 0)
         playerStatus = 0;
 
     //----------------PLAYER TYPE CHANGING----------------
-    if(playerStatus >= playerStatusS){
-        if(lastPlayerType != SNIPER){
+    if (playerStatus >= playerStatusS) {
+        if (lastPlayerType != SNIPER) {
             change = true;
 
-            life = ((float) life/ASSAULT_HEALTH) * SNIPER_HEALTH;
+            life = ((float)life / ASSAULT_HEALTH) * SNIPER_HEALTH;
 
             lastPlayerType = SNIPER;
             damage = SNIPER_DAMAGE;
             visionDist = SNIPER_VISION_DIST;
 
-            timeShot = timeShot/shotInterval * SNIPER_SHOT_INTERVAL;
-            
+            timeShot = timeShot / shotInterval * SNIPER_SHOT_INTERVAL;
+
             shotInterval = SNIPER_SHOT_INTERVAL;
             speedLimit = SNIPER_SPEED_LIMIT;
             angularSpeedLimit = SNIPER_ANGULAR_SPEED_LIMIT;
@@ -121,21 +121,21 @@ void Player::drawPlayer() {
             numberOfRays = SNIPER_NUMBER_OF_RAYS;
         }
         cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, SNIPER_RAY, 3);
-    
-    }else if(playerStatus >= playerStatusA){
-        if(lastPlayerType != ASSAULT){
-            if(lastPlayerType == SNIPER)
-                life = ((float) life/SNIPER_HEALTH) * ASSAULT_HEALTH;
+
+    } else if (playerStatus >= playerStatusA) {
+        if (lastPlayerType != ASSAULT) {
+            if (lastPlayerType == SNIPER)
+                life = ((float)life / SNIPER_HEALTH) * ASSAULT_HEALTH;
             else
-                life = ((float) life/LIGHT_ASSAULT_HEALTH) * ASSAULT_HEALTH;
+                life = ((float)life / LIGHT_ASSAULT_HEALTH) * ASSAULT_HEALTH;
 
             change = true;
             lastPlayerType = ASSAULT;
             damage = ASSAULT_DAMAGE;
             visionDist = ASSAULT_VISION_DIST;
 
-            timeShot = timeShot/shotInterval * ASSAULT_SHOT_INTERVAL;
-            
+            timeShot = timeShot / shotInterval * ASSAULT_SHOT_INTERVAL;
+
             shotInterval = ASSAULT_SHOT_INTERVAL;
             speedLimit = ASSAULT_SPEED_LIMIT;
             angularSpeedLimit = ASSAULT_ANGULAR_SPEED_LIMIT;
@@ -143,19 +143,19 @@ void Player::drawPlayer() {
             visionAngle = ASSAULT_VISION_ANGLE;
             numberOfRays = ASSAULT_NUMBER_OF_RAYS;
         }
-        
+
         cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, ASSAULT_RAY, 3);
 
-    }else {
-        if(lastPlayerType != LIGHT_ASSAULT){
+    } else {
+        if (lastPlayerType != LIGHT_ASSAULT) {
             change = true;
-            life = ((float) life/ASSAULT_HEALTH) * LIGHT_ASSAULT_HEALTH;
+            life = ((float)life / ASSAULT_HEALTH) * LIGHT_ASSAULT_HEALTH;
             lastPlayerType = LIGHT_ASSAULT;
             damage = LIGHT_ASSAULT_DAMAGE;
             visionDist = LIGHT_ASSAULT_VISION_DIST;
 
-            timeShot = timeShot/shotInterval * LIGHT_ASSAULT_SHOT_INTERVAL;
-            
+            timeShot = timeShot / shotInterval * LIGHT_ASSAULT_SHOT_INTERVAL;
+
             shotInterval = LIGHT_ASSAULT_SHOT_INTERVAL;
             speedLimit = LIGHT_ASSAULT_SPEED_LIMIT;
             angularSpeedLimit = LIGHT_ASSAULT_ANGULAR_SPEED_LIMIT;
@@ -167,7 +167,7 @@ void Player::drawPlayer() {
         cv::line(screen->getMap(), center, cv::Point(cos(direction) * (RADIUS + 4), sin(direction) * (RADIUS + 4)) + center, LIGHT_ASSAULT_RAY, 3);
     }
 
-    if(change){
+    if (change) {
         separationAngle = visionAngle / numberOfRays;
         angleCorrection = visionAngle / numberOfRays - separationAngle;
 
@@ -181,21 +181,21 @@ void Player::updateVision() {
     float currentAngle;
 
     cv::Point pt;
-    
+
     currentAngle = direction;
     for (int i = 0; i < NUMBER_OF_TOUCH_SENSORS; i++) {
         pt.x = center.x + cos(currentAngle) * TOUCH_SENSOR_DIST;
         pt.y = center.y + sin(currentAngle) * TOUCH_SENSOR_DIST;
         touchRayID[i] = screen->colorToId(screen->getColor(pt));
-        
+
         currentAngle += TOUCH_ANGLE_INTERVAL;
-        
-        if(pt.x > LENGTH || pt.x < 0 || pt.y > HEIGHT || pt.y < 0)
+
+        if (pt.x > LENGTH || pt.x < 0 || pt.y > HEIGHT || pt.y < 0)
             touchRayID[i] = OBSTACLE;
         else
             touchRayID[i] = screen->colorToId(screen->getColor(pt));
-        
-        if(touchRayID[i] != NOTHING)
+
+        if (touchRayID[i] != NOTHING)
             cv::line(screen->getMap(), center, pt, screen->idToRay(touchRayID[i]));
     }
 
@@ -328,7 +328,7 @@ void Player::setAlive(bool alive) {
 
     if (!alive) {
         score -= 12;
-        
+
         center.x = 0;
         center.y = 0;
     }
@@ -337,7 +337,7 @@ void Player::setAlive(bool alive) {
 void Player::setComunInput() {
     int i;
     int j;
-    
+
     //----------------VISION----------------
     for (i = 0, j = 0; i < 2 * numberOfRays; i += 2, j++) {
         if (raysID[j] == playerType)
@@ -384,29 +384,29 @@ void Player::reset(float life, bool resetScore) {
     this->life = life;
     timeShot = shotInterval;
     lastPlayerType = playerType;
-     
+
     //----------------RESET PLAYER TYPE----------------
-    if(playerType == SNIPER) {
+    if (playerType == SNIPER) {
         playerStatus = playerStatusS;
         damage = SNIPER_DAMAGE;
         visionDist = SNIPER_VISION_DIST;
 
-        timeShot = timeShot/shotInterval * SNIPER_SHOT_INTERVAL;
-        
+        timeShot = timeShot / shotInterval * SNIPER_SHOT_INTERVAL;
+
         shotInterval = SNIPER_SHOT_INTERVAL;
         speedLimit = SNIPER_SPEED_LIMIT;
         angularSpeedLimit = SNIPER_ANGULAR_SPEED_LIMIT;
 
         visionAngle = SNIPER_VISION_ANGLE;
         numberOfRays = SNIPER_NUMBER_OF_RAYS;
-    
-    } else if(playerType == ASSAULT){
+
+    } else if (playerType == ASSAULT) {
         playerStatus = playerStatusA;
         damage = ASSAULT_DAMAGE;
         visionDist = ASSAULT_VISION_DIST;
 
-        timeShot = timeShot/shotInterval * ASSAULT_SHOT_INTERVAL;
-        
+        timeShot = timeShot / shotInterval * ASSAULT_SHOT_INTERVAL;
+
         shotInterval = ASSAULT_SHOT_INTERVAL;
         speedLimit = ASSAULT_SPEED_LIMIT;
         angularSpeedLimit = ASSAULT_ANGULAR_SPEED_LIMIT;
@@ -419,8 +419,8 @@ void Player::reset(float life, bool resetScore) {
         damage = LIGHT_ASSAULT_DAMAGE;
         visionDist = LIGHT_ASSAULT_VISION_DIST;
 
-        timeShot = timeShot/shotInterval * LIGHT_ASSAULT_SHOT_INTERVAL;
-        
+        timeShot = timeShot / shotInterval * LIGHT_ASSAULT_SHOT_INTERVAL;
+
         shotInterval = LIGHT_ASSAULT_SHOT_INTERVAL;
         speedLimit = LIGHT_ASSAULT_SPEED_LIMIT;
         angularSpeedLimit = LIGHT_ASSAULT_ANGULAR_SPEED_LIMIT;

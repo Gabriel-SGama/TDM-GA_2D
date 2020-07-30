@@ -1,7 +1,7 @@
 #include "headers/Sniper.h"
 
 Sniper::Sniper()
-     : Player() {
+    : Player() {
     //----------------PLAYER INICIAL VALUES----------------
     playerType = SNIPER;
     lastPlayerType = SNIPER;
@@ -17,9 +17,9 @@ Sniper::Sniper()
     angularSpeedLimit = SNIPER_ANGULAR_SPEED_LIMIT;
 
     visionAngle = SNIPER_VISION_ANGLE;
-    
+
     direction = (rand() % (int)(M_PI * 200)) / 100.0;
-    initialPos = cv::Point(LENGTH - 400,150);
+    initialPos = cv::Point(LENGTH - 400, 150);
     numberOfRays = SNIPER_NUMBER_OF_RAYS;
 }
 

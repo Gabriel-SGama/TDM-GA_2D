@@ -19,7 +19,7 @@ Assault::Assault()
     visionAngle = ASSAULT_VISION_ANGLE;
 
     direction = (rand() % (int)(M_PI * 200)) / 100.0;
-    initialPos = cv::Point(0,150);
+    initialPos = cv::Point(0, 150);
     numberOfRays = ASSAULT_NUMBER_OF_RAYS;
 }
 

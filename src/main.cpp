@@ -60,28 +60,19 @@ void copyModerator() {
         bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr(), evolution->bestSniperANN->getBiasPtr());
         bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr(), evolution->bestAssaultANN->getBiasPtr());
 
-        // bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
-        // bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
-        // bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
-
         bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
         bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix, bestSniperMatrix, bestAssaultMatrix);
         mtx.unlock();
 
-        std::cout << "start game of best indv" << std::endl;
         bestIndvsCopy->gameOfBest();
-        std::cout << "end game of best indv" << std::endl;
         bestIndvsCopy->resetAllPlayers(true);
         //*/
         //----------------PLOT----------------
-        
-        std::cout << "plot" << std::endl;
         plot->plotData(gen);
     }
 }
 
 int main() {
-
     srand(time(0));
 
     evolution = new Evolution;
@@ -89,10 +80,10 @@ int main() {
 
     plot = new Plot;
 
-    std::thread th(copyModerator);
-    /*
+    // std::thread th(copyModerator);
+    //*
     //----------------ONE GAME----------------
-    evolution->readANNAll("try2/matrixs/5000.txt");
+    evolution->readANNAll("best/matrixs/5000.txt");
     Moderator *bestIndvsCopy = new Moderator;
 
     bestIndvsCopy->setScreen(new Screen);
@@ -116,10 +107,6 @@ int main() {
     bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr(), evolution->bestSniperANN->getBiasPtr());
     bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr(), evolution->bestAssaultANN->getBiasPtr());
 
-    // bestLightAssaultMatrix->copyWheights(evolution->bestLightAssaultANN->getMatrixPtr());
-    // bestSniperMatrix->copyWheights(evolution->bestSniperANN->getMatrixPtr());
-    // bestAssaultMatrix->copyWheights(evolution->bestAssaultANN->getMatrixPtr());
-
     bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
     bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix, bestSniperMatrix, bestAssaultMatrix);
     bestIndvsCopy->resetAllPlayers(true);
@@ -133,7 +120,7 @@ int main() {
     std::chrono::steady_clock::time_point end;
 
     long double totalTime = 0;
-    
+
     while (1) {
         //----------------EVOLUTION----------------
         ///*
@@ -144,9 +131,9 @@ int main() {
         end = std::chrono::steady_clock::now();
         totalTime += std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 
-        std::cout << "time: " <<  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() / 1000.0 << "s" << std::endl;
-        std::cout << "med time: " <<  totalTime / (gen*1000.0) << "s" << std::endl;
-        
+        std::cout << "time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() / 1000.0 << "s" << std::endl;
+        std::cout << "med time: " << totalTime / (gen * 1000.0) << "s" << std::endl;
+
         evolution->tournamentAll();
 
         std::cout << "-------------GEN " << gen << " -------------" << std::endl;
@@ -164,18 +151,18 @@ int main() {
         evolution->reset();
 
         // if(!(gen % 50)){
-        //     cv::imwrite("try3/images/" + std::to_string(gen) + "gen.png", plot->getGraph());
+        //     cv::imwrite("best/images/" + std::to_string(gen) + "gen.png", plot->getGraph());
         // }
 
         // if((gen % 20) < 3){
-        //     evolution->saveANNAll(("try3/matrixs/" + std::to_string(gen) + ".txt").c_str());
+        //     evolution->saveANNAll(("best/matrixs/" + std::to_string(gen) + ".txt").c_str());
         // }
 
         plot->addData(scoreData);
 
         mtx.unlock();
 
-        std::this_thread::sleep_for(1ms); //time to change threads
+        std::this_thread::sleep_for(1ms);  //time to change threads
         gen++;
         //*/
     }
