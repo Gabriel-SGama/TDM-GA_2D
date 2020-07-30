@@ -23,8 +23,5 @@ If the compiling worked, run the program:
 The evolution process should start and three screens should show up.
 
 ## Results:
+[![Team Death Match](http://img.youtube.com/vi/xY0Qm68ImTw/0.jpg)](http://www.youtube.com/watch?v=xY0Qm68ImTw "Team Death Match")
 
-steps:
-- title: team death match with best players.
-  description: test.
-  video: https://www.youtube.com/embed/xY0Qm68ImTw
