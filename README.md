@@ -23,7 +23,4 @@ If the compiling worked, run the program:
 The evolution process should start and three screens should show up.
 
 ## Results:
-
-[![Alt text](http://img.youtube.com/vi/xY0Qm68ImTw/0.jpg)](http://www.youtube.com/watch?v=xY0Qm68ImTw)
-[![Team Death Match](http://img.youtube.com/vi/xY0Qm68ImTw/0.jpg)](http://www.youtube.com/watch?v=xY0Qm68ImTw "Team Death Match")
-
+![](game.gif)
