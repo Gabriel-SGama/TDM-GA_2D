@@ -26,4 +26,5 @@ The evolution process should start and three screens should show up.
 After envolving for 5000 generations, the players learn how to move around and aim on the enemy players:
 
 ![](game.gif)
+fitness:
 ![](graph.gif)
