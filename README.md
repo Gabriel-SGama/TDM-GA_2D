@@ -23,6 +23,6 @@ If the compiling worked, run the program:
 The evolution process should start and three screens should show up.
 
 ## Results:
-After envolving for 5000 generations, the result is:
+After envolving for 5000 generations, the players learn how to move around and aim on the enemy players:
 
 ![](game.gif)
