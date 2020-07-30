@@ -141,6 +141,10 @@ void MatrixF::print(){
     }
 }
 
+float MatrixF::operator[](const int &index){
+    return this->matrix[index];
+}
+
 void MatrixF::writeMatrixToFile(std::ofstream* fileObj){
     int line;
     int colun;

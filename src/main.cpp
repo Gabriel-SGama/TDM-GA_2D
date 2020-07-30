@@ -14,7 +14,7 @@ Evolution *evolution;
 Plot *plot;
 
 void copyModerator() {
-    //*
+
     Moderator *copyModerator = new Moderator;
 
     LightAssault *lightAssaults = evolution->bestTeams->getLightAssaults();
@@ -38,10 +38,9 @@ void copyModerator() {
     bestLightAssaultMatrix->setANNParameters(lightAssaults->ANNInputSize, lightAssaults->ANNOutputSize);
     bestSniperMatrix->setANNParameters(snipers->ANNInputSize, snipers->ANNOutputSize);
     bestAssaultMatrix->setANNParameters(assaults->ANNInputSize, assaults->ANNOutputSize);
-    //*/
+
     while (true) {
         //----------------BEST TEAM MATCH----------------
-        //*
         mtx.lock();
 
         copyModerator->setInicialPosAll(initialPos, rand() % 3);
@@ -66,24 +65,18 @@ void copyModerator() {
 
         bestIndvsCopy->gameOfBest();
         bestIndvsCopy->resetAllPlayers(true);
-        //*/
         //----------------PLOT----------------
         plot->plotData(gen);
     }
 }
 
-int main() {
-    srand(time(0));
-
-    evolution = new Evolution;
-    scoreData_t scoreData;
-
-    plot = new Plot;
-
-    // std::thread th(copyModerator);
-    //*
+void showBestGame(){
+    std::string filePath;
+    std::cout << "Filepath to matrix data:" << std::endl;
+    std::cin >> filePath;
+    
     //----------------ONE GAME----------------
-    evolution->readANNAll("best/matrixs/5000.txt");
+    evolution->readANNAll(filePath.c_str());
     Moderator *bestIndvsCopy = new Moderator;
 
     bestIndvsCopy->setScreen(new Screen);
@@ -111,11 +104,41 @@ int main() {
     bestIndvsCopy->setAllWeightsOneMatrix(bestLightAssaultMatrix, bestSniperMatrix, bestAssaultMatrix);
     bestIndvsCopy->resetAllPlayers(true);
 
-    bestIndvsCopy->gameOfBest();
-    bestIndvsCopy->resetAllPlayers(true);
-    return 0;
-    //*/
+    while (true) {
+        bestIndvsCopy->gameOfBest();
+        bestIndvsCopy->setInicialPosAll(initialPos, rand() % 3);
+        bestIndvsCopy->resetAllPlayers(true);
+    }    
+}
 
+int main() {
+    srand(time(0));
+
+    evolution = new Evolution;
+    scoreData_t scoreData;
+
+    int choose;
+
+    std::cout << "evolution(0) or load file(1)?" << std::endl;
+    std::cin >> choose;
+    
+    if(choose == 1)
+        showBestGame();
+
+    std::cout << "save evolution data? n(0) y(1)" << std::endl;
+    std::cin >> choose;
+    getc(stdin);
+
+    std::string filePath = "";
+    
+    if(choose){
+        std::cout << "directory to save matrix data: (press enter to save on current directory)" << std::endl;
+        std::getline (std::cin,filePath);
+    }
+
+    plot = new Plot;
+    std::thread th(copyModerator);
+    
     std::chrono::steady_clock::time_point begin;
     std::chrono::steady_clock::time_point end;
 
@@ -123,7 +146,6 @@ int main() {
 
     while (1) {
         //----------------EVOLUTION----------------
-        ///*
         mtx.lock();
 
         begin = std::chrono::steady_clock::now();
@@ -150,21 +172,22 @@ int main() {
 
         evolution->reset();
 
-        // if(!(gen % 50)){
-        //     cv::imwrite("best/images/" + std::to_string(gen) + "gen.png", plot->getGraph());
-        // }
+        if(choose){
+            if(!(gen % 50)){
+                cv::imwrite(filePath + std::to_string(gen) + "gen.png", plot->getGraph());
+            }
 
-        // if((gen % 20) < 3){
-        //     evolution->saveANNAll(("best/matrixs/" + std::to_string(gen) + ".txt").c_str());
-        // }
-
+            if((gen % 20) < 3){
+                evolution->saveANNAll((filePath + std::to_string(gen) + ".txt").c_str());
+            }
+        }
+        
         plot->addData(scoreData);
 
         mtx.unlock();
 
         std::this_thread::sleep_for(1ms);  //time to change threads
         gen++;
-        //*/
     }
 
     return 0;

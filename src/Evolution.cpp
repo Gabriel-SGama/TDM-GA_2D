@@ -312,7 +312,7 @@ void Evolution::sintese(ANN *resultANN, ANN *ANN1, ANN *ANN2) {
         
         totalSize = matrix1[layerSize].lines*matrix1[layer].coluns;
         for (count = 0; count < totalSize; count++) {
-            resultMatrix[layer].matrix[count] = (matrix1[layer].matrix[count] + matrix2[layer].matrix[count]) / 2.0;
+            resultMatrix[layer].matrix[count] = (matrix1[layer][count] + matrix2[layer][count]) / 2.0;
         }
 
         for (count = 0; count < bias1[layer].size; count++) {
@@ -345,11 +345,11 @@ void Evolution::crossover(ANN *resultANN, ANN *ANN1, ANN *ANN2) {
 
         for (posi = 0; posi < totalSize; posi++) {
             if (side == 1){
-                resultBias[layer].vector[posi] = bias2[layer].vector[posi];
+                resultBias[layer].vector[posi] = bias2[layer][posi];
                     if (rand() % 1000 < crossChance)
                         side = 0;
             } else {
-                resultBias[layer].vector[posi] = bias1[layer].vector[posi];
+                resultBias[layer].vector[posi] = bias1[layer][posi];
                 if (rand() % 1000 < crossChance)
                     side = 1;
             }
@@ -360,11 +360,11 @@ void Evolution::crossover(ANN *resultANN, ANN *ANN1, ANN *ANN2) {
 
         for (posi = 0; posi < totalSize; posi++) {
             if (side == 1){
-                resultMatrix[layer].matrix[posi] = matrix2[layer].matrix[posi];
+                resultMatrix[layer].matrix[posi] = matrix2[layer][posi];
                     if (rand() % 1000 < crossChance)
                         side = 0;
             } else {
-                resultMatrix[layer].matrix[posi] = matrix1[layer].matrix[posi];
+                resultMatrix[layer].matrix[posi] = matrix1[layer][posi];
                 if (rand() % 1000 < crossChance)
                     side = 1;
             }

@@ -54,6 +54,7 @@ class MatrixF {
     vectorF operator*(const vectorF &vec);
     MatrixF operator+(const MatrixF &matrix);
     MatrixF operator/(const float &val);
+    float operator[](const int &index);
     
     void operator=(const MatrixF &matrix);
 };
