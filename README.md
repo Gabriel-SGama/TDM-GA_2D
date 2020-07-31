@@ -5,7 +5,7 @@ Team Death Match 2d version with AI
 ## Introduction:
 This repository is an aplicattion of reiforcement learning to a simple game of team death match in 2D.
 
-Introductory video: need to add link
+Introductory video: https://drive.google.com/file/d/1qCWFNm_g0V1kOvlsjCQaOSMteqH9scix/view?usp=sharing
 
 ## Dependencies:
  - *opencv*
