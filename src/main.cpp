@@ -177,7 +177,7 @@ int main() {
                 cv::imwrite(filePath + std::to_string(gen) + "gen.png", plot->getGraph());
             }
 
-            if((gen % 20) < 3){
+            if(!(gen % 20)){
                 evolution->saveANNAll((filePath + std::to_string(gen) + ".txt").c_str());
             }
         }
