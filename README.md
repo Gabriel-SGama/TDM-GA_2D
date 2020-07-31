@@ -16,7 +16,7 @@ After installing the dependecies, go to the selected directory and run the makef
 
 `make all`
 
-If the compiling worked, run the program:
+If the compiling process worked, run the program:
 
 `./tdm-GA.o`
 
