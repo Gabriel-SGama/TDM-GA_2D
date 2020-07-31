@@ -20,7 +20,7 @@ If the compiling process worked, run the program:
 
 `./tdm-GA.o`
 
-When you start the program you will be asked if you want to start an evolution process or load the neural network that has already been trained. If you select "evolution" it will apear the option to save your evolution data. In that case the fitness will be saved at each 50 generations and the neural network at each 20 generations. In both chooses ("evolution" or "load file") you will be asked to insert an directory or a filepath, respectively.
+When you start the program you will be asked if you want to start an evolution process or load the neural network that has already been trained. If you select "evolution" it will apear the option to save your evolution data. In that case the fitness will be saved at each 50 generations and the neural network at each 20 generations. In both choices ("evolution" or "load file") you will be asked to insert an directory or a filepath, respectively.
 
 ## Results:
 After envolving for 5000 generations, the players learn how to move around and aim on the enemy players:
