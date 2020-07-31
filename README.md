@@ -25,7 +25,8 @@ When you start the program you will be asked if you want to start an evolution p
 ## Results:
 After envolving for 5000 generations, the players learn how to move around and aim on the enemy players:
 
+#### Game:
 ![](game.gif)
 
-#### fitness:
+#### Fitness:
 ![](graph.gif)
